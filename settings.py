@@ -13,8 +13,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql', 
         'NAME': 'django_database',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'USER': 'jlugo',
+        'PASSWORD': 'jlugo',
         'HOST': '',      
         'PORT': '',      
     }
@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'OneTree.wall',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
