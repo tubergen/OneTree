@@ -1,3 +1,6 @@
+#from django.contrib import admin
+#admin.autodiscover()
+
 # Django settings for onetree project.
 
 DEBUG = True
@@ -93,4 +96,5 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'OneTree.wall',
 )
