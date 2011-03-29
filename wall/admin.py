@@ -1,5 +1,5 @@
 from django.contrib import admin
-from OneTree.models import *
+from OneTree.wall.models import *
 
 admin.site.register(Post);
 admin.site.register(Announcement);
