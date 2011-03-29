@@ -65,3 +65,4 @@ class User(models.Model):
 
 class UserInfo(models.Model):
     pass
+
