@@ -1,0 +1,18 @@
+Template Hierarchy:
+
+Base.html (site layout)
+	  Group Page extends base.html
+	  	Includes wall_display.html
+			 Includes wall_submit (the post submission form)
+			 Includes wall_content (the list of posts)
+---
+
+The wall_display.html relies on a very specific directory structure with the 
+includes. We should change this. (apply to url a function that uses os.dirname
+and that sort of stuff, perhaps)
+
+---
+
+Will having separate models for the announcements and events ultimately make
+it annoying, since we can't use posts.objects to get all posts? (Posts is
+abstract, so it has no object manager)

@@ -1,13 +1,23 @@
 from django.db import models
 
+'''
+I temporarily allowed some of the following fields to be blank. We should
+go back through and figure out which ones we actually want to be blank.
+
+We need to add null=True for things that are integers. See "making date
+and numeric fields optional" at:
+
+http://www.djangobook.com/en/2.0/chapter06/
+'''
+
 class Post(models.Model):
-    group = models.ForeignKey('Group')
-    author = models.ForeignKey('User')
+    group = models.ForeignKey('Group', blank=True, null=True)
+    author = models.ForeignKey('User', blank=True, null=True)
     text = models.TextField()
-    date = models.DateField(auto_now=True)
-    upvotes = models.IntegerField() 
-    downvotes = models.IntegerField() 
-    spamvotes = models.IntegerField() 
+    date = models.DateTimeField(auto_now=True)
+    upvotes = models.IntegerField(blank=True, null=True)
+    downvotes = models.IntegerField(blank=True, null=True)
+    spamvotes = models.IntegerField(blank=True, null=True)
 
     '''"Comment List" represented implicitly. Given a post, we should be able
     to get the the associated comments through the foreign key relationship.
@@ -15,15 +25,17 @@ class Post(models.Model):
 
     class Meta:
         abstract = True  # post instances cannot be declared
+        ordering = ['-date']
 
     def __unicode__(self):
-        return "Post by" + self.author + "on" + self.date;
+        return self.text; # temporary since other fields can be blank
+        #return "Post by" + self.author + "on" + self.date;
 
 class Announcement(Post):
     pass
 
 class Event(Post):
-    eventDate = models.DateField()    
+    eventDate = models.DateTimeField()    
     flags = models.ManyToManyField('Flag')
 
 # We should only associate a comment with either an event or an announcement

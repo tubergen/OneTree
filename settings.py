@@ -80,10 +80,25 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'OneTree.urls'
 
+import os.path # add this to try to use Dondero's general path thing
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    
+    os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/')
+
+    # grr... this is going to cause problems. maybe we should figure out
+    # how to use Dondero's thing to make this portable.
+    
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+     "django.contrib.auth.context_processors.auth",
+    
+# the internet said to include the following to get csrf working, but it
+# gave me an error
+#     "django.contrib.auth.context_processors.csrf", 
 )
 
 INSTALLED_APPS = (
@@ -98,3 +113,4 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
