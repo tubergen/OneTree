@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
 </head>
 <body>
+    {% block header %}
     <h1>This is temporary</h1>
+    {% endblock %}
+
     {% block content %}{% endblock %}
+
     {% block footer %}
     <hr>
-    <p>Default footer</p>
+        <h5>Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen</h5>
     {% endblock %}
 </body>
 </html>

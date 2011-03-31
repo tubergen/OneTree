@@ -4,7 +4,6 @@ should find a way to tell the template system, "Hey, look in the directory
 of the file that included the file you're looking for."
 {% endcomment %}
 
-
 {% if errormsg %}
    <p style="color: red;">
      {{ errormsg }}
@@ -12,6 +11,4 @@ of the file that included the file you're looking for."
 {% endif %}
 
 {% include "includes/wall/wall_submit.html" %}
-<br/>
-<br/>
 {% include "includes/wall/wall_content.html" %}
