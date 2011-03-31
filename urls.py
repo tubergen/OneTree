@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.wall.views import group
+from OneTree.apps.wall.views import group
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin

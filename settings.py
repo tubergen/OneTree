@@ -10,14 +10,12 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-MANAGERS = ADMINS
-
 DATABASES = {
     'default': {
         'ENGINE': 'mysql', 
         'NAME': 'django_database',
-        'USER': 'jlugo',
-        'PASSWORD': 'jlugo',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': '',      
         'PORT': '',      
     }
@@ -107,7 +105,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'OneTree.wall',
+    'OneTree.apps.wall',
+    'OneTree.apps.common',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
