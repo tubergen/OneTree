@@ -1,0 +1,8 @@
+In common or something, we should keep all of the string literals in a 
+text.en file
+
+Note: Even though I check for multiple groups mapping to the same url in 
+group_page/views.py we should figure out how to enforce url uniqueness in our
+model.
+
+...How do we do percolation efficiently?

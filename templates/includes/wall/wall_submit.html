@@ -1,5 +1,5 @@
 <p>
-<form action="/group/" method="post">{% csrf_token %}
+<form action={{ group_url }} method="post">{% csrf_token %}
     <textarea name="post_content" cols=80 rows=4></textarea><br />
   <input type="submit" value="Submit" />	
 </form>

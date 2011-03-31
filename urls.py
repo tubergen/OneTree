@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.wall.views import group
+from OneTree.apps.group_page.views import group_page
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -14,5 +14,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^group/$', group),
+    #(r'^group/$', group_page),
+    (r'^(\w+)/$', group_page),                       
 )
