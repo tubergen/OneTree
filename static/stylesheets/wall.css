@@ -25,3 +25,8 @@
 #wall-submit {
     text-align: center;
 }
+
+.wall-error-text {
+    color: #FF0000;
+    text-align: center;
+}
