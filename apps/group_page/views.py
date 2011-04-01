@@ -77,6 +77,7 @@ def group_page(request, group_url):
    # is there a better way to do this group_url parameter???
    return render_to_response('base_wall_group.html',
                              {'announcements': announcements,
-                             'errormsg': errormsg,},
+                             'errormsg': errormsg,
+                             'group_name': group.name},
                              #'group_url': ('/group/' + group_url + '/')},
                              context_instance=RequestContext(request))
