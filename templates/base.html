@@ -1,22 +1,38 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
     {% block head %}{% endblock %}
 </head>
 <body>
-    {% block header %}
-    <h1>This is temporary</h1>
-    {% endblock %}
+    <div id="wrap">
+        <div id="header">
+            {% block header %}
+                {# will probably never be changed by any page #}
+                {# if user logged in display the logged in bar #}
+                {# else display the logged out bar #}
+            {% endblock %}
+        </div>
 
-    {% block content %}{% endblock %}
+        <div id="content">
+            {% block top_content %}
+                {# contains title, arrows, calendar #}
+                <span id="title">
+                    <h1>Page title</h1>
+                </span>
+            {% endblock %}
+            {% block main_content %}
+                {# contains wall, post, and right bar #}
+            {% endblock %}
+        </div>
 
-    {% block footer %}
-    <hr>
-        <h5>Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen</h5>
-    {% endblock %}
+        <div id="footer">
+            {% block footer %}
+                {# will probably never be changed by any page #}
+                <h5>Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen</h5>
+            {% endblock %}
+        </div>
+    </div>
 </body>
 </html>
-
-
-

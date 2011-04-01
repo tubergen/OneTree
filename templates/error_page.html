@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block title %}
+    Error!
+{% endblock %}
 
-oh god how did this get here I am not good with computer
-<br/>
-<br/>
-oh btw the error message is:
-<br/>
-<br/>
-{{errormsg}}
-
+{% block top_content %}
+    <h1>{{errormsg}}</h1>
+    <p>Nice going.</p>
 {% endblock %}

@@ -1,0 +1,29 @@
+#wrap {
+    width: 1000px;
+    margin: 1em auto 1em auto;
+    border: 1px solid;
+}
+
+#header {
+}
+
+#content {
+}
+
+#title {
+    text-align: center;
+}
+
+#footer {
+    width: 95%;
+    margin: 1em auto 1em auto;
+    padding: .5em;
+    border: 1px solid;
+    text-align: center;
+    background-color: #FFC600;
+}
+
+.wall-error-text {
+    color: #FF0000;
+    text-align: center;
+}

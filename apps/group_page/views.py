@@ -75,8 +75,8 @@ def group_page(request, group_url):
    (announcements, events) = concat_with_child_posts(group)
 
    # is there a better way to do this group_url parameter???
-   return render_to_response('group_page.html',
+   return render_to_response('base_wall_group.html',
                              {'announcements': announcements,
-                             'errormsg': errormsg,
-                             'group_url': ('/' + group_url + '/')},
+                             'errormsg': errormsg,},
+                             #'group_url': ('/group/' + group_url + '/')},
                              context_instance=RequestContext(request))

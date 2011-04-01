@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
+{% endblock %}
+
+{% block top_content %}
+    {# username or group name #}
+    {# put a calendar here #}
+{% endblock %}
+
+{% block main_content %}
+    {% include "includes/wall/wall_display.html" %}
+{% endblock %}
