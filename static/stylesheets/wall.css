@@ -1,0 +1,27 @@
+.wall {
+    word-break: break-word;
+    text-align: center;
+    width: 60%;
+    margin: 1em auto 1em auto;
+    border: 1px solid;
+}
+
+.announcement-box {
+    padding: .7em;
+    margin: 1em;
+}
+
+.announcement-group {
+    font-weight: bold;
+    border: 1px solid;
+    background-color: #FFC600;
+}
+
+.announcement-text {
+    border: 1px solid;
+    background-color: #FFE073;
+}
+
+#wall-submit {
+    text-align: center;
+}

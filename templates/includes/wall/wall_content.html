@@ -1,8 +1,6 @@
-<h3>wall posts</h3>
-
 {% for announcement in announcements %}
-<p>
-{{ announcement.text }}
-</p>
-
+<div class="announcement-box">
+    <div class="announcement-group">{{ announcement.group }}</div>
+    <div class="announcement-text">{{ announcement.text }}</div>
+</div>
 {% endfor %}

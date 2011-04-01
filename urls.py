@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from OneTree.apps.group_page.views import group_page
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,5 +16,11 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
     #(r'^group/$', group_page),
-    (r'^(\w+)/$', group_page),                       
+    (r'^group/(\w+)/$', group_page),                       
 )
+
+# on our own computers, serve static files properly
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+        )
