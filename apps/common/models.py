@@ -103,9 +103,9 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-class Group(ModelForm):
-    class Meta:
-        model = Group
+#class Group(ModelForm):
+#    class Meta:
+#        model = Group
 
 # ===============================
 # MEMBERSHIP
