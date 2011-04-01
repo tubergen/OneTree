@@ -53,7 +53,7 @@ def group_page(request, group_url):
 
 
     # is there a better way to do this group_url parameter???
-    return render_to_response('group_page.html',
+    return render_to_response('base_wall_group.html',
                               {'announcements': group.announcements.all(),
                               'errormsg': errormsg,},
                               context_instance=RequestContext(request))
