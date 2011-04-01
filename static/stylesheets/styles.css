@@ -1,5 +1,6 @@
 body {
     background-color: #FFE073;
+    font-family: Verdana, sans-serif;
 }
 
 #wrap {
@@ -17,7 +18,6 @@ body {
 }
 
 #header_logo {
-    font-family: sans-serif;
     font-weight: bold;
     font-size: large;
     text-align: left;
@@ -44,14 +44,14 @@ body {
 #content {
 }
 
-#title {
+#subtitle, #title {
     text-align: center;
+    font-family: Georgia, serif;
 }
 
 #footer {
     padding: .8em;
     font-size: small;
-    font-weight: bold;
     background-color: #FFC600;
     border-top: 1px solid;
     text-align: center;
