@@ -1,5 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
+from django import forms # for experimentation
+
 '''
 I temporarily allowed some of the following fields to be blank. We should
 go back through and figure out which ones we actually want to be blank.
@@ -71,8 +73,9 @@ class Group(models.Model):
     name = models.CharField(max_length=30)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True)
+
     users = models.ManyToManyField('User', through='Membership', blank=True,
-                               null=True)
+                                    null=True)
 
     # A group can have many posts. A post can appear on many groups.
     announcements = models.ManyToManyField('Announcement', blank=True, null=True)
@@ -103,9 +106,12 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-#class Group(ModelForm):
-#    class Meta:
-#        model = Group
+class GroupForm(ModelForm):
+    class Meta:
+        model = Group
+        exclude = ('users', 'tags', 'groupinfo', ) 
+        # these fields need to be excluded because they break our website
+        # not sure how to fix this yet
 
 # ===============================
 # MEMBERSHIP
@@ -148,3 +154,43 @@ class User(models.Model):
 class UserInfo(models.Model):
     pass
 
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    message = forms.CharField()
+    sender = forms.EmailField()
+    cc_myself = forms.BooleanField(required=False)
+
+TITLE_CHOICES = (
+    ('MR', 'Mr.'),
+    ('MRS', 'Mrs.'),
+    ('MS', 'Ms.'),
+)
+
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=3, choices=TITLE_CHOICES)
+    birth_date = models.DateField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+class Book(models.Model):
+    name = models.CharField(max_length=100)
+    authors = models.ManyToManyField(Author)
+
+class AuthorForm(ModelForm):
+    class Meta:
+        model = Author
+
+class BookForm(ModelForm):
+    class Meta:
+        model = Book
+
+class GroupX(models.Model):
+    name = models.CharField(max_length=30)
+
+class GroupXForm(ModelForm):
+    class Meta:
+        model = Group
+	fields = ('name', 'announcements', 'events', )
