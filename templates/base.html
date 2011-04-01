@@ -11,7 +11,17 @@
             {% block header %}
                 {# will probably never be changed by any page #}
                 {# if user logged in display the logged in bar #}
-                {# else display the logged out bar #}
+                {# else display the logged out bar: #}
+                <div id="header_logo">
+                    - OneTree -
+                </div>
+                <div id="header_nav">
+                    <ul>
+                        <li>Register</li>
+                        <li>Login</li>
+                        <li>Search</li>
+                    </ul>
+                </div>
             {% endblock %}
         </div>
 
@@ -30,7 +40,7 @@
         <div id="footer">
             {% block footer %}
                 {# will probably never be changed by any page #}
-                <h5>Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen</h5>
+                Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen
             {% endblock %}
         </div>
     </div>
