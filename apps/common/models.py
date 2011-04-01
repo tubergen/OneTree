@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.forms import ModelForm
 '''
 I temporarily allowed some of the following fields to be blank. We should
 go back through and figure out which ones we actually want to be blank.
@@ -9,6 +9,10 @@ and numeric fields optional" at:
 
 http://www.djangobook.com/en/2.0/chapter06/
 '''
+
+# ===============================
+# POST
+# ===============================
 
 class Post(models.Model):
     origin_group = models.ForeignKey('Group', blank=True, null=True)
@@ -31,13 +35,23 @@ class Post(models.Model):
         return self.text; # temporary since other fields can be blank
         #return "Post by" + self.author + "on" + self.date;
 
+# ===============================
+# ANNOUNCEMENT
+# ===============================
 class Announcement(Post):
     pass
 
+# ===============================
+# EVENT
+# ===============================
 class Event(Post):
     eventDate = models.DateTimeField()    
     flags = models.ManyToManyField('Flag')
 
+
+# ===============================
+# COMMENT
+# ===============================
 # We should only associate a comment with either an event or an announcement
 # Not both
 class Comment(Post):
@@ -50,6 +64,9 @@ class Flag(models.Model):
     def __unicode__(self):
         return self.name;
 
+# ===============================
+# GROUP
+# ===============================
 class Group(models.Model):
     name = models.CharField(max_length=30)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
@@ -86,6 +103,13 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
+class Group(ModelForm):
+    class Meta:
+        model = Group
+
+# ===============================
+# MEMBERSHIP
+# ===============================
 class Membership(models.Model):
     user = models.ForeignKey('User')
     group = models.ForeignKey('Group')
@@ -94,12 +118,21 @@ class Membership(models.Model):
     is_subscriber = models.BooleanField()
     is_email_subscriber = models.BooleanField()
 
+# ===============================
+# TAG 
+# ===============================
 class Tag(models.Model):
     tag = models.CharField(max_length=30)
 
+# ===============================
+# GROUPINFO
+# ===============================
 class GroupInfo(models.Model):
     pass
 
+# ===============================
+# USER
+# ===============================
 class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
@@ -109,6 +142,9 @@ class User(models.Model):
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
 
+# ===============================
+# USERINFO
+# ===============================
 class UserInfo(models.Model):
     pass
 
