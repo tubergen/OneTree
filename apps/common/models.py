@@ -11,7 +11,7 @@ http://www.djangobook.com/en/2.0/chapter06/
 '''
 
 class Post(models.Model):
-    group = models.ForeignKey('Group', blank=True, null=True)
+    origin_group = models.ForeignKey('Group', blank=True, null=True)
     author = models.ForeignKey('User', blank=True, null=True)
     text = models.TextField()
     date = models.DateTimeField(auto_now=True)
@@ -56,15 +56,32 @@ class Group(models.Model):
                                null=True)
     users = models.ManyToManyField('User', through='Membership', blank=True,
                                null=True)
+
+    # A group can have many posts. A post can appear on many groups.
+    announcements = models.ManyToManyField('Announcement', blank=True, null=True)
+    events = models.ManyToManyField('Event', blank=True, null=True)
+
     #members = models.ManyToManyField('User', through='Membership')
     #admins = models.ManyToManyField('User', through='Administrators')
     #subscribers = models.ManyToManyField('User')
     #email_subscribers = models.ManyToManyField('User')
+    
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     groupinfo = models.OneToOneField('GroupInfo', blank=True, null=True)
     url = models.CharField(max_length=30)
 
-    '''Announcements, Events represented through foreignKey relationship.'''
+    # in future, change this so that parent can 'reject' percolating posts
+    def addAnnToParent(self, announcement):
+        curNode = self
+        while (curNode is not None):
+            curNode.announcements.add(announcement)
+            curNode = curNode.parent
+
+    def addEventToParent(self, event):
+        curNode = self
+        while (curNode is not None):
+            curNode.events.add(event)
+            curNode = curNode.parent
 
     def __unicode__(self):
         return self.name;
