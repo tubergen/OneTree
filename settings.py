@@ -14,8 +14,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql', 
         'NAME': 'django_database',
-        'USER': 'jlugo',
-        'PASSWORD': 'jlugo',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': '',      
         'PORT': '',      
     }
