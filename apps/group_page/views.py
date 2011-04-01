@@ -55,7 +55,7 @@ def group_page(request, group_url):
     # is there a better way to do this group_url parameter???
     return render_to_response('group_page.html',
                               {'announcements': group.announcements.all(),
-                              'errormsg': errormsg,
+                              'errormsg': errormsg,},
                               context_instance=RequestContext(request))
 
 '''
@@ -101,3 +101,4 @@ def dfs(group):
 
             child.last_update_query = datetime.now()
             child.hasNewPosts = False
+'''
