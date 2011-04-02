@@ -1,0 +1,11 @@
+ssh m@onetree.princeton.edu
+password: 1netree
+
+just sign on under m. then clone into some directory of your own, and go to /var/www/OneTree and sudo cp -r [whereveryouputit/OneTree/*] .
+
+then to make sure you don't have the wrong django.wsgi, just do "sudo cp ../django.wsgi ." while you're still in the /var/www/OneTree folder
+
+to clone, password is: passphrase
+
+may have to restart apache:
+sudo /etc/init.d/apache2 restart
