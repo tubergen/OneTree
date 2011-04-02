@@ -1,6 +1,6 @@
 body {
     background-color: #FFE073;
-    font-family: Verdana, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 #wrap {
@@ -42,11 +42,12 @@ body {
 }
 
 #content {
+    text-align: center;
 }
 
 #subtitle, #title {
     text-align: center;
-    font-family: Georgia, serif;
+    font-family: Verdana, Arial, sans-serif;
 }
 
 #footer {
@@ -55,4 +56,25 @@ body {
     background-color: #FFC600;
     border-top: 1px solid;
     text-align: center;
+}
+
+.error-message {
+    color: #FF0000;
+}
+
+.errorlist {
+    background-color: #DDDDDD;
+    height: 0;
+}
+
+.error {
+    background-color: #DDDDDD;
+}
+
+.main-container {
+    word-break: break-word;
+    text-align: center;
+    width: 60%;
+    margin: 1em auto 1em auto;
+    border: 4px double;
 }

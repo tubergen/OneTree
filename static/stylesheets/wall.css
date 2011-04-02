@@ -1,11 +1,3 @@
-.wall {
-    word-break: break-word;
-    text-align: center;
-    width: 60%;
-    margin: 1em auto 1em auto;
-    border: 4px double;
-}
-
 .announcement-box {
     padding: .7em;
     margin: 1em;
