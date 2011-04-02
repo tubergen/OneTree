@@ -88,7 +88,7 @@ class Group(models.Model):
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     groupinfo = models.OneToOneField('GroupInfo', blank=True, null=True)
-    url = models.CharField(max_length=30)
+    url = models.CharField(max_length=30, unique=True)
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
