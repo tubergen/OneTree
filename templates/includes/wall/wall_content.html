@@ -21,9 +21,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 <div class="post-box">
     <div class="post-group">
         {% ifnotequal post.origin_group  group %}
-            <span class="announcement-via"></span>
+            <span class="post-via"></span>
         {% else %}
-            <span class="announcement-by-same-group"></span>
+            <span class="post-by-same-group"></span>
         {% endifnotequal %}
         <span class="post-group-name">{{ post.origin_group }}</div>
     <div class="post-content">
