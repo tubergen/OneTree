@@ -7,7 +7,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     <script type="text/javascript" charset="utf-8">
 
     // vote_type specifies if this was up or down vote; ann_id identifies announcement
-    function update_vote(vote_type, ann_id) 
+    function update_vote_script(vote_type, ann_id) 
     {
         var data = {"vote_type":vote_type, "ann_id":ann_id};
         $.getJSON("/_post/update_vote", data, function(data) {
@@ -25,10 +25,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <ul>
                 <li>
                     <button type="button" class="up-button" 
-                            onClick="update_vote('up', {{announcement.id}})">Up</button></li>
+                            onClick="update_vote_script('up', {{announcement.id}})">Up</button></li>
                 <li><span class="vote-score">{{ announcement.score }}</span></li>
                 <li><button type="button" class="down-button" 
-                            onClick="update_vote('down', {{announcement.id}})">Down</button></li>
+                            onClick="update_vote_script('down', {{announcement.id}})">Down</button></li>
             </ul>
         </div>
         <div class="announcement-text">{{ announcement.text }}</div>
