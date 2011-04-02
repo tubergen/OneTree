@@ -3,7 +3,6 @@
 {% block head %}
     {{ block.super }}
     <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
-
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" charset="utf-8">
 
@@ -15,8 +14,8 @@
             var score = data;
             $("#vote-score-"+ann_id).html(score);
         });
-        }
-    </script>
+    }
+</script>
 {% endblock %}
 
 {% block top_content %}
