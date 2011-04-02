@@ -1,6 +1,38 @@
+{% comment %}
+I just wanted to see if I could do Ajax. We can move this stuff out of here later.
+{% endcomment %}
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+  // vote_type specifies if this was up or down vote; ann_id identifies announcement
+  function update_vote(vote_type, ann_id) 
+  {
+     var data = {"vote_type":vote_type, "ann_id":ann_id};
+     $.getJSON("/_post/update_vote", data, function(data) {
+       var score = data;
+       $("#vote-score-"+ann_id).html(score);
+     });
+  }
+</script>
+
 {% for announcement in announcements %}
 <div class="announcement-box">
     <div class="announcement-group">{{ announcement.origin_group }}</div>
-    <div class="announcement-text">{{ announcement.text }}</div>
+    <div class="announcement-content">
+      <div class="announcement-votes">
+	<div>
+	  <button type="button" class="vote-button" id="up-button" 
+		  onClick="update_vote('up', {{announcement.id}})">Up</button>
+	</div>
+	{# is this id assignment hacky? #}
+	<div id="vote-score-{{announcement.id}}">{{ announcement.score }}</div>
+	<div>
+	  <button type="button" class="vote-button" id="down-button" 
+		  onClick="update_vote('down', {{announcement.id}})">Down</button>
+	</div>
+      </div>
+      <div class="announcement-text">{{ announcement.text }}</div>
+    </div>
 </div>
 {% endfor %}

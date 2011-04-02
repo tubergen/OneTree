@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from OneTree.apps.group_page.views import group_page
 from OneTree.apps.group_signup.views import create_group
+from OneTree.apps.wall.views import update_vote
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
@@ -19,6 +20,7 @@ urlpatterns = patterns('',
     #(r'^group/$', group_page),
     (r'^group/(\w+)/$', group_page),                       
     (r'^group-signup/$', create_group),
+    (r'^_post/update_vote/$', update_vote),                       
 )
 
 # on our own computers, serve static files properly

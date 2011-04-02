@@ -33,6 +33,9 @@ class Post(models.Model):
         abstract = True  # post instances cannot be declared
         ordering = ['-date']
 
+    def score(self):
+        return self.upvotes - self.downvotes;
+
     def __unicode__(self):
         return self.text; # temporary since other fields can be blank
         #return "Post by" + self.author + "on" + self.date;

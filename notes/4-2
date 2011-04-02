@@ -1,0 +1,7 @@
+oddly, wall posts seem to be rendered in order of score... even though
+we have them being ordered by date?
+
+when a post is created, we need to be sure to assign default field values, 
+like upvotes=0 and downvotes=0
+
+how is this going to work with intermixing events and announcements?
