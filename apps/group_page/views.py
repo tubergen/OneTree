@@ -51,12 +51,12 @@ def group_page(request, group_url):
         else:
             errormsg = "Empty announcement? Surely you aren't *that* boring."
 
-
-    # is there a better way to do this group_url parameter???
+    children = group.child_set.all()
     return render_to_response('base_wall_group.html',
                               {'announcements': group.announcements.all(),
                               'errormsg': errormsg,
-                              'group': group},
+                              'group': group,
+                              'children': children},
                               context_instance=RequestContext(request))
 
 '''
