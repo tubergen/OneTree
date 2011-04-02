@@ -16,7 +16,7 @@
 .child-list li {
     display: inline-block;
     list-style: none;
-    padding: 0 1em 0 0;
+    padding: 0 .5em 0 .5em;
 }
 
 .announcement-box {
