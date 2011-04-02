@@ -33,7 +33,8 @@ def update_vote(request):
                     else:
                         post.downvotes += 1
                 post.save()
-                score = post.upvotes - post.downvotes;
-                return HttpResponse(score, mimetype="application/javascript")
+                return HttpResponse();
+                #score = post.upvotes - post.downvotes;
+                #return HttpResponse(score, mimetype="application/javascript")
 
     return HttpResponse(status=400)
