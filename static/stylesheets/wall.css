@@ -37,28 +37,29 @@
     padding: .8em;
     text-align: left;
     background-color: #FFE073;
+    overflow: hidden;
 }
 
 .announcement-votes {
     text-align: center;
     float: left;
-/*    padding-right: .8em; */
+    padding-right: .8em;
+}
+
+.announcement-votes ul, .announcement-votes li {
+    padding: 0;
+    margin: 0;
+    line-height: 1.5em;
 }
 
 .announcement-text {
 }
 
-.vote-button {
+.up-button, .down-button {
     width: 50px;
     /* html buttons seem to have padding / margins built in by default */
     padding-top: 0px;
     margin-top: 0px; 
-}
-
-#up-button {
-}
-
-#down-button {
 }
 
 #wall-submit {

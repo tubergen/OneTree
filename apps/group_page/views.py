@@ -44,7 +44,10 @@ def group_page(request, group_url):
 
             # later insert logic to distinguish events vs announcements
             new_announcement = Announcement(text=request.POST['post_content'],
-                                               origin_group=group)
+                    upvotes = 0,
+                    downvotes = 0,
+                    origin_group=group)
+
             new_announcement.save()
             group.announcements.add(new_announcement)
             group.addAnnToParent(new_announcement)
