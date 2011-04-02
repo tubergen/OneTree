@@ -19,7 +19,13 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
 {% for announcement in announcements %}
 <div class="announcement-box">
-    <div class="announcement-group">{{ announcement.origin_group }}</div>
+    <div class="announcement-group">
+        {% ifnotequal announcement.origin_group  group %}
+            <span class="announcement-via"></span>
+        {% else %}
+            <span class="announcement-by-same-group"></span>
+        {% endifnotequal %}
+        <span class="announcement-group-name">{{ announcement.origin_group }}</div>
     <div class="announcement-content">
         <div class="announcement-votes">
             <ul>

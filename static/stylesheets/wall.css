@@ -25,10 +25,25 @@
 }
 
 .announcement-group {
-    font-weight: bold;
     border: 1px solid;
     background-color: #FFC600;
     padding: .3em;
+}
+
+.announcement-group-name {
+    font-weight: bold;
+}
+
+.announcement-via {
+    font-style: italic;
+    font-size: small;
+}
+
+.announcement-via:after {
+    content: "via:";
+}
+
+.announcement-by-same-group {
 }
 
 .announcement-content {
