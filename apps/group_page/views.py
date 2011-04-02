@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from OneTree.apps.common.models import *
+from OneTree.apps.helpers.rank_posts import calc_hot_score
 
 import datetime
 
@@ -55,8 +56,11 @@ def group_page(request, group_url):
             errormsg = "Empty announcement? Surely you aren't *that* boring."
 
     children = group.child_set.all()
+    anns = list(group.announcements.all())
+    anns.sort(key=calc_hot_score, reverse=True)
+    #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
     return render_to_response('base_wall_group.html',
-                              {'announcements': group.announcements.all(),
+                              {'announcements': anns,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children},

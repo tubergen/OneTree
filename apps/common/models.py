@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+from OneTree.apps.helpers.rank_posts import calc_hot_score
 # from django import forms # for experimentation
 
 '''
@@ -34,10 +35,15 @@ class Post(models.Model):
         ordering = ['-date']
 
     def score(self):
-        return self.upvotes - self.downvotes;
+        return self.upvotes - self.downvotes
+
+    # note that this function is not called in the wall views to sort
+    # instead, calc_hot_score from rank_posts is directly called
+    def hotscore(self):
+        return calc_hot_score(self)
 
     def __unicode__(self):
-        return self.text; # temporary since other fields can be blank
+        return self.text # temporary since other fields can be blank
         #return "Post by" + self.author + "on" + self.date;
 
 # ===============================

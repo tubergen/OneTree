@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     (r'^group/(\w+)/$', group_page),                       
     (r'^group-signup/$', create_group),
     (r'^_post/update_vote/$', update_vote),
-    (r'^user-signup/$', create_user),
+    #(r'^user-signup/$', create_user),
 )
 
 # on our own computers, serve static files properly
