@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     #(r'^group/$', group_page),
     (r'^group/(\w+)/$', group_page),                       
     (r'^group-signup/$', create_group),
-    (r'^_apps/wall/views/update_vote/$', update_vote),
+    (r'^_apps/wall/views-update_vote/$', update_vote),
     #(r'^user-signup/$', create_user),
 )
 
