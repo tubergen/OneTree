@@ -3,19 +3,6 @@
 {% block head %}
     {{ block.super }}
     <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" charset="utf-8">
-
-    // vote_type specifies if this was up or down vote; ann_id identifies announcement
-    function update_vote(vote_type, ann_id) 
-    {
-        var data = {"vote_type":vote_type, "ann_id":ann_id};
-        $.getJSON("/_post/update_vote", data, function(data) {
-            var score = data;
-            $("#vote-score-"+ann_id).html(score);
-        });
-    }
-</script>
 {% endblock %}
 
 {% block top_content %}

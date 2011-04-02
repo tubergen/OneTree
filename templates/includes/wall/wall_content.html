@@ -3,6 +3,20 @@ I just wanted to see if I could do Ajax. We can move this stuff out of here late
 Brian: I moved your code elsewhere so I can use inheritance to put it in the head.
 {% endcomment %}
 
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    // vote_type specifies if this was up or down vote; ann_id identifies announcement
+    function update_vote(vote_type, ann_id) 
+    {
+        var data = {"vote_type":vote_type, "ann_id":ann_id};
+        $.getJSON("/_post/update_vote", data, function(data) {
+            var score = data;
+            $("#vote-score-"+ann_id).html(score);
+        });
+    }
+</script>
+
 {% for announcement in announcements %}
 <div class="announcement-box">
     <div class="announcement-group">{{ announcement.origin_group }}</div>
