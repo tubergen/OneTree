@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 from OneTree.apps.helpers.rank_posts import calc_hot_score
+from OneTree.apps.common.PostType import PostType
 # from django import forms # for experimentation
 
 '''
@@ -26,6 +27,8 @@ class Post(models.Model):
     downvotes = models.IntegerField(blank=True, null=True)
     spamvotes = models.IntegerField(blank=True, null=True)
 
+    post_type = PostType.POST
+
     '''"Comment List" represented implicitly. Given a post, we should be able
     to get the the associated comments through the foreign key relationship.
     '''
@@ -50,7 +53,7 @@ class Post(models.Model):
 # ANNOUNCEMENT
 # ===============================
 class Announcement(Post):
-    pass
+    post_type = PostType.ANNOUNCEMENT
 
 # ===============================
 # EVENT
@@ -58,7 +61,7 @@ class Announcement(Post):
 class Event(Post):
     eventDate = models.DateTimeField()    
     flags = models.ManyToManyField('Flag')
-
+    post_type = PostType.EVENT
 
 # ===============================
 # COMMENT
