@@ -15,6 +15,7 @@ body {
     padding: 1em;
     background-color: #FFC600;
     border-bottom: 1px solid;
+    margin-bottom: 1em;
 }
 
 #header_logo {
@@ -45,9 +46,16 @@ body {
     text-align: center;
 }
 
-#subtitle, #title {
-    text-align: center;
+#subtitle, #title, #group-title {
     font-family: Verdana, Arial, sans-serif;
+}
+
+#group-title, #title {
+    margin-top: 0;
+}
+
+#group-title {
+    margin-bottom: 0;
 }
 
 #footer {
@@ -64,6 +72,7 @@ body {
 
 .errorlist {
     background-color: #DDDDDD;
+    color: #FF0000;
     height: 0;
 }
 
@@ -77,4 +86,9 @@ body {
     width: 60%;
     margin: 1em auto 1em auto;
     border: 4px double;
+}
+
+a {
+    color: #2618B1;
+    text-decoration: none;
 }

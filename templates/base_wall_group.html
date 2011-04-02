@@ -1,3 +1,17 @@
 {% extends "base_wall.html" %}
 
-{% block top_content %}<span id="title"><h1>{{ group.name }}</h1></span>{% endblock %}
+{% block top_content %}
+    <div id="group-name-nav">
+    {% if group.parent %}
+        <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+    {% endif %}
+    <h1 id="group-title">{{ group.name }}</h1>
+    {% if children %}
+        <ul class="child-list">
+        {% for child in children %}
+            <li><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+{% endblock %}

@@ -1,3 +1,24 @@
+#parent {
+    font-size: small;
+    display: block;
+}
+
+#group-name-nav {
+    margin-bottom: 1em;
+}
+
+.child-list {
+    padding: 0;
+    font-size: small;
+    margin: 0;
+}
+
+.child-list li {
+    display: inline-block;
+    list-style: none;
+    padding: 0 1em 0 0;
+}
+
 .announcement-box {
     padding: .7em;
     margin: 1em;
