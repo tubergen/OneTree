@@ -24,5 +24,5 @@ class UserForm(ModelForm):
     required_css_class = 'required'
 
     class Meta:
-        model = Group
-        fields = ('first_name', 'last_name', 'email',)
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username',)

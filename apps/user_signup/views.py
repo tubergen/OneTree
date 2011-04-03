@@ -18,12 +18,12 @@ def create_user(request):
 
             #first_name = form.cleaned_data['first_name']
             #last_name = form.cleaned_data['last_name']
-            #email = form.cleaned_data['url']
+            #email = form.cleaned_data['email']
 
             # necessary?
             
             # where should this redirect to? user info page?
-           # return HttpResponseRedirect('/user/' + form.cleaned_data['last_name'])
+            return HttpResponseRedirect('/user/' + form.cleaned_data['username'])
 
         else:
             return render_to_response('base_usersignup.html', {'form': form, 'is_first_attempt': False,}, RequestContext(request)) # change redirect destination
