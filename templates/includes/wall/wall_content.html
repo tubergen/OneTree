@@ -1,4 +1,8 @@
 {% comment %}
+
+The ajax call to generate this upon new filter only sends posts and group to this 
+template. Don't rely on any other template variables being here.
+
 I just wanted to see if I could do Ajax. We can move this stuff out of here later.
 Brian: I moved your code elsewhere so I can use inheritance to put it in the head.
 {% endcomment %}
@@ -15,7 +19,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         else
             nextScore -= 1;
         var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
-        $.getJSON("/_apps/wall/views-update_vote/", data, function() {
+        $.get("/_apps/wall/views-update_vote/", data, function() {
             $('#vote-score-'+post_id).html(nextScore);
         });
     }

@@ -1,7 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 from OneTree.apps.helpers.rank_posts import calc_hot_score
-from OneTree.apps.common.enums import PostType
+from OneTree.apps.helpers.enums import PostType
 # from django import forms # for experimentation
 
 '''

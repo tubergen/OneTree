@@ -1,10 +1,11 @@
 # Create your views here.
 
 from OneTree.apps.common.models import *
-from OneTree.apps.common.enums import PostType
-from OneTree.apps.group_page.views import get_posts
+from OneTree.apps.helpers.enums import PostType
+from OneTree.apps.helpers.Filter import Filter
 from django.http import HttpResponse
-from django.core import serializers
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 def group(request):
     pass
@@ -40,27 +41,23 @@ def update_vote(request):
 
     return HttpResponse(status=400)
 
-''' Instead of passing a single filter type string, perhaps pass in multiple
-filters in a list, and add them to the dictionary incrementally?'''
-def filter_wall(request):
-    print "made it!!"
-    if request.is_ajax():
-        filter_type = request.GET.get("filter_type")
-        if filter_type:
-            print filter_type
-            #if filter_type == 'this_group_only':
-            #    posts = get_posts(request.group, {filter_type:request.group,})
-            #else:
-            print "here"
-            #print request.get
-            posts = get_posts(request.group, {})
+'''
+I wanted to submit a dictionary of filters to this function. However, I think
+this may be hard / impossible. See:
 
-            print "return"
-            return render_to_response("/wall/wall_content.html",
+http://stackoverflow.com/questions/3397217/jquery-submit-a-js-object-via-ajax-to-django-view
+'''
+def filter_wall(request):
+    if request.is_ajax():
+        group_id = request.GET.get("group_id")
+        if group_id:
+            group = Group.objects.get(id=group_id)
+            filters = Filter();
+            filters.parse_request(group, request);
+            filtered_posts = filters.get_posts(group);
+            return render_to_response('includes/wall/wall_content.html',
                                       {'posts':filtered_posts,
-                                       'errormsg': request.errormsg,
-                                       'group': request.group,
-                                       'children': request.children},
+                                       'group': group,},
                                       context_instance=RequestContext(request))
 
     return HttpResponse(status=400)

@@ -1,20 +1,83 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" charset="utf-8">
 
-    // vote_type specifies if this was up or down vote; post_id identifies post
+    var filters = {};
+    var apply_map = {}; /* tells us whether to apply or remove a filter */
+
+    $(document).ready(function() {
+        $('.filter-button').click(function(event) {
+
+            event.stopPropagation();
+            id = $(this).attr('id');
+
+            if (apply_map[id] == null || apply_map[id] == true) {
+                apply_filter(id);
+                apply_map[id] = false;
+            }
+            else {
+                remove_filter(id);
+                apply_map[id] = true;
+            }
+        });
+    });
+
     function filter_wall(filter_type)
     {
-        alert(filter_type);
+        // Technically this isn't a filter, but we need to send it too:
+        filters["group_id"] = {{ group.id }};
         url = "/_apps/wall/views-filter_wall/";
-        var data = {"filter_type":filter_type};
-        $.getJSON(url, data, function(response) {
+
+        $.get(url, filters, function(data) {
             alert("response!");
-            $('#wall-content').html(response);
+            $('#wall-content').html(data);
         });
+    }
+
+    function apply_filter(filter_type)
+    {
+        /* This is sent to django as the string "true". Any not-null string
+           will work here, since python evaluates them all as true. */
+        filters[filter_type] = true;
+        filter_wall(filter_type);
+
+        alert("here");
+
+        /* Rebind to remove filter 
+        selector = "#" + filter_type;
+        $(selector).unbind();
+        $(selector).click(function(event) {
+            event.stopPropagation();
+            remove_filter(filter_type);
+            alert("darn");
+        });
+*/        
+    }
+
+    function remove_filter(filter_type)
+    {
+        alert("remove");
+        /* Setting the filter to false will not work because python 
+           evaluates the string "false" as true. */
+        delete filters[filter_type];
+        filter_wall(filter_type);
+
+        /* Rebind to apply filter 
+        selector = "#" + filter_type;
+        $(selector).unbind();
+        $(selector).click(function(event) {
+            event.stopPropagation();
+            apply_filter(filter_type);
+        });
+*/
     }
 </script>
 
 {% comment %}
+The filter button ids are important. They give the name of the filter we need
+to apply. If you change them, you'll have to change the document.ready snippet
+so that you make sure to match the argument passed to apply_filter with the filter
+string that's in our Django code.
+
 I don't like the way the URLs are tied to this directory structure. We 
 should find a way to tell the template system, "Hey, look in the directory
 of the file that included the file you're looking for."
@@ -29,7 +92,9 @@ of the file that included the file you're looking for."
 {% include "includes/wall/wall_submit.html" %}
 <div class="main-container">
 
-<button id="test" onClick="filter_wall('this_group_only')">Only Display Posts From This Group</button>
+<button class="filter-button" id="this_group_only">{{group}}'s Posts Only</button>
+<button class="filter-button" id="events_only">Events Only</button>
+<button class="filter-button" id="anns_only">Announcements Only</button>
 
 <h2 id="subtitle">wall posts</h2>
 <div id="wall-content">{% include "includes/wall/wall_content.html" %}</div>
