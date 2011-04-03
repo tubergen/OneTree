@@ -28,7 +28,6 @@
         url = "/_apps/wall/views-filter_wall/";
 
         $.get(url, filters, function(data) {
-            alert("response!");
             $('#wall-content').html(data);
         });
     }
@@ -39,44 +38,22 @@
            will work here, since python evaluates them all as true. */
         filters[filter_type] = true;
         filter_wall(filter_type);
-
-        alert("here");
-
-        /* Rebind to remove filter 
-        selector = "#" + filter_type;
-        $(selector).unbind();
-        $(selector).click(function(event) {
-            event.stopPropagation();
-            remove_filter(filter_type);
-            alert("darn");
-        });
-*/        
     }
 
     function remove_filter(filter_type)
     {
-        alert("remove");
         /* Setting the filter to false will not work because python 
            evaluates the string "false" as true. */
         delete filters[filter_type];
         filter_wall(filter_type);
-
-        /* Rebind to apply filter 
-        selector = "#" + filter_type;
-        $(selector).unbind();
-        $(selector).click(function(event) {
-            event.stopPropagation();
-            apply_filter(filter_type);
-        });
-*/
     }
 </script>
 
 {% comment %}
 The filter button ids are important. They give the name of the filter we need
-to apply. If you change them, you'll have to change the document.ready snippet
-so that you make sure to match the argument passed to apply_filter with the filter
-string that's in our Django code.
+to apply. If you change them, you'll have to change the document.ready 
+snippet so that you make sure to match the argument passed to apply_filter 
+with the filter string that's in our Django code.
 
 I don't like the way the URLs are tied to this directory structure. We 
 should find a way to tell the template system, "Hey, look in the directory
