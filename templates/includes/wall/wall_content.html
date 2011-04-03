@@ -9,14 +9,14 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     // vote_type specifies if this was up or down vote; post_id identifies post
     function update_vote_script(vote_type, post_id, post_type)
     {
-        var nextScore = parseInt($("#vote-score-"+post_id).html());
+        var nextScore = parseInt($('#vote-score-'+post_id).html());
         if (vote_type == 'up')
             nextScore += 1;
         else
             nextScore -= 1;
         var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
         $.getJSON("/_apps/wall/views-update_vote/", data, function() {
-            $("#vote-score-"+post_id).html(nextScore);
+            $('#vote-score-'+post_id).html(nextScore);
         });
     }
 </script>

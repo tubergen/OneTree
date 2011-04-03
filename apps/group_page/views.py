@@ -26,6 +26,23 @@ Note: Even though I check for multiple groups mapping to the same url here
 we should figure out how to enforce url uniqueness in our model.
 '''
 
+# filters is a dictionary of filters to apply
+def get_posts(group, filters):
+    anns = group.announcements.all()
+    events = group.events.all()
+
+    # should probably come up with a switch statement of filters to apply
+    origin_group = filters.get('this_group_only')
+    if origin_group:
+        anns = anns.filter(origin_group=origin_group)
+        events = events.filter(origin_group=origin_group)
+
+    posts = chain(anns, events)
+    # is this inefficient? in future, maybe only get ~20 posts instead of all
+    posts = list(posts)
+    posts.sort(key=calc_hot_score, reverse=True)
+    return posts;
+
 def group_page(request, group_url):
     errormsg = None
 
@@ -57,10 +74,7 @@ def group_page(request, group_url):
             errormsg = "Empty announcement? Surely you aren't *that* boring."
 
     children = group.child_set.all()
-    posts = chain(group.announcements.all(), group.events.all())
-    # is this inefficient? in future, maybe only get ~20 posts instead of all
-    posts = list(posts)
-    posts.sort(key=calc_hot_score, reverse=True)
+    posts = get_posts(group, {})
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
     return render_to_response('base_wall_group.html',
                               {'posts': posts,

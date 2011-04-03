@@ -1,3 +1,19 @@
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+    // vote_type specifies if this was up or down vote; post_id identifies post
+    function filter_wall(filter_type)
+    {
+        alert(filter_type);
+        url = "/_apps/wall/views-filter_wall/";
+        var data = {"filter_type":filter_type};
+        $.getJSON(url, data, function(response) {
+            alert("response!");
+            $('#wall-content').html(response);
+        });
+    }
+</script>
+
 {% comment %}
 I don't like the way the URLs are tied to this directory structure. We 
 should find a way to tell the template system, "Hey, look in the directory
@@ -12,6 +28,9 @@ of the file that included the file you're looking for."
 
 {% include "includes/wall/wall_submit.html" %}
 <div class="main-container">
+
+<button id="test" onClick="filter_wall('this_group_only')">Only Display Posts From This Group</button>
+
 <h2 id="subtitle">wall posts</h2>
-{% include "includes/wall/wall_content.html" %}
+<div id="wall-content">{% include "includes/wall/wall_content.html" %}</div>
 </div>

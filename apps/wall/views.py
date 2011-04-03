@@ -2,6 +2,7 @@
 
 from OneTree.apps.common.models import *
 from OneTree.apps.common.enums import PostType
+from OneTree.apps.group_page.views import get_posts
 from django.http import HttpResponse
 from django.core import serializers
 
@@ -36,5 +37,30 @@ def update_vote(request):
                 return HttpResponse();
                 #score = post.upvotes - post.downvotes;
                 #return HttpResponse(score, mimetype="application/javascript")
+
+    return HttpResponse(status=400)
+
+''' Instead of passing a single filter type string, perhaps pass in multiple
+filters in a list, and add them to the dictionary incrementally?'''
+def filter_wall(request):
+    print "made it!!"
+    if request.is_ajax():
+        filter_type = request.GET.get("filter_type")
+        if filter_type:
+            print filter_type
+            #if filter_type == 'this_group_only':
+            #    posts = get_posts(request.group, {filter_type:request.group,})
+            #else:
+            print "here"
+            #print request.get
+            posts = get_posts(request.group, {})
+
+            print "return"
+            return render_to_response("/wall/wall_content.html",
+                                      {'posts':filtered_posts,
+                                       'errormsg': request.errormsg,
+                                       'group': request.group,
+                                       'children': request.children},
+                                      context_instance=RequestContext(request))
 
     return HttpResponse(status=400)
