@@ -1,12 +1,14 @@
 from django.conf.urls.defaults import *
 from OneTree.apps.group_page.views import group_page
+from OneTree.apps.user_page.views import user_page
+from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
 from OneTree.apps.wall.views import update_vote
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
@@ -16,12 +18,13 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    (r'^admin/', include(admin.site.urls)),
+    #(r'^admin/', include(admin.site.urls)),
     #(r'^group/$', group_page),
-    (r'^group/(\w+)/$', group_page),                       
+    (r'^group/(\w+)/$', group_page),
+    (r'^user/(\w+)/$', user_page),
     (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
-    #(r'^user-signup/$', create_user),
+    (r'^user-signup/$', create_user),
 )
 
 # on our own computers, serve static files properly

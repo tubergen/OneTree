@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+<span id="title"><h1>{{ user.username }}</h1></span>
+{% endblock %}
+
+{% block main_content %}
+<p>
+  <strong>Name: </strong>{{ user.first_name }} {{ user.last_name }}<br>
+  <strong>Email: </strong>{{ user.email }}<br>
+</p>
+{% endblock %}

@@ -149,6 +149,10 @@ class User(models.Model):
     last_name = models.CharField(max_length=40)
     email = models.EmailField()
     userinfo = models.OneToOneField('UserInfo')
+    # should users specify a username? easy for url creation
+    # each user has their own page for future news feeds
+    username = models.CharField(max_length=30, unique=True)
+    
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
