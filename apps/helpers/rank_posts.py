@@ -15,7 +15,6 @@ def score(ups, downs):
 
 def hot(ups, downs, date):
     """The hot formula. Should match the equivalent function in postgres."""
-    print ups
     ups = int(ups)
     downs = int(downs)
     s = score(ups, downs)
