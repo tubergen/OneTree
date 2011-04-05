@@ -1,5 +1,6 @@
 body {
-    background-color: #FFE073;
+    /* background-color: #FFE073;    light orange */
+    background-image: url(/static/images/bgflowers.jpg);
     font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -89,6 +90,7 @@ body {
 }
 
 a {
-    color: #2618B1;
-    text-decoration: none;
+    color: #e14adf; /* pink
+    color: #2618B1;   blue 
+    text-decoration: none; */
 }

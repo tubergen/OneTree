@@ -100,7 +100,8 @@
 }
 
 .delete-button:hover, .up-button:hover, .down-button:hover {
-    background-color: #FFC600;
+   /* background-color: #FFC600;    orange */
+   background-color: #e14adf;
 }
 
 #wall-submit {
