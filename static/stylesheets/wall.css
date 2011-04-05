@@ -58,24 +58,49 @@
 .post-votes {
     text-align: center;
     float: left;
-    padding-right: .8em;
+    padding-right: 1em;
+    width: 8%;
 }
 
 .post-votes ul, .post-votes li {
     padding: 0;
     margin: 0;
-    line-height: 1.5em;
+    line-height: 1.7em;
     list-style: none;
 }
 
-.post-text {
+.up-button, .down-button {
+    background-color: #FFFFFF;
+    /* html buttons seem to have padding / margins built in by default */
+    border: 1px solid;
+    padding: .3em;
+    margin-top: 0; 
 }
 
-.up-button, .down-button {
-    width: 50px;
-    /* html buttons seem to have padding / margins built in by default */
-    padding-top: 0px;
-    margin-top: 0px; 
+.post-text {
+    float: left;
+    width: 82%;
+}
+
+.post-delete {
+    float: right;
+    margin: -.5em -.5em 0 0;
+    padding-left: .8em;
+    width: 5%;
+}
+
+.delete-button {
+    font-family: Monospace;
+    font-size: large;
+    background-color: #FFFFFF;
+    border: 1px solid;
+    padding: 0;
+    width: 1.3em;
+    height: 1.3em;
+}
+
+.delete-button:hover, .up-button:hover, .down-button:hover {
+    background-color: #FFC600;
 }
 
 #wall-submit {
@@ -85,9 +110,4 @@
 .wall-error-text {
     color: #FF0000;
     text-align: center;
-}
-
-.post-delete {
-    float: right;
-    padding-left: .8em;
 }
