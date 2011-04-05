@@ -1,6 +1,7 @@
 body {
     /* background-color: #FFE073;    light orange */
     background-image: url(/static/images/bgflowers.jpg);
+    background-attachment: fixed;
     font-family: Helvetica, Arial, sans-serif;
 }
 
