@@ -86,3 +86,8 @@
     color: #FF0000;
     text-align: center;
 }
+
+.post-delete {
+    float: right;
+    padding-left: .8em;
+}

@@ -38,14 +38,20 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         <div class="post-votes">
             <ul>
                 <li>
-                    <button type="button" class="up-button" 
-                            onClick="update_vote_script('up', {{post.id}}, {{post.post_type}})">Up</button></li>
+                    <button type="button" class="up-button" onClick="update_vote_script('up', {{post.id}}, {{post.post_type}})">Up</button></li>
                 <li><span class="vote-score" id="vote-score-{{post.id}}">{{ post.score }}</span></li>
-                <li><button type="button" class="down-button" 
-                            onClick="update_vote_script('down', {{post.id}}, {{post.post_type}})">Down</button></li>
+                <li><button type="button" class="down-button" onClick="update_vote_script('down', {{post.id}}, {{post.post_type}})">Down</button></li>
             </ul>
         </div>
         <div class="post-text">{{ post.text }}</div>
+	<div class="post-delete">
+	  <form name="delete-info" action="" method="POST">{% csrf_token %}
+	    <input type="hidden" name="group_id" value="{{group.id}}">
+	    <input type="hidden" name="post_id" value="{{post.id}}">
+	    <input type="hidden" name="post_type" value="{{post.post_type}}">
+	    <input type="submit" value="delete BUTTON, Jorge">
+	  </form>
+	</div>
     </div>
 </div>
 {% endfor %}

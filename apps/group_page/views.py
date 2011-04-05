@@ -1,9 +1,11 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.exceptions import ObjectDoesNotExist
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.Filter import Filter
+from OneTree.apps.helpers.enums import PostType
 
 import datetime
 
@@ -25,21 +27,12 @@ Note: Even though I check for multiple groups mapping to the same url here
 we should figure out how to enforce url uniqueness in our model.
 '''
 
-def group_page(request, group_url):
-    errormsg = None
-
-    # check that the url corresponds to a valid group
-    group = Group.objects.filter(url=group_url)
-    if len(group) > 1:
-        errormsg = "Database Error. URL mapped to multiple groups."
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    elif len(group) == 0:
-        errormsg = "Group doesn't exist."
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    else:
-        group = group[0] # only one element in queryset
-
-    # get the data that was perhaps submitted
+'''
+Looks at the wall post that was potentially submitted and, if any data was
+submitted, adds that data to the database. Returns an errorMsg if there was a
+error, which can be rendered. Returns None otherwise.
+'''
+def handle_submit(group, request):
     if request.method == 'POST':
         if 'post_content' in request.POST and request.POST['post_content']:
 
@@ -54,6 +47,79 @@ def group_page(request, group_url):
             group.addAnnToParent(new_announcement)
         else:
             errormsg = "Empty announcement? Surely you aren't *that* boring."
+    return None;
+
+'''
+Looks at request. If request specifies a post should be deleted (ie: removed),
+then it's removed. Otherwise does nothing.
+
+Don't forget to add authentication to this. Some permissions should be required
+to be able to delete a post. 
+
+SPECIAL NOTE : if there's ever a bug where an event mysteriously appears on the
+wall only when "[this page]'s Posts Only" is selected, and it cannot be deleted,
+it might be because of the line "post = manager.get(id=post_id)". If somehow a
+post managed to get deleted from its creater's wall without it being deleted
+completely from the database, then this behavior will occur. I think this is
+impossible now, but I'm not 100% sure.
+
+We could patch this up by instead getting the post with Event.objects.get(id=...)
+etc. for each type of post. However, I am not doing this right now because it
+would hide a bigger issue: that posts which are deleted on the creater's wall
+are not completely deleted from the database.
+'''
+def handle_post_delete(request):
+    err_loc = ' See handle_post_delete in the group_page views.py.'
+    if request.method == 'POST':
+        try:
+            group_id = int(request.POST.get('group_id'))
+            post_id = int(request.POST.get('post_id'))
+            post_type = int(request.POST.get('post_type'))
+        except:
+            print 'Wall post delete POST data were not valid integers.' + err_loc
+            return;
+        if group_id and post_id and post_type:
+            group_id = int(group_id)
+            group = Group.objects.get(id=group_id)
+            try: 
+                if (post_type == PostType.EVENT):
+                    manager = group.events
+                elif (post_type == PostType.ANNOUNCEMENT):
+                    manager = group.announcements                
+                else:
+                    print 'Tried to delete non-announcement non-event.' + err_loc
+                    return
+
+                post = manager.get(id=post_id)
+                print post.origin_group.id
+                print group_id
+                if (post.origin_group.id == group_id):
+                    post.delete()
+                else:
+                    manager.remove(post)
+            
+            except ObjectDoesNotExist:
+                print 'Tried to delete non-existent object.' + err_loc
+            
+def group_page(request, group_url):
+    errormsg = None
+
+    # check that the url corresponds to a valid group
+    group = Group.objects.filter(url=group_url)
+    if len(group) > 1:
+        errormsg = 'Database Error. URL mapped to multiple groups.'
+        return render_to_response('error_page.html', {'errormsg': errormsg,})
+    elif len(group) == 0:
+        errormsg = "Group doesn't exist."
+        return render_to_response('error_page.html', {'errormsg': errormsg,})
+    else:
+        group = group[0] # only one element in queryset
+
+    # handle the wall post that was perhaps submitted
+    errorMsg = handle_submit(group, request)
+
+    # handle a possible post deletion
+    handle_post_delete(request)
 
     children = group.child_set.all()
     posts = Filter().get_posts(group) # runs posts through an empty filter
