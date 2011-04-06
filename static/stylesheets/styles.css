@@ -16,6 +16,8 @@ body {
 #header {
     padding: 1em;
     background-color: #FFC600;
+   /* background-image: url(/static/images/tree.jpg); */
+    background-repeat: none;
     border-bottom: 1px solid;
     margin-bottom: 1em;
 }
