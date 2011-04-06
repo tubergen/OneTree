@@ -36,15 +36,30 @@ def handle_submit(group, request):
     if request.method == 'POST':
         if 'post_content' in request.POST and request.POST['post_content']:
 
-            # later insert logic to distinguish events vs announcements
-            new_announcement = Announcement(text=request.POST['post_content'],
-                    upvotes = 0,
-                    downvotes = 0,
-                    origin_group=group)
+            # later insert logic to distinguish events vs announcement
+            # this is probably not good logic
+            if 'eventclick' in request.POST and request.POST['eventclick']:
+              
+                new_event = Event(text=request.POST['post_content'],
+                                  upvotes = 0,
+                                  downvotes = 0,
+                                  origin_group=group,
+                #                  eventName=request.POST['title'],
+                #                  eventPlace=request.POST['where'],
+                                  eventDate=request.POST['when'])
+                new_event.save()
+                group.events.add(new_event)
+                group.addEventToParent(new_event)
+            
+            else:
+                new_announcement = Announcement(text=request.POST['post_content'],
+                                                upvotes = 0,
+                                                downvotes = 0,
+                                                origin_group=group)
 
-            new_announcement.save()
-            group.announcements.add(new_announcement)
-            group.addAnnToParent(new_announcement)
+                new_announcement.save()
+                group.announcements.add(new_announcement)
+                group.addAnnToParent(new_announcement)
         else:
             errormsg = "Empty announcement? Surely you aren't *that* boring."
     return None;

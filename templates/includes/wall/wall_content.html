@@ -49,6 +49,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <li><button type="button" class="down-button" onClick="update_vote_script('down', {{post.id}}, {{post.post_type}})">;_;</button></li>
             </ul>
         </div>
+	{% comment %}
+	Tried putting the date here, no good.
+	{% endcomment %}
         <div class="post-text">{{ post.text }}</div>
     </div>
 </div>
