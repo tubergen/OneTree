@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block top_content %}<span id="title"><h1>User Login</h1></span>{% endblock %}
+
+{% block main_content %}
+    {% if form.errors %}
+        <p class="error-message">Sorry, that's not a valid username or password</p>
+    {% endif %}
+
+    <form class="main-container" action="" method="post">{% csrf_token %}
+        <p><label for="username">User name:</label>
+            <input type="text" name="username" value="" id="username" />
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" value="" id="password" />
+        </p>
+        <p>
+            <input type="submit" value="login" />
+        </p>
+        <input type="hidden" name="next" value="/profile/" />
+    </form>
+
+{% endblock %}

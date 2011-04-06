@@ -8,5 +8,4 @@ admin.site.register(Comment);
 admin.site.register(Flag);
 admin.site.register(Group);
 admin.site.register(GroupInfo);
-admin.site.register(User);
 admin.site.register(UserInfo);

@@ -76,6 +76,7 @@ body {
     background-color: #DDDDDD;
     color: #FF0000;
     height: 0;
+    list-style: none;
 }
 
 .error {
