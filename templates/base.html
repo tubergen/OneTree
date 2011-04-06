@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}Onetree.com{% endblock %}</title>
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
     {% block head %}{% endblock %}
 </head>
@@ -17,9 +17,14 @@
                 </div>
                 <div id="header_nav">
                     <ul>
-                        <li><a href="/user-signup/">Register</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="/profile/">{{ user.username }}</a></li>
+                            <li><a href="/logout/">Logout</a></li>
+                        {% else %}
+                            <li><a href="/user-signup/">Register</a></li>
+                            <li><a href="/login/">Login</a></li>
+                        {% endif %}
                         <li><a href="/group-signup/">Group Signup</a></li>
-                        <li>Login</li>
                         <li>Search</li>
                     </ul>
                 </div>

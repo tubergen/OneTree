@@ -1,6 +1,7 @@
 body {
     /* background-color: #FFE073;    light orange */
     background-image: url(/static/images/bgflowers.jpg);
+    background-attachment: fixed;
     font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -75,6 +76,7 @@ body {
     background-color: #DDDDDD;
     color: #FF0000;
     height: 0;
+    list-style: none;
 }
 
 .error {

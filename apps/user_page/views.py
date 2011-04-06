@@ -3,34 +3,31 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from OneTree.apps.common.models import *
+from django.contrib.auth.models import User
 
 import datetime
 
-
-
-
-def user_page(request, user_username):
+def user_page(request, username):
     errormsg = None
 
-    # check that the url corresponds to a valid user
-    user = User.objects.filter(username=user_username)
-    if len(user) > 1:
-        errormsg = "Database Error. URL mapped to multiple users."
-        return render_to_response('error_page.html', {'errormsg': errormsg, })
-    elif len(user) == 0:
-        errormsg = "User doesn't exist."
-        return render_to_response('error_page.html', {'errormsg': errormsg, })
+    if not username: # no username means they're trying to view their own profile
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            return render_to_response('base_loginerror.html', 
+                    context_instance=RequestContext(request));
     else:
-        user = user[0] # only one element in query
-
-    # what does a user page contain? subscriptions from other groups?
-    # for now, we'll just display the user's info
-
-    #if request.method == 'POST':
+        # check that the url corresponds to a valid user
+        user = User.objects.filter(username=username)
+        if len(user) > 1:
+            errormsg = "Database Error. URL mapped to multiple users."
+            return render_to_response('error_page.html', {'errormsg': errormsg, })
+        elif len(user) == 0:
+            errormsg = "User %s doesn't exist" % username # SHOULD CLEAN THIS?
+            return render_to_response('error_page.html', {'errormsg': errormsg, })
+        else:
+            user = user[0] # only one element in query
 
     return render_to_response('base_user.html',
                               {'user': user},
                               context_instance=RequestContext(request))
-        
-
-

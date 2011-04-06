@@ -1,15 +1,12 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <span id="title"><h1>User Registration</h1></span>
+    <span id="title"><h1>User Account Creation</h1></span>
 {% endblock %}
 
 {% block main_content %}
-    {% if not is_first_attempt %}
-        <p class="error-message">Please fill out all required fields.</p>
-    {% endif %}
-    <form class="main-container" action="/user-signup/" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+  <form class="main-container" action="/user-signup/" method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit">
+  </form>
 {% endblock %}

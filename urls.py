@@ -5,6 +5,7 @@ from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
 from OneTree.apps.wall.views import *
 from django.conf import settings
+from django.contrib.auth.views import login, logout
 
 # Uncomment the next two lines to enable the admin:
 # Tyler problem
@@ -27,6 +28,9 @@ urlpatterns = patterns('',
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),                       
     (r'^user-signup/$', create_user),
+    (r'^login/$',  login, {'template_name': 'base_login.html'}),
+    (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...
+    (r'^profile/$', user_page, {'username': ''})
 )
 
 # on our own computers, serve static files properly
