@@ -39,18 +39,20 @@ def handle_submit(group, request):
             # later insert logic to distinguish events vs announcement
             # this is probably not good logic
             if 'eventclick' in request.POST and request.POST['eventclick']:
-              
                 new_event = Event(text=request.POST['post_content'],
                                   upvotes = 0,
                                   downvotes = 0,
                                   origin_group=group,
-                #                  eventName=request.POST['title'],
-                #                  eventPlace=request.POST['where'],
-                                  eventDate=request.POST['when'])
+                                  event_title=request.POST['title'],
+                                  event_place=request.POST['where'],
+                                  event_date=request.POST['when'])
                 new_event.save()
                 group.events.add(new_event)
                 group.addEventToParent(new_event)
-            
+
+                if (new_event.event_title == ''):
+                    print "empty string"
+
             else:
                 new_announcement = Announcement(text=request.POST['post_content'],
                                                 upvotes = 0,

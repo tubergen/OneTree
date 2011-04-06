@@ -15,6 +15,8 @@ class Filter:
             self.filters['this_group_only'] = group;
         if request.GET.get('events_only'):
             self.filters['events_only'] = True;
+        if request.GET.get('anns_only'):
+            self.filters['anns_only'] = True;            
         return self.filters;
 
     # Get posts that meet the criteria specified by this filter
@@ -29,18 +31,22 @@ class Filter:
             anns = group.announcements.all()
             events = group.events.all()
 
-        if self.filters.get('events_only'):
-            anns = None
-        elif self.filters.get('anns_only'):
-            events = None
+        events_only = self.filters.get('events_only');
+        anns_only = self.filters.get('anns_only');
+        if events_only and anns_only:
+            posts = None
+        elif anns_only:
+            posts = anns
+        elif events_only:
+            posts = events
         else:
-            pass
-
+            posts = chain(anns, events)            
+        
         # is this inefficient? in future, get/chain ~20 posts instead of all
         try:
-            posts = chain(anns, events)
             posts = list(posts)
             posts.sort(key=calc_hot_score, reverse=True)
         except:
+            print "Failed to form a list of posts in filter.py getFilter()."
             posts = None
         return posts;

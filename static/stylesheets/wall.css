@@ -112,3 +112,7 @@
     color: #FF0000;
     text-align: center;
 }
+
+.selected {
+    background-color: #FFC600;
+}

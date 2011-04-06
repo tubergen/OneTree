@@ -61,9 +61,9 @@ class Announcement(Post):
 # ===============================
 class Event(Post):
     # fiddling with things here
-    # eventName = models.CharField(max_length=30)
-    # eventPlace = models.TextField()
-    eventDate = models.DateTimeField()
+    event_title = models.CharField(max_length=30)
+    event_place = models.CharField(max_length=30)
+    event_date = models.DateTimeField()
     flags = models.ManyToManyField('Flag')
     post_type = PostType.EVENT
 
