@@ -57,6 +57,8 @@ def handle_submit(group, request):
                 else:
                     pass
 
+                if (new_event.event_title == ''):
+                    print "title is empty"
             else:
                 new_announcement = Announcement(text=request.POST['post_content'],
                                                 upvotes = 0,
