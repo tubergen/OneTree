@@ -1,0 +1,7 @@
+{% for field in form %}
+{% if field.errors %}<div class="form-field form-error">
+{% else %}<div class="form-field">
+{% endif %}
+{{ field.label_tag }}: {{ field }}
+</div>
+{% endfor %}

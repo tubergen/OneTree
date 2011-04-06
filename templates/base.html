@@ -13,18 +13,18 @@
                 {# if user logged in display the logged in bar #}
                 {# else display the logged out bar: #}
                 <div id="header_logo">
-                    - OneTree -
+                    - <a href="/">OneTree</a> -
                 </div>
                 <div id="header_nav">
                     <ul>
                         {% if user.is_authenticated %}
                             <li><a href="/profile/">{{ user.username }}</a></li>
                             <li><a href="/logout/">Logout</a></li>
+                            <li><a href="/group-signup/">Group Signup</a></li>
                         {% else %}
                             <li><a href="/user-signup/">Register</a></li>
                             <li><a href="/login/">Login</a></li>
                         {% endif %}
-                        <li><a href="/group-signup/">Group Signup</a></li>
                         <li>Search</li>
                     </ul>
                 </div>

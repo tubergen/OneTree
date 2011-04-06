@@ -5,11 +5,11 @@
 {% endblock %}
 
 {% block main_content %}
-    {% if not is_first_attempt %}
-        <p class="error-message">Please fill out all required fields.</p>
+    {% if form.errors %}
+        <p class="error-message">One or more fields below are either missing or filled out improperly.</p>
     {% endif %}
     <form class="main-container" action="/group-signup/" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {% include "includes/forms/forms.html" %}
         <input type="submit" value="Submit" />
     </form>
 {% endblock %}
