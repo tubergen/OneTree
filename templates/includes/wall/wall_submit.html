@@ -6,77 +6,51 @@
 
   var cal = new CalendarPopup();
 
+  function clear_fields()
+  {
+     $('#title_box').val('');
+     $('#place_box').val('');
+     $('#time_box').val('');   
+     $('#eventclick').attr('checked', false);
+  }
+
   function toggle_event_fields() 
   {
      if ($('#eventclick').is(':checked'))
      {
-   $('#event_fields').show()  
-        $('#title_box').show();
-        $('#place_box').show();
-        $('#time_box').show();
-        $('#title_label').show();
-        $('#place_label').show();
-        $('#time_label').show();
+        $('#event_fields').show();
         $('#title_box').focus();
-        $('#calendar_link').show();
      }
      else
      {
-        $('#title_box').val('');
-        $('#place_box').val('');
-        $('#time_box').val('');        
-        $('#title_box').hide();
-        $('#place_box').hide();
-        $('#time_box').hide();
-        $('#title_label').hide();
-        $('#place_label').hide();
-        $('#time_label').hide();
-        $('#calendar_link').hide();
+        $('#event_fields').hide();     
+        clear_fields();
      }
-/*
-     if (document.add_event_form.title_box.style.visibility == 'visible') {
-        document.add_event_form.title_box.style.visibility = 'hidden';
-        document.add_event_form.place_box.style.visibility = 'hidden';
-        document.add_event_form.time_box.style.visibility = 'hidden';
-        {# document.add_event_form.anchor.style.visibility = 'hidden'; #}
-     }
-     else {
-        document.add_event_form.title_box.value = '';
-        document.add_event_form.place_box.value = '';
-        document.add_event_form.time_box.value = '';
-        document.add_event_form.eventclick.value = 'event';
-        document.add_event_form.title_box.style.visibility = 'visible';
-        document.add_event_form.title_box.focus();
-        document.add_event_form.place_box.style.visibility = 'visible';
-        document.add_event_form.time_box.style.visibility = 'visible';
-        {# document.add_event_form.anchor.style.visibility = 'visible'; #}
-     }
-*/
   }
 
   $(document).ready(function() { 
-//    toggle_event_fields();
-    $('#event_fields').hide()  
+    $('#event_fields').hide();
+    clear_fields(); /* to avoid strange behavior with browser back button */
   });
 
 </script>
+
 <div id="wall-submit">
 
-  {# checkbox #}  
-  <form name="toggle_event_form">{% csrf_token %}
-    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()">Event<br>
-  </form>
-
   <form name="add_post_form" action="" method="post">{% csrf_token %}
+    {# checkbox #}  
+    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()">Event<br>
+
     {# area for event fields #}
     <div id="event_fields">
-      <label for="title_box" id="title_label">Title:</label>  <input type="text" id="title_box" name="title"size=20><br>
-      <label for="place_box" id="place_label">Where:</label> <input type="text" id="place_box" name="where" size=20><br>
-      <label for="time_box" id="time_label">When:</label> <input type="text" id="time_box" name="when" size=20>
-      <a href="#" onClick="cal.select(document.add_event_form.time_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a><br>
-    </div>
+      <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title"size=20><br>
+      <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" size=20><br>
+      <label for="time_box">When:</label> <input type="text" id="time_box" name="when" size=20>
+      <a href="#" onClick="cal.select(document.add_post_form.time_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a>
+    </div>    
 
-    <textarea name="post_content" cols=50 rows=4></textarea><br />
-    <input type="submit" value="Submit" />	
+  <textarea name="post_content" cols=50 rows=4></textarea><br />
+  <input type="submit" value="Submit" />	
+
   </form>
 </div>
