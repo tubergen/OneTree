@@ -1,6 +1,31 @@
 {# it used to be action={{ group_url }} #}
+<script>
+  function eventFields() 
+  {
+     if (document.myform.textBox01.style.visibility == 'visible') {
+        document.myform.textBox01.style.visibility = 'hidden';
+        document.myform.textBox02.style.visibility = 'hidden';
+        document.myform.textBox03.style.visibility = 'hidden';
+     }
+     else {
+        document.myform.textBox01.value = '';
+        document.myform.textBox02.value = '';
+        document.myform.textBox03.value = '';
+        document.myform.textBox01.style.visibility = 'visible';
+        document.myform.textBox01.focus();
+        document.myform.textBox02.style.visibility = 'visible';
+        document.myform.textBox03.style.visibility = 'visible';
+     }
+  }
+</script>
 <div id="wall-submit">
-<form action="" method="post">{% csrf_token %}
+<form name="myform" action="" method="post">{% csrf_token %}
+  {# checkbox #}  
+  <input type="checkbox" onclick="eventFields()" value="event">Event<br>
+  {# area for event fields #}
+  Title:  <input type="text" id="textBox01" name="title"size=20 style="visibility:hidden"><br>
+  When: <input type="text" id="textBox02" name="When" size=20 style="visibility:hidden"><br>
+  Where: <input type="text" id="textBox03" name="Where" size=20 style="visibility:hidden"><br>
     <textarea name="post_content" cols=50 rows=4></textarea><br />
   <input type="submit" value="Submit" />	
 </form>
