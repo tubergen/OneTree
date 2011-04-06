@@ -1,4 +1,4 @@
-from OneTree.apps.group_signup.models import GroupForm, DivErrorList
+from OneTree.apps.group_signup.models import GroupForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
@@ -11,8 +11,10 @@ from django.http import HttpResponseRedirect
 # http://docs.djangoproject.com/en/dev/ref/forms/api/#ref-forms-api-bound-unbound
 
 def create_group(request):
+    if not request.user.is_authenticated():
+        return render_to_response("base_loginerror.html", RequestContext(request));
     if request.method == 'POST':        
-        form = GroupForm(request.POST, error_class=DivErrorList) # Form bound to POST data
+        form = GroupForm(request.POST) # Form bound to POST data
         if form.is_valid():   # NEED TO ADD VALIDATION!
             form.save()
 
@@ -25,9 +27,9 @@ def create_group(request):
             return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
 
         else:
-            return render_to_response('base_groupsignup.html', {'form': form, 'is_first_attempt': False,},
+            return render_to_response('base_groupsignup.html', {'form': form,},
                     RequestContext(request)) # change redirect destination
     else:
-        form = GroupForm(error_class=DivErrorList) # An unbound form - can use this for error messages
+        form = GroupForm() # An unbound form - can use this for error messages
 
-    return render_to_response('base_groupsignup.html', {'form': form, 'is_first_attempt': True,}, RequestContext(request))
+    return render_to_response('base_groupsignup.html', {'form': form,}, RequestContext(request))

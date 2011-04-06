@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+    <h1 id="title">OneTree</h1>
+{% endblock %}
+
+{% block main_content %}
+<div class="main-container">
+    {% if toplevelgroups %}
+    <p>Here are all the top level groups currently registered at OneTree:</p>
+        <ul class="group-list">
+            {% for group in toplevelgroups %}
+            <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, there are no groups yet. Why don't you go ahead and make one?</p>
+    {% endif %}
+</div>
+{% endblock %}

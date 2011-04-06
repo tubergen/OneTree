@@ -20,11 +20,11 @@
                         {% if user.is_authenticated %}
                             <li><a href="/profile/">{{ user.username }}</a></li>
                             <li><a href="/logout/">Logout</a></li>
+                            <li><a href="/group-signup/">Group Signup</a></li>
                         {% else %}
                             <li><a href="/user-signup/">Register</a></li>
                             <li><a href="/login/">Login</a></li>
                         {% endif %}
-                        <li><a href="/group-signup/">Group Signup</a></li>
                         <li>Search</li>
                     </ul>
                 </div>

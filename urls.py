@@ -3,6 +3,7 @@ from OneTree.apps.group_page.views import group_page
 from OneTree.apps.user_page.views import user_page
 from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
+from OneTree.apps.common.views import homepage
 from OneTree.apps.wall.views import *
 from django.conf import settings
 from django.contrib.auth.views import login, logout
@@ -29,7 +30,8 @@ urlpatterns = patterns('',
     (r'^user-signup/$', create_user),
     (r'^login/$',  login, {'template_name': 'base_login.html'}),
     (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...
-    (r'^profile/$', user_page, {'username': ''})
+    (r'^profile/$', user_page, {'username': ''}),
+    (r'^$', homepage),
 )
 
 # on our own computers, serve static files properly
