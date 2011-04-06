@@ -50,8 +50,12 @@ def handle_submit(group, request):
                 group.events.add(new_event)
                 group.addEventToParent(new_event)
 
-                if (new_event.event_title == ''):
+                if (request.POST['title'] == ''):
                     print "empty string"
+                elif (request.POST['title'] == None):
+                    print "none"
+                else:
+                    pass
 
             else:
                 new_announcement = Announcement(text=request.POST['post_content'],
