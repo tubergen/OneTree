@@ -1,43 +1,82 @@
 {# it used to be action={{ group_url }} #}
 {# mini-date calendar #}
-<script language="JavaScript" src="http://www.mattkruse.com/javascript/calendarpopup/combined-compact/CalendarPopup.js"></script>
-<script language="JavaScript">
+<script src="http://code.jquery.com/jquery-latest.js"></script>  
+<script src="http://www.mattkruse.com/javascript/calendarpopup/combined-compact/CalendarPopup.js"></script>
+<script type="text/javascript" charset="utf">
+
   var cal = new CalendarPopup();
 
-  function eventFields() 
+  function toggle_event_fields() 
   {
-     if (document.myform.titleBox.style.visibility == 'visible') {
-        document.myform.titleBox.style.visibility = 'hidden';
-        document.myform.placeBox.style.visibility = 'hidden';
-        document.myform.timeBox.style.visibility = 'hidden';
-        {# document.myform.anchor.style.visibility = 'hidden'; #}
+     if ($('#eventclick').is(':checked'))
+     {
+   $('#event_fields').show()  
+        $('#title_box').show();
+        $('#place_box').show();
+        $('#time_box').show();
+        $('#title_label').show();
+        $('#place_label').show();
+        $('#time_label').show();
+        $('#title_box').focus();
+        $('#calendar_link').show();
+     }
+     else
+     {
+        $('#title_box').val('');
+        $('#place_box').val('');
+        $('#time_box').val('');        
+        $('#title_box').hide();
+        $('#place_box').hide();
+        $('#time_box').hide();
+        $('#title_label').hide();
+        $('#place_label').hide();
+        $('#time_label').hide();
+        $('#calendar_link').hide();
+     }
+/*
+     if (document.add_event_form.title_box.style.visibility == 'visible') {
+        document.add_event_form.title_box.style.visibility = 'hidden';
+        document.add_event_form.place_box.style.visibility = 'hidden';
+        document.add_event_form.time_box.style.visibility = 'hidden';
+        {# document.add_event_form.anchor.style.visibility = 'hidden'; #}
      }
      else {
-        document.myform.titleBox.value = '';
-        document.myform.placeBox.value = '';
-        document.myform.timeBox.value = '';
-        document.myform.eventclick.value = 'event';
-        document.myform.titleBox.style.visibility = 'visible';
-        document.myform.titleBox.focus();
-        document.myform.placeBox.style.visibility = 'visible';
-        document.myform.timeBox.style.visibility = 'visible';
-        {# document.myform.anchor.style.visibility = 'visible'; #}
+        document.add_event_form.title_box.value = '';
+        document.add_event_form.place_box.value = '';
+        document.add_event_form.time_box.value = '';
+        document.add_event_form.eventclick.value = 'event';
+        document.add_event_form.title_box.style.visibility = 'visible';
+        document.add_event_form.title_box.focus();
+        document.add_event_form.place_box.style.visibility = 'visible';
+        document.add_event_form.time_box.style.visibility = 'visible';
+        {# document.add_event_form.anchor.style.visibility = 'visible'; #}
      }
+*/
   }
+
+  $(document).ready(function() { 
+//    toggle_event_fields();
+    $('#event_fields').hide()  
+  });
+
 </script>
 <div id="wall-submit">
-<form name="myform" action="" method="post">{% csrf_token %}
+
   {# checkbox #}  
-  <input type="checkbox" name="eventclick" onclick="eventFields()">Event<br>
-  {# area for event fields #}
-  Title:  <input type="text" id="titleBox" name="title"size=20 style="visibility:hidden"><br>
-  Where: <input type="text" id="placeBox" name="where" size=20 style="visibility:hidden"><br>
-  When: <input type="text" id="timeBox" name="when" size=20 style="visibility:hidden">
-  <a href="#"
-   onClick="cal.select(document.myform.timeBox,'anchor1','yyyy-MM-dd'); return false;"
-   name="anchor1" id="anchor1">select</a><br>
+  <form name="toggle_event_form">{% csrf_token %}
+    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()">Event<br>
+  </form>
+
+  <form name="add_post_form" action="" method="post">{% csrf_token %}
+    {# area for event fields #}
+    <div id="event_fields">
+      <label for="title_box" id="title_label">Title:</label>  <input type="text" id="title_box" name="title"size=20><br>
+      <label for="place_box" id="place_label">Where:</label> <input type="text" id="place_box" name="where" size=20><br>
+      <label for="time_box" id="time_label">When:</label> <input type="text" id="time_box" name="when" size=20>
+      <a href="#" onClick="cal.select(document.add_event_form.time_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a><br>
+    </div>
 
     <textarea name="post_content" cols=50 rows=4></textarea><br />
-  <input type="submit" value="Submit" />	
-</form>
+    <input type="submit" value="Submit" />	
+  </form>
 </div>
