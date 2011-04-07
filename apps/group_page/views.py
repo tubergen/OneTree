@@ -41,7 +41,7 @@ def handle_submit(group, request):
             # later insert logic to distinguish events vs announcement
             # this is probably not good logic
             if 'eventclick' in request.POST and request.POST['eventclick']:
-                if not request.POST['title'] or not request.POST['where'] or not request.POST['when']:
+                if not request.POST['title'] or not request.POST['where'] or not request.POST['date'] or not request.POST['time']:
                     errormsg = 'Please fill out all required fields for an event.'
                     pass                    
 
@@ -49,13 +49,29 @@ def handle_submit(group, request):
                     title = request.POST['title'].strip()
                     url = string.join(request.POST['title'].split(), '')
                     url = url.strip()
+                    when = request.POST['date'] + ' '
+                    time = request.POST['time'].split(':')
+                    print time[0] + ':'
+                    if request.POST['timedrop'] == 'am':
+                        if time[0] == '12':
+                            new_time = '00:' + time[1]
+                        else:
+                            new_time = time[0] + ':' + time[1]
+                    else:
+                        format_time = int(time[0])
+                        if format_time == 12:
+                            new_time = str(format_time) + ':' + time[1]
+                        else:
+                            hour = format_time + 12
+                            new_time = str(hour) + ':' + time[1]
+                    when += new_time
                     new_event = Event(text=request.POST['post_content'],
                                       upvotes = 0,
                                       downvotes = 0,
                                       origin_group=group,
                                       event_title=title,
                                       event_place=request.POST['where'],
-                                      event_date=request.POST['when'],
+                                      event_date=when,
                                       event_url=url)
                     new_event.save()
                     group.events.add(new_event)
