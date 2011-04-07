@@ -86,9 +86,9 @@ class Flag(models.Model):
 # GROUP
 # ===============================
 class Group(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, verbose_name="name")
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
-                               null=True)
+                               null=True, verbose_name="parent")
 
     users = models.ManyToManyField(auth.models.User, through='Membership', blank=True,
                                     null=True)
@@ -104,7 +104,10 @@ class Group(models.Model):
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     groupinfo = models.OneToOneField('GroupInfo', blank=True, null=True)
-    url = models.CharField(max_length=30, unique=True)
+    url = models.SlugField(max_length=30, 
+                           unique=True, 
+                           verbose_name="onetree.princeton.edu/group/", 
+                           )
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
@@ -121,6 +124,7 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.name;
+
 
 # ===============================
 # MEMBERSHIP
@@ -148,19 +152,10 @@ class GroupInfo(models.Model):
 # ===============================
 # USER
 # ===============================
-'''class User(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=40)
-    email = models.EmailField()
-    userinfo = models.OneToOneField('UserInfo', blank=True, null=True) # we can deal with this later...
 
-    # should users specify a username? easy for url creation
-    # each user has their own page for future news feeds
-    username = models.CharField(max_length=30, unique=True)
+# See user_signup/models.py for user model
 
-    def __unicode__(self):
-        return u'%s %s' % (self.first_name, self.last_name)
-'''
+
 # ===============================
 # USERINFO
 # ===============================

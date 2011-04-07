@@ -2,6 +2,11 @@
 {% if field.errors %}<div class="form-field form-error">
 {% else %}<div class="form-field">
 {% endif %}
+{% if field.label != "Onetree.princeton.edu/group/" %} 
 {{ field.label_tag }}: {{ field }}
+{% else %}
+
+{{ field.label_tag|lower }} {{ field }}
+{% endif %}
 </div>
 {% endfor %}
