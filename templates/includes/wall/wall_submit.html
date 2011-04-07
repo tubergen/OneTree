@@ -10,7 +10,8 @@
   {
      $('#title_box').val('');
      $('#place_box').val('');
-     $('#time_box').val('');   
+     $('#date_box').val('');   
+     $('#time_box').val('');
      $('#eventclick').attr('checked', false);
   }
 
@@ -45,8 +46,13 @@
     <div id="event_fields">
       <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title"size=20><br>
       <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" size=20><br>
-      <label for="time_box">When:</label> <input type="text" id="time_box" name="when" size=20>
-      <a href="#" onClick="cal.select(document.add_post_form.time_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a>
+      <label for="date_box">Date:</label> <input type="text" id="date_box" name="date" size=9>
+      <a href="#" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a>
+      <label for="time_box">Time:</label> <input type="text" id="time_box" name="time" size=4>
+      <select name="timedrop">
+	<option value="am">A.M.</option>
+	<option value="pm">P.M.</option>
+      </select>
     </div>    
 
   <textarea name="post_content" cols=50 rows=4></textarea><br />
