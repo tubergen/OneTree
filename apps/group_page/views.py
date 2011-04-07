@@ -51,19 +51,22 @@ def handle_submit(group, request):
                     url = url.strip()
                     when = request.POST['date'] + ' '
                     time = request.POST['time'].split(':')
-                    print time[0] + ':'
+                    if len(time) == 1:
+                        minutes = '00'
+                    else:
+                        minutes = time[0]
                     if request.POST['timedrop'] == 'am':
                         if time[0] == '12':
-                            new_time = '00:' + time[1]
+                            new_time = '00:' + minutes
                         else:
-                            new_time = time[0] + ':' + time[1]
+                            new_time = time[0] + ':' + minutes
                     else:
                         format_time = int(time[0])
                         if format_time == 12:
-                            new_time = str(format_time) + ':' + time[1]
+                            new_time = str(format_time) + ':' + minutes
                         else:
                             hour = format_time + 12
-                            new_time = str(hour) + ':' + time[1]
+                            new_time = str(hour) + ':' + minutes
                     when += new_time
                     new_event = Event(text=request.POST['post_content'],
                                       upvotes = 0,
