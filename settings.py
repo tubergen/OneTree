@@ -16,7 +16,7 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '',      
+        'HOST': 'onetree.princeton.edu',      
         'PORT': '',      
     }
 }
@@ -111,5 +111,13 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'registration'
 )
+
+ACCOUNT_ACTIVATION_DAYS = 2
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'cos.333.2011@gmail.com'
+EMAIL_HOST_PASSWORD = 'cos3332011'
+EMAIL_USE_TLS = True
 

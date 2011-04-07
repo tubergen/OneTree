@@ -36,6 +36,8 @@ urlpatterns = patterns('',
     (r'^profile/$', user_page, {'username': ''}),
     (r'^$', homepage),
     (r'^register/$', register),
+    (r'^accounts/', include('registration.backends.default.urls')),
+
 )
 
 # on our own computers, serve static files properly
