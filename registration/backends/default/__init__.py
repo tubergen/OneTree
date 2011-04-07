@@ -2,9 +2,9 @@ from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
 
-from registration import signals
-from registration.forms import RegistrationForm
-from registration.models import RegistrationProfile
+from OneTree.registration import signals
+from OneTree.registration.forms import RegistrationForm
+from OneTree.registration.models import RegistrationProfile
 
 
 class DefaultBackend(object):

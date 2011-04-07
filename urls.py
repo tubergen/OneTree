@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     (r'^profile/$', user_page, {'username': ''}),
     (r'^$', homepage),
     (r'^register/$', register),
-    (r'^accounts/', include('registration.backends.default.urls')),
+    (r'^accounts/', include('OneTree.registration.backends.default.urls')),
 
 )
 
