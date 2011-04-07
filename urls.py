@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.group_page.views import group_page
+from OneTree.apps.group_page.views import group_page, event_page
 from OneTree.apps.user_page.views import user_page
 from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
@@ -9,7 +9,6 @@ from django.conf import settings
 from django.contrib.auth.views import login, logout
 
 # Uncomment the next two lines to enable the admin:
-# Tyler problem
 from django.contrib import admin
 admin.autodiscover()
 
@@ -25,6 +24,7 @@ urlpatterns = patterns('',
     #(r'^group/$', group_page),
     (r'^group/(\w+)/$', group_page),
     (r'^user/(\w+)/$', user_page),
+    (r'^group/(\w+)/(.*)/$', event_page),
     (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),                       

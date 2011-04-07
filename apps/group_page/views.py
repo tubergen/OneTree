@@ -8,6 +8,7 @@ from OneTree.apps.helpers.Filter import Filter
 from OneTree.apps.helpers.enums import PostType
 
 import datetime
+import string
 
 '''
 Is it ultimately going to be a pain when generating the wall that we
@@ -33,32 +34,42 @@ submitted, adds that data to the database. Returns an errorMsg if there was a
 error, which can be rendered. Returns None otherwise.
 '''
 def handle_submit(group, request):
+    errormsg = None
     if request.method == 'POST':
         if 'post_content' in request.POST and request.POST['post_content']:
 
             # later insert logic to distinguish events vs announcement
             # this is probably not good logic
             if 'eventclick' in request.POST and request.POST['eventclick']:
-                new_event = Event(text=request.POST['post_content'],
-                                  upvotes = 0,
-                                  downvotes = 0,
-                                  origin_group=group,
-                                  event_title=request.POST['title'],
-                                  event_place=request.POST['where'],
-                                  event_date=request.POST['when'])
-                new_event.save()
-                group.events.add(new_event)
-                group.addEventToParent(new_event)
+                if not request.POST['title'] or not request.POST['where'] or not request.POST['when']:
+                    errormsg = 'Please fill out all required fields for an event.'
+                    pass                    
 
-                if (request.POST['title'] == ''):
-                    print "empty string"
-                elif (request.POST['title'] == None):
-                    print "none"
                 else:
-                    pass
+                    title = request.POST['title'].strip()
+                    url = string.join(request.POST['title'].split(), '')
+                    url = url.strip()
+                    new_event = Event(text=request.POST['post_content'],
+                                      upvotes = 0,
+                                      downvotes = 0,
+                                      origin_group=group,
+                                      event_title=title,
+                                      event_place=request.POST['where'],
+                                      event_date=request.POST['when'],
+                                      event_url=url)
+                    new_event.save()
+                    group.events.add(new_event)
+                    group.addEventToParent(new_event)
 
-                if (new_event.event_title == ''):
-                    print "title is empty"
+                    if (request.POST['title'] == ''):
+                        print "empty string"
+                    elif (request.POST['title'] == None):
+                        print "none"
+                    else:
+                        pass
+
+                    if (new_event.event_title == ''):
+                        print "title is empty"
             else:
                 new_announcement = Announcement(text=request.POST['post_content'],
                                                 upvotes = 0,
@@ -69,8 +80,8 @@ def handle_submit(group, request):
                 group.announcements.add(new_announcement)
                 group.addAnnToParent(new_announcement)
         else:
-            errormsg = "Empty announcement? Surely you aren't *that* boring."
-    return None;
+            errormsg = "Empty post? Surely you aren't *that* boring."
+    return errormsg
 
 '''
 Looks at request. If request specifies a post should be deleted (ie: removed),
@@ -125,7 +136,7 @@ def handle_post_delete(request):
                 print 'Tried to delete non-existent object.' + err_loc
             
 def group_page(request, group_url):
-    errormsg = None
+    errorMsg = None
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
@@ -140,6 +151,7 @@ def group_page(request, group_url):
 
     # handle the wall post that was perhaps submitted
     errorMsg = handle_submit(group, request)
+    print errorMsg
 
     # handle a possible post deletion
     handle_post_delete(request)
@@ -149,11 +161,29 @@ def group_page(request, group_url):
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
     return render_to_response('base_wall_group.html',
                               {'posts': posts,
-                              'errormsg': errormsg,
+                              'errormsg': errorMsg,
                               'group': group,
                               'children': children},
                               context_instance=RequestContext(request))
 
+def event_page(request, groupname, title):
+    errorMsg = None
+    
+    # check that the url corresponds to a valid event
+    this_event = Event.objects.filter(event_url=title)
+    group = Group.objects.filter(event = this_event)
+    if len(this_event) > 1:
+        errormsg = 'Database Error. URL mapped to multiple events.'
+        return render_to_response('error_page.html', {'errormsg': errormsg,})
+    elif len(this_event) == 0:
+        errormsg = "Event doesn't exist."
+        return render_to_response('error_page.html', {'errormsg': errormsg,})
+    else:
+        this_event = this_event[0] # only one element in queryset
+    return render_to_response('base_event.html',
+                              {'errormsg': errorMsg,
+                               'event': this_event},
+                              context_instance=RequestContext(request))
 '''
 This was a function intended to do a dfs, having each parent node query
 it's children and updating it's own announcement / event lists if

@@ -49,9 +49,12 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <li><button type="button" class="down-button" onClick="update_vote_script('down', {{post.id}}, {{post.post_type}})">;_;</button></li>
             </ul>
         </div>
-	{% comment %}
-	Tried putting the date here, no good.
-	{% endcomment %}
+	{% if post.event_date %}
+	Event: <strong><a href="/group/{{ group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br>
+	Where: {{ post.event_place }}<br>
+	Time: {{ post.event_date }}
+	<hr>
+	{% endif %}
         <div class="post-text">{{ post.text }}</div>
     </div>
 </div>

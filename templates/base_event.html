@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+<span id="title"><h1>{{ event.event_title }}</h1></span>
+<h2><strong>Created by: </strong>{{ event.origin_group }}</h2>
+{% endblock %}
+
+{% block main_content %}
+<p>
+  <strong>Where: </strong>{{ event.event_place }}<br>
+  <strong>When: </strong>{{ event.event_date }}<br>
+  <hr>
+  More info:<br>
+  {{ event.text }}
+</p>
+<br>
+<br>
+Back to <a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a>
+{% endblock %}
