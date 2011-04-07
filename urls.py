@@ -8,6 +8,8 @@ from OneTree.apps.wall.views import *
 from django.conf import settings
 from django.contrib.auth.views import login, logout
 
+from OneTree.apps.user_signup.views import register
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -33,6 +35,7 @@ urlpatterns = patterns('',
     (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...
     (r'^profile/$', user_page, {'username': ''}),
     (r'^$', homepage),
+    (r'^register/$', register),
 )
 
 # on our own computers, serve static files properly
