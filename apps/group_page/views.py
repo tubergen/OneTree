@@ -54,7 +54,8 @@ def handle_submit(group, request):
                     if len(time) == 1:
                         minutes = '00'
                     else:
-                        minutes = time[0]
+                        minutes = time[1]
+                    print minutes
                     if request.POST['timedrop'] == 'am':
                         if time[0] == '12':
                             new_time = '00:' + minutes
