@@ -43,8 +43,7 @@ def handle_submit(group, request):
             if 'eventclick' in request.POST and request.POST['eventclick']:
                 if not request.POST['title'] or not request.POST['where'] or not request.POST['date'] or not request.POST['time']:
                     errormsg = 'Please fill out all required fields for an event.'
-                    pass                    
-
+    
                 else:
                     title = request.POST['title'].strip()
                     url = string.join(request.POST['title'].split(), '')
@@ -80,16 +79,6 @@ def handle_submit(group, request):
                     new_event.save()
                     group.events.add(new_event)
                     group.addEventToParent(new_event)
-
-                    if (request.POST['title'] == ''):
-                        print "empty string"
-                    elif (request.POST['title'] == None):
-                        print "none"
-                    else:
-                        pass
-
-                    if (new_event.event_title == ''):
-                        print "title is empty"
             else:
                 new_announcement = Announcement(text=request.POST['post_content'],
                                                 upvotes = 0,
@@ -136,18 +125,16 @@ def handle_post_delete(request):
             group_id = int(group_id)
             group = Group.objects.get(id=group_id)
             try: 
-                if (post_type == PostType.EVENT):
+                if post_type == PostType.EVENT:
                     manager = group.events
-                elif (post_type == PostType.ANNOUNCEMENT):
+                elif post_type == PostType.ANNOUNCEMENT:
                     manager = group.announcements                
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
                     return
 
                 post = manager.get(id=post_id)
-                print post.origin_group.id
-                print group_id
-                if (post.origin_group.id == group_id):
+                if post.origin_group.id == group_id:
                     post.delete()
                 else:
                     manager.remove(post)
@@ -170,11 +157,14 @@ def group_page(request, group_url):
         group = group[0] # only one element in queryset
 
     # handle the wall post that was perhaps submitted
-    errorMsg = handle_submit(group, request)
-    print errorMsg
+    if 'post_submit' in request.POST:
+        errorMsg = handle_submit(group, request)
+        if errorMsg:
+            print errorMsg
 
     # handle a possible post deletion
-    handle_post_delete(request)
+    if 'delete_submit' in request.POST:
+        handle_post_delete(request)
 
     children = group.child_set.all()
     posts = Filter().get_posts(group) # runs posts through an empty filter
@@ -204,47 +194,3 @@ def event_page(request, groupname, title):
                               {'errormsg': errorMsg,
                                'event': this_event},
                               context_instance=RequestContext(request))
-'''
-This was a function intended to do a dfs, having each parent node query
-it's children and updating it's own announcement / event lists if
-necessary. Then Jorge and I  realized that it's much easier to just push
-announcements and events up on their creation.
-
-Leaving this in here b/c it might be useful later for applications where
-we do want parents to query their children.
-
-However, note that this DOES NOT WORK at all right now. AT ALL.
-
-marked = {} # keep track of all children reached in update tree dfs
-timeBetweenQueries = 0 # change later if our site has heavy traffic
-postsPerChild = 5 # maximum number of each type of post to get from a child
-
-def update_tree(group):
-    marked = {}
-    dfs(group)
-
-def dfs(group):
-    marked[group.id] = True
-    announcements = group.announcement_set.all()
-    events = group.event_set.all()
-
-    children = group.child_set.all()
-    curTime = datetime.datetime.now()
-    for child in children:
-        if (not marked.get(child.id)): #and child.hasNewPosts and
-        #        child.last_update_time.AddSeconds(timeBetweenQueries) < curTime):
-
-            dfs(child)
-            
-            child_announcements = child.announcements.order_by('-date').values_list('id', flat=True)[:postsPerChild]
-            group.announcements.add(child_announcements[0])
-            
-            child_events = child.events.order_by('-date').values_list('id', flat=True)[:postsPerChild]
-            group.events.add(child_events)
-            
-            #announcements = announcements | child_announcements;
-            #events = events | child_events;
-
-            child.last_update_query = datetime.now()
-            child.hasNewPosts = False
-'''
