@@ -1,0 +1,74 @@
+{% comment %}
+The filters depend on the div containing the wall_content include having
+id "wall-content".
+{% endcomment %}
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" charset="utf-8">
+
+    var filters = {};
+    var apply_map = {}; /* tells us whether to apply or remove a filter */
+
+    $(document).ready(function() {
+        $('.filter-button').click(function(event) {
+
+            event.stopPropagation();
+            id = $(this).attr('id');
+
+            if (apply_map[id] == null || apply_map[id] == true) {
+                apply_filter(id);
+                apply_map[id] = false;
+            }
+            else {
+                remove_filter(id);
+                apply_map[id] = true;
+            }
+        });
+    });
+
+    function filter_wall(filter_type)
+    {
+        // Technically this isn't a filter, but we need to send it too:
+        filters["group_id"] = {{ group.id }};
+        url = "/_apps/wall/views-filter_wall/";
+
+        $.get(url, filters, function(data) {
+            $('#wall-content').html(data);
+        });
+    }
+
+    function apply_filter(filter_type)
+    {
+        /* This is sent to django as the string "true". Any not-null string
+           will work here, since python evaluates them all as true. */
+        filters[filter_type] = true;
+        filter_wall(filter_type);
+        $('#' + filter_type).addClass('selected');
+    }
+
+    function remove_filter(filter_type)
+    {
+        /* Setting the filter to false will not work because python 
+           evaluates the string "false" as true. */
+        $
+        delete filters[filter_type];
+        filter_wall(filter_type);
+        $('#' + filter_type).removeClass('selected');
+    }
+</script>
+
+{% comment %}
+The filter button ids are important. They give the name of the filter we need
+to apply. If you change them, you'll have to change the document.ready 
+snippet so that you make sure to match the argument passed to apply_filter 
+with the filter string that's in our Django code.
+{% endcomment %}
+
+{% for filter_id, filter_descrip in filter_list.items %}
+  <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
+{% comment %}
+  <button class="filter-button" id="this_group_only">{{group}}'s Posts Only</button>
+  <button class="filter-button" id="events_only">Events Only</button>
+  <button class="filter-button" id="anns_only">Announcements Only</button>
+{% endcomment %}
+{% endfor %}

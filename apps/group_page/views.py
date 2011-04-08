@@ -168,12 +168,14 @@ def group_page(request, group_url):
 
     children = group.child_set.all()
     posts = Filter().get_posts(group) # runs posts through an empty filter
+    wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
     return render_to_response('base_wall_group.html',
                               {'posts': posts,
                               'errormsg': errorMsg,
                               'group': group,
-                              'children': children},
+                              'children': children,
+                              'filter_list': wall_filter_list},
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):

@@ -1,8 +1,15 @@
 from OneTree.apps.helpers.rank_posts import calc_hot_score
 from itertools import chain
 
+wall_filter_ids = ['this_group_only', 'events_only', 'anns_only'];
+wall_filter_descrips = ["{{group}}'s Posts Only", 'Events Only', 'Announcements Only']
+
 class Filter:
-    valid_filters = ['this_group_only', 'events_only', 'anns_only']
+    @staticmethod
+    def get_wall_filter_list(group_name):
+        updated_filter_descrips = wall_filter_descrips
+        updated_filter_descrips[0] = updated_filter_descrips[0].replace("{{group}}", group_name)
+        return dict(zip(wall_filter_ids, updated_filter_descrips));
 
     def __init__(self):
         self.filters = {}
