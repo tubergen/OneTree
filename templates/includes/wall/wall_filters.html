@@ -30,7 +30,7 @@ id "wall-content".
     {
         // Technically this isn't a filter, but we need to send it too:
         filters["group_id"] = {{ group.id }};
-        url = "/_apps/wall/views-filter_wall/";
+        url = "{{ filter_view_url }}";
 
         $.get(url, filters, function(data) {
             $('#wall-content').html(data);

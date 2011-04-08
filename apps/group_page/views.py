@@ -175,7 +175,8 @@ def group_page(request, group_url):
                               'errormsg': errorMsg,
                               'group': group,
                               'children': children,
-                              'filter_list': wall_filter_list},
+                              'filter_list': wall_filter_list,
+                              'filter_view_url': '/_apps/wall/views-filter_wall/'},
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):
