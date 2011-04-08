@@ -3,6 +3,8 @@ from django.forms import ModelForm
 from OneTree.apps.helpers.rank_posts import calc_hot_score
 from OneTree.apps.helpers.enums import PostType
 from django.contrib import auth
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 # from django import forms # for experimentation
 
 '''
@@ -125,6 +127,24 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
+# ===============================
+# USER PROFILE
+# ===============================
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True, null=True)
+    memberships = models.ManyToManyField('Group', related_name='members', blank=True, null=True)
+    
+    #other fields here
+
+    def __unicode__(self):
+        return "%s's profile" % self.user
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            profile, created = UserProfile.objects.get_or_create(user=instance)
+
+    post_save.connect(create_user_profile, sender=User)
 
 # ===============================
 # MEMBERSHIP
