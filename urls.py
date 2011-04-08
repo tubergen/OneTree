@@ -4,6 +4,7 @@ from OneTree.apps.user_page.views import user_page
 from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
 from OneTree.apps.common.views import homepage
+from OneTree.apps.newsfeed.views import newsfeed
 from OneTree.apps.wall.views import *
 from django.conf import settings
 from django.contrib.auth.views import login, logout
@@ -34,6 +35,7 @@ urlpatterns = patterns('',
     (r'^login/$',  login, {'template_name': 'base_login.html'}),
     (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...
     (r'^profile/$', user_page, {'username': ''}),
+    (r'^news/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
     (r'^accounts/', include('OneTree.registration.backends.default.urls')),

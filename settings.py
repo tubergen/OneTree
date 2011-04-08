@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'OneTree.apps.wall',
     'OneTree.apps.common',
+    'OneTree.apps.newsfeed',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -121,3 +122,5 @@ EMAIL_HOST_USER = 'cos.333.2011@gmail.com'
 EMAIL_HOST_PASSWORD = 'cos3332011'
 EMAIL_USE_TLS = True
 
+# necessary for the UserProfile model to work 
+AUTH_PROFILE_MODULE = 'common.UserProfile'

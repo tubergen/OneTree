@@ -2,6 +2,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.Filter import Filter
@@ -56,41 +57,32 @@ def handle_post_delete(request):
             
             except ObjectDoesNotExist:
                 print 'Tried to delete non-existent object.' + err_loc
-            
-def newsfeed(request)
+
+@login_required
+def newsfeed(request):
     errorMsg = None
 
-    # check that the url corresponds to a valid group
-    user = request.user
-    group = Group.objects.filter(url=group_url)
-    if len(group) > 1:
-        errormsg = 'Database Error. URL mapped to multiple groups.'
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    elif len(group) == 0:
-        errormsg = "Group doesn't exist."
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    else:
-        group = group[0] # only one element in queryset
+    user = request.user;
+    profile = user.get_profile();
+    subscriptions = profile.subscriptions;
 
-    # handle the wall post that was perhaps submitted
-    if 'post_submit' in request.POST:
-        errorMsg = handle_submit(group, request)
-        if errorMsg:
-            print errorMsg
+    posts = Filter().get_posts(group) # runs posts through an empty filter
+
+    if len(posts) < 1:
+        errormsg = "You aren't part of any communities? That's sad. =("
+    
+    newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
     # handle a possible post deletion
-    if 'delete_submit' in request.POST:
-        handle_post_delete(request)
+    #if 'delete_submit' in request.POST:
+    #    handle_post_delete(request)
 
-    children = group.child_set.all()
-    posts = Filter().get_posts(group) # runs posts through an empty filter
-    wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
-    return render_to_response('base_wall_group.html',
+    return render_to_response('base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errorMsg,
-                              'group': group,
-                              'children': children,
-                              'filter_list': wall_filter_list,
+                              'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/'},
                               context_instance=RequestContext(request))
+
+    #return render_to_response('base_newsfeed.html');

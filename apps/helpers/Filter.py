@@ -11,6 +11,11 @@ class Filter:
         updated_filter_descrips[0] = updated_filter_descrips[0].replace("{{group}}", group_name)
         return dict(zip(wall_filter_ids, updated_filter_descrips));
 
+    ''' This is pathetically lazy and at least the names should be changed later.'''
+    @staticmethod
+    def get_newsfeed_filter_list():
+        return dict(zip(wall_filter_ids[1:3], wall_filter_descrips[1:3]));
+
     def __init__(self):
         self.filters = {}
 
@@ -26,10 +31,9 @@ class Filter:
             self.filters['anns_only'] = True;            
         return self.filters;
 
-    # Get posts that meet the criteria specified by this filter
-    # If anybody knows how to write better filter logic, do it
-    def get_posts(self, group):
-
+    # returns a tuple (events, announcements) based on this_group_only
+    # filter, if it's set
+    def this_group_only(self, group):
         only_group = self.filters.get('this_group_only')
         if only_group:
             anns = only_group.announcement_set.all()
@@ -38,8 +42,13 @@ class Filter:
             anns = group.announcements.all()
             events = group.events.all()
 
-        events_only = self.filters.get('events_only');
-        anns_only = self.filters.get('anns_only');
+        return anns, events;
+
+    # returns a list of posts based on events_only and anns_only filters,
+    # if they're set
+    def post_type_only(self, anns, events):
+        events_only = self.filters.get('events_only')
+        anns_only = self.filters.get('anns_only')
         if events_only and anns_only:
             posts = None
         elif anns_only:
@@ -47,7 +56,17 @@ class Filter:
         elif events_only:
             posts = events
         else:
-            posts = chain(anns, events)            
+            posts = chain(anns, events)
+            
+        return posts
+    
+    # Get posts that meet the criteria specified by this filter
+    # If anybody knows how to write better filter logic, do it
+    def get_posts(self, group):
+
+        anns, events = self.this_group_only(group)        
+
+        posts = self.post_type_only(anns, events)
         
         # is this inefficient? in future, get/chain ~20 posts instead of all
         try:
