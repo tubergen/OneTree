@@ -83,9 +83,13 @@ class Filter:
         return posts;
 
     # returns a list of top posts from user's subscriptions, which is a
-    # list of groups
+    # list of groups. User must exist and have a profile.
     def get_news(self, user, posts_to_get=10):
-        subscriptions = user.get_profile().subscriptions;
+        try: 
+            subscriptions = user.get_profile().subscriptions;
+        except AttributeError:
+            print 'User is either None or Anonymous'
+            return None
         
         # add to tuples to pq of the form (score, post)
         # pq is sorted by score from lowest to highest
