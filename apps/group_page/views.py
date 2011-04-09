@@ -4,29 +4,17 @@ from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 
 from OneTree.apps.common.models import *
-from OneTree.apps.helpers.Filter import Filter
+from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
 
 import datetime
 import string
 
 '''
-Is it ultimately going to be a pain when generating the wall that we
-have separate models for announcements and events? Post has no objects
-managers, so it's not simple to just query all posts. We may have to do
-a merge of the event and announcements lists for display on the wall. Maybe
-this would not be necessary if posts were not abstract?
-'''
-
-'''
 Note: In common or something, we should keep all of these string
 literals in a text.en file
 '''
 
-'''
-Note: Even though I check for multiple groups mapping to the same url here
-we should figure out how to enforce url uniqueness in our model.
-'''
 
 '''
 Looks at the wall post that was potentially submitted and, if any data was
@@ -166,6 +154,13 @@ def group_page(request, group_url):
     if 'delete_submit' in request.POST:
         handle_post_delete(request)
 
+    # get user's subscription status to this group
+    try:
+        request.user.get_profile().subscriptions.get(id=group.id)
+        user_is_subscribed = True
+    except Group.DoesNotExist:
+        user_is_subscribed = False
+
     children = group.child_set.all()
     posts = Filter().get_posts(group) # runs posts through an empty filter
     wall_filter_list = Filter.get_wall_filter_list(group.name);
@@ -175,8 +170,10 @@ def group_page(request, group_url):
                               'errormsg': errorMsg,
                               'group': group,
                               'children': children,
+                              'user_is_subscribed': user_is_subscribed,
+                              'subscribe_view_url':'/_apps/newsfeed/views-change_subscribe/',
                               'filter_list': wall_filter_list,
-                              'filter_view_url': '/_apps/wall/views-filter_wall/'},
+                              'filter_view_url': '/_apps/wall/views-filter_wall/',},
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):

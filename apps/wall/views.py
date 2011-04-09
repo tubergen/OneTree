@@ -2,7 +2,7 @@
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.enums import PostType
-from OneTree.apps.helpers.Filter import Filter
+from OneTree.apps.helpers.filter import Filter
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -35,7 +35,7 @@ def update_vote(request):
                     else:
                         post.downvotes += 1
                 post.save()
-                return HttpResponse();
+                return HttpResponse()
                 #score = post.upvotes - post.downvotes;
                 #return HttpResponse(score, mimetype="application/javascript")
 

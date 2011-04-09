@@ -3,7 +3,6 @@ The filters depend on the div containing the wall_content include having
 id "wall-content".
 {% endcomment %}
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript" charset="utf-8">
 
     var filters = {};
@@ -30,7 +29,7 @@ id "wall-content".
     {
         // Technically this isn't a filter, but we need to send it too:
         filters["group_id"] = {{ group.id }};
-        url = "{{ filter_view_url }}";
+        var url = "{{ filter_view_url }}";
 
         $.get(url, filters, function(data) {
             $('#wall-content').html(data);

@@ -116,3 +116,7 @@
 .selected {
     background-color: #FFC600;
 }
+
+#subscribe-button {
+    color: white;
+}

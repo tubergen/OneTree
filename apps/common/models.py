@@ -181,3 +181,6 @@ class GroupInfo(models.Model):
 # ===============================
 class UserInfo(models.Model):
     pass
+
+class Test(models.Model):
+    pass

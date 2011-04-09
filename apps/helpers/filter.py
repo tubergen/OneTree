@@ -1,5 +1,6 @@
 from OneTree.apps.helpers.rank_posts import calc_hot_score
 from itertools import chain
+import Queue
 
 wall_filter_ids = ['this_group_only', 'events_only', 'anns_only'];
 wall_filter_descrips = ["{{group}}'s Posts Only", 'Events Only', 'Announcements Only']
@@ -31,8 +32,10 @@ class Filter:
             self.filters['anns_only'] = True;            
         return self.filters;
 
-    # returns a tuple (events, announcements) based on this_group_only
-    # filter, if it's set
+    # Returns a tuple (events, announcements) based on this_group_only
+    # filter, if it's set. We use the group passed into this group_only
+    # as our only_group, but the parameter group is probably just as good.
+    # Consider refactoring this later.
     def this_group_only(self, group):
         only_group = self.filters.get('this_group_only')
         if only_group:
@@ -64,8 +67,9 @@ class Filter:
     # If anybody knows how to write better filter logic, do it
     def get_posts(self, group):
 
+        # note that this filters only try to apply these filters
+        # they have no effect if the filters are not set
         anns, events = self.this_group_only(group)        
-
         posts = self.post_type_only(anns, events)
         
         # is this inefficient? in future, get/chain ~20 posts instead of all
@@ -76,3 +80,41 @@ class Filter:
             print "Failed to form a list of posts in filter.py getFilter()."
             posts = None
         return posts;
+
+    # returns a list of top posts from subscriptions, which is a
+    # list of groups
+    def get_news(self, subscriptions, posts_to_get=10):
+        # add to tuples to pq of the form (score, post)
+        # pq is sorted by score from lowest to highest
+        pq = Queue.PriorityQueue(posts_to_get)
+        for group in subscriptions.all():
+            posts = self.get_posts(group)
+            for post in posts:
+                score = calc_hot_score(post)
+                try: 
+                    pq.put_nowait((score, post))
+                except Queue.Full:
+                    (low_score, low_post) = pq.get_nowait()
+                    # keep the post with the higher score
+                    if low_score < score:
+                        pq.put_nowait((score, post))
+                    else:
+                        pq.put_nowait((low_score, low_post))
+
+        top_posts = []
+        while True:
+            try:
+                (low_score, low_post) = pq.get_nowait()
+                top_posts.append(low_post)
+            except Queue.Empty:
+                break
+
+        return top_posts
+            
+
+
+
+
+        
+
+        

@@ -1,0 +1,2 @@
+If I go to a @login_required page without being logged in, and then log in
+there, I get a csrf validation failed.
