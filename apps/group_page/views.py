@@ -158,7 +158,8 @@ def group_page(request, group_url):
     try:
         request.user.get_profile().subscriptions.get(id=group.id)
         user_is_subscribed = True
-    except Group.DoesNotExist:
+    except (Group.DoesNotExist, AttributeError): 
+        # Note: attribute error occurs when user is AnonymousUser
         user_is_subscribed = False
 
     children = group.child_set.all()
