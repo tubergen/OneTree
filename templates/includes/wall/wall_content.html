@@ -27,7 +27,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 {% for post in posts %}
 <div class="post-box">
     <div class="post-group">
-        {% ifnotequal post.origin_group  group %}
+        {% ifnotequal post.origin_group group %}
             <span class="post-via"></span>
         {% else %}
             <span class="post-by-same-group"></span>

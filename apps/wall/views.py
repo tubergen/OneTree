@@ -56,8 +56,9 @@ def filter_wall(request):
             filters.parse_request(group, request);
             filtered_posts = filters.get_posts(group);
             return render_to_response('includes/wall/wall_content.html',
-                                      {'posts':filtered_posts,
+                                      {'posts': filtered_posts,
                                        'group': group,},
                                       context_instance=RequestContext(request))
 
+    print 'HTTP 400 returned in filter_wall()'    
     return HttpResponse(status=400)

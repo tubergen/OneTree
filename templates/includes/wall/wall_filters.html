@@ -28,7 +28,9 @@ id "wall-content".
     function filter_wall(filter_type)
     {
         // Technically this isn't a filter, but we need to send it too:
-        filters["group_id"] = {{ group.id }};
+        {% if group.id %}
+            filters["group_id"] = {{ group.id }};
+        {% endif %}
         var url = "{{ filter_view_url }}";
 
         $.get(url, filters, function(data) {
@@ -65,9 +67,4 @@ with the filter string that's in our Django code.
 
 {% for filter_id, filter_descrip in filter_list.items %}
   <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
-{% comment %}
-  <button class="filter-button" id="this_group_only">{{group}}'s Posts Only</button>
-  <button class="filter-button" id="events_only">Events Only</button>
-  <button class="filter-button" id="anns_only">Announcements Only</button>
-{% endcomment %}
 {% endfor %}

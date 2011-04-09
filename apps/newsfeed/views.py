@@ -9,6 +9,20 @@ from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
 from django.http import HttpResponse  
 
+@login_required
+def filter_newsfeed(request):
+    if request.is_ajax():
+        user = request.user;
+        if user:
+            filters = Filter();
+            filters.parse_request(None, request)
+            filtered_posts = filters.get_news(user)
+            return render_to_response('includes/wall/wall_content.html',
+                                     {'posts': filtered_posts,},
+                                     context_instance=RequestContext(request))
+
+    print 'HTTP 400 returned in filter_newsfeed()'
+    return HttpResponse(status=400)
 
 @login_required
 def change_subscribe(request):
@@ -87,11 +101,7 @@ def handle_post_delete(request):
 def newsfeed(request):
     errorMsg = None
 
-    user = request.user;
-    profile = user.get_profile();
-    subscriptions = profile.subscriptions;
-
-    posts = Filter().get_news(subscriptions) # runs posts through an empty filter
+    posts = Filter().get_news(request.user) # runs posts through an empty filter
 
     if len(posts) < 1:
         errormsg = "You aren't part of any communities? That's sad. =("
@@ -107,7 +117,7 @@ def newsfeed(request):
                               'errormsg': errorMsg,
                               'submit_off': True,
                               'filter_list': newsfeed_filter_list,
-                              'filter_view_url': '/_apps/wall/views-filter_wall/'},
+                              'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/'},
                               context_instance=RequestContext(request))
 
     #return render_to_response('base_newsfeed.html');

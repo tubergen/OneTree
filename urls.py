@@ -4,7 +4,7 @@ from OneTree.apps.user_page.views import user_page
 from OneTree.apps.user_signup.views import create_user
 from OneTree.apps.group_signup.views import create_group
 from OneTree.apps.common.views import homepage
-from OneTree.apps.newsfeed.views import newsfeed, change_subscribe
+from OneTree.apps.newsfeed.views import newsfeed, change_subscribe, filter_newsfeed
 from OneTree.apps.wall.views import *
 from django.conf import settings
 from django.contrib.auth.views import login, logout
@@ -32,6 +32,7 @@ urlpatterns = patterns('',
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
     (r'^_apps/newsfeed/views-change_subscribe/$', change_subscribe),
+    (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^user-signup/$', create_user),
     (r'^login/$',  login, {'template_name': 'base_login.html'}),
     (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...

@@ -77,18 +77,23 @@ class Filter:
             posts = list(posts)
             posts.sort(key=calc_hot_score, reverse=True)
         except:
-            print "Failed to form a list of posts in filter.py getFilter()."
+            print ("Failed to form a list of posts in filter.py getFilter(), "
+                   "perhaps because no posts passed through filter.")
             posts = None
         return posts;
 
-    # returns a list of top posts from subscriptions, which is a
+    # returns a list of top posts from user's subscriptions, which is a
     # list of groups
-    def get_news(self, subscriptions, posts_to_get=10):
+    def get_news(self, user, posts_to_get=10):
+        subscriptions = user.get_profile().subscriptions;
+        
         # add to tuples to pq of the form (score, post)
         # pq is sorted by score from lowest to highest
         pq = Queue.PriorityQueue(posts_to_get)
         for group in subscriptions.all():
             posts = self.get_posts(group)
+            if posts == None:
+                continue
             for post in posts:
                 score = calc_hot_score(post)
                 try: 
@@ -109,6 +114,9 @@ class Filter:
             except Queue.Empty:
                 break
 
+        # reverse top posts, since we appended from low_score to high_score
+        if top_posts != None:
+            top_posts.reverse()
         return top_posts
             
 
