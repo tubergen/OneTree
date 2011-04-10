@@ -124,3 +124,7 @@ EMAIL_USE_TLS = True
 
 # necessary for the UserProfile model to work 
 AUTH_PROFILE_MODULE = 'common.UserProfile'
+
+# default login / logout urls
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'

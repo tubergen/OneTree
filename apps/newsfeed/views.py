@@ -66,11 +66,12 @@ etc. for each type of post. However, I am not doing this right now because it
 would hide a bigger issue: that posts which are deleted on the creater's wall
 are not completely deleted from the database.
 '''
+@login_required
 def handle_post_delete(request):
     err_loc = ' See handle_post_delete in the group_page views.py.'
     if request.method == 'POST':
         try:
-            group_id = int(request.POST.get('group_id'))
+            user = request.user
             post_id = int(request.POST.get('post_id'))
             post_type = int(request.POST.get('post_type'))
         except:
