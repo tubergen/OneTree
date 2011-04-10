@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     (r'^login/$',  login, {'template_name': 'base_login.html'}),
     (r'^logout/$', logout, {'next_page': '/login/'}), # change this to the homepage when we have one...
     (r'^profile/$', user_page, {'username': ''}),
-    (r'^news/$', newsfeed),
+    (r'^newsfeed/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
     (r'^accounts/', include('OneTree.registration.backends.default.urls')),

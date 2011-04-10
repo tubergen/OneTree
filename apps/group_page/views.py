@@ -166,7 +166,7 @@ def group_page(request, group_url):
     posts = Filter().get_posts(group) # runs posts through an empty filter
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
-    return render_to_response('base_wall_group.html',
+    return render_to_response('group/base_group.html',
                               {'posts': posts,
                               'errormsg': errorMsg,
                               'group': group,

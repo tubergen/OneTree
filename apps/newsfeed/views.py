@@ -112,7 +112,7 @@ def newsfeed(request):
     #if 'delete_submit' in request.POST:
     #    handle_post_delete(request)
 
-    return render_to_response('base_newsfeed.html',
+    return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errorMsg,
                               'submit_off': True,

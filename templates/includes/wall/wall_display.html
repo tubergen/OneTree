@@ -17,6 +17,8 @@ id "wall-content".
 <div class="main-container">
   {% include "includes/wall/wall_filters.html" %}
 
-  <h2 id="subtitle">wall posts</h2>
+  {% block wall_title %}
+    <h2 id="subtitle">wall posts</h2>
+  {% endblock %}
   <div id="wall-content">{% include "includes/wall/wall_content.html" %}</div>
 </div>
