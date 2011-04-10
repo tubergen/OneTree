@@ -1,8 +1,8 @@
 from OneTree.apps.helpers.rank_posts import calc_hot_score
+from OneTree.apps.helpers.enums import PostType
 from itertools import chain
-import Queue
-
 from operator import attrgetter
+import Queue
 
 wall_filter_ids = ['this_group_only', 'events_only', 'anns_only'];
 wall_filter_descrips = ["{{group}}'s Posts Only", 'Events Only', 'Announcements Only']
@@ -77,6 +77,8 @@ class Filter:
         # is this inefficient? in future, get/chain ~20 posts instead of all
         try:
             posts = list(posts)
+            # primary sort is hot score, secondary sort is date
+            posts.sort(key=attrgetter('date'), reverse=True)            
             posts.sort(key=calc_hot_score, reverse=True)
         except:
             print ("Failed to form a list of posts in filter.py getFilter(), "
@@ -105,9 +107,14 @@ class Filter:
                 continue
             for post in posts:
                 # skip this post if it's been deleted
-                if deleted_events.filter(id=post.id) or \
-                       deleted_anns.filter(id=post.id):
+                if post.post_type == PostType.EVENT and \
+                       deleted_events.filter(id=post.id):
                     continue
+                elif post.post_type == PostType.ANNOUNCEMENT and \
+                         deleted_anns.filter(id=post.id):
+                    continue
+                else:
+                    pass
                 
                 score = calc_hot_score(post)
                 try: 
@@ -133,8 +140,7 @@ class Filter:
         '''
         We could just reverse top posts here. However, then the ordering of
         posts will change on filter click if posts have equal scores (of 0). So
-        sort first on the post date, THEN sort on calc_hot_score to keep a stable
-        ordering.
+        sort primarily on hot score, then on date to keep a stable ordering.
         '''
         if top_posts != None:
             top_posts.sort(key=attrgetter('date'), reverse=True)

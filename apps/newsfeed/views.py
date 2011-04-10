@@ -106,7 +106,7 @@ def newsfeed(request):
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
     if not posts:
-        errormsg = "You aren't part of any communities? That's sad. Join some !"
+        errormsg = "No news. Join some more communities !"
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
