@@ -138,5 +138,5 @@ class Filter:
         '''
         if top_posts != None:
             top_posts.sort(key=attrgetter('date'), reverse=True)
-            posts.sort(key=calc_hot_score, reverse=True)
+            top_posts.sort(key=calc_hot_score, reverse=True)
         return top_posts    

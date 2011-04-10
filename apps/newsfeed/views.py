@@ -82,14 +82,14 @@ def handle_post_delete(request):
             print 'Error: Wall post delete POST data were not integers.' + err_loc
             return
         
-        if subscriptions and post_id and post_type:
+        if profile and post_id and post_type:
             try: 
                 if post_type == PostType.EVENT:
                     post = Event.objects.get(id=post_id)
                     profile.deleted_events.add(post)
                 elif post_type == PostType.ANNOUNCEMENT:
                     post = Announcement.objects.get(id=post_id)
-                    profile.deleted_announcements.add(post)                    
+                    profile.deleted_anns.add(post)                    
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
             except ObjectDoesNotExist:
@@ -97,22 +97,22 @@ def handle_post_delete(request):
 
 @login_required
 def newsfeed(request):
-    errorMsg = None
+    errormsg = None
+
+    # handle a possible post deletion
+    if 'delete_submit' in request.POST:
+        handle_post_delete(request)
 
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
-    if len(posts) < 1:
-        errormsg = "You aren't part of any communities? That's sad. =("
+    if not posts:
+        errormsg = "You aren't part of any communities? That's sad. Join some !"
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
-    # handle a possible post deletion
-    #if 'delete_submit' in request.POST:
-    #    handle_post_delete(request)
-
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
-                              'errormsg': errorMsg,
+                              'errormsg': errormsg,
                               'submit_off': True,
                               'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/'},

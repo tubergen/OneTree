@@ -131,7 +131,7 @@ def handle_post_delete(request):
                 print 'Error: Tried to delete non-existent object.' + err_loc
             
 def group_page(request, group_url):
-    errorMsg = None
+    errormsg = None
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
@@ -146,9 +146,9 @@ def group_page(request, group_url):
 
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
-        errorMsg = handle_submit(group, request)
-        if errorMsg:
-            print errorMsg
+        errormsg = handle_submit(group, request)
+        if errormsg:
+            print errormsg
 
     # handle a possible post deletion
     if 'delete_submit' in request.POST:
@@ -168,7 +168,7 @@ def group_page(request, group_url):
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
     return render_to_response('group/base_group.html',
                               {'posts': posts,
-                              'errormsg': errorMsg,
+                              'errormsg': errormsg,
                               'group': group,
                               'children': children,
                               'user_is_subscribed': user_is_subscribed,
@@ -178,7 +178,7 @@ def group_page(request, group_url):
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):
-    errorMsg = None
+    errormsg = None
     
     # check that the url corresponds to a valid event
     this_event = Event.objects.filter(event_url=title)
@@ -192,6 +192,6 @@ def event_page(request, groupname, title):
     else:
         this_event = this_event[0] # only one element in queryset
     return render_to_response('base_event.html',
-                              {'errormsg': errorMsg,
+                              {'errormsg': errormsg,
                                'event': this_event},
                               context_instance=RequestContext(request))
