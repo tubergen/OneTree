@@ -132,8 +132,11 @@ class Group(models.Model):
 # ===============================
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
-    subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True, null=True)
-    memberships = models.ManyToManyField('Group', related_name='members', blank=True, null=True)
+    subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
+    memberships = models.ManyToManyField('Group', related_name='members', blank=True)
+
+    deleted_events = models.ManyToManyField('Event', blank=True)
+    deleted_anns = models.ManyToManyField('Announcement', blank=True)
     
     #other fields here
 

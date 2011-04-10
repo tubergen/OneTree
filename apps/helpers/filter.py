@@ -2,6 +2,8 @@ from OneTree.apps.helpers.rank_posts import calc_hot_score
 from itertools import chain
 import Queue
 
+from operator import attrgetter
+
 wall_filter_ids = ['this_group_only', 'events_only', 'anns_only'];
 wall_filter_descrips = ["{{group}}'s Posts Only", 'Events Only', 'Announcements Only']
 
@@ -85,26 +87,36 @@ class Filter:
     # returns a list of top posts from user's subscriptions, which is a
     # list of groups. User must exist and have a profile.
     def get_news(self, user, posts_to_get=10):
-        try: 
-            subscriptions = user.get_profile().subscriptions;
+        try:
+            profile = user.get_profile()
+            subscriptions = profile.subscriptions
+            deleted_events = profile.deleted_events
+            deleted_anns = profile.deleted_anns
         except AttributeError:
-            print 'User is either None or Anonymous'
+            print 'Error: User is either None or Anonymous'
             return None
         
         # add to tuples to pq of the form (score, post)
         # pq is sorted by score from lowest to highest
         pq = Queue.PriorityQueue(posts_to_get)
         for group in subscriptions.all():
-            posts = self.get_posts(group)
+            posts = self.get_posts(group)            
             if posts == None:
                 continue
             for post in posts:
+                # skip this post if it's been deleted
+                if deleted_events.filter(id=post.id) or \
+                       deleted_anns.filter(id=post.id):
+                    continue
+                
                 score = calc_hot_score(post)
                 try: 
                     pq.put_nowait((score, post))
                 except Queue.Full:
                     (low_score, low_post) = pq.get_nowait()
                     # keep the post with the higher score
+                    # if there's a tie, most recent posts should be put on pq,
+                    # but I don't think this is happening right now
                     if low_score < score:
                         pq.put_nowait((score, post))
                     else:
@@ -118,15 +130,13 @@ class Filter:
             except Queue.Empty:
                 break
 
-        # reverse top posts, since we appended from low_score to high_score
+        '''
+        We could just reverse top posts here. However, then the ordering of
+        posts will change on filter click if posts have equal scores (of 0). So
+        sort first on the post date, THEN sort on calc_hot_score to keep a stable
+        ordering.
+        '''
         if top_posts != None:
-            top_posts.reverse()
-        return top_posts
-            
-
-
-
-
-        
-
-        
+            top_posts.sort(key=attrgetter('date'), reverse=True)
+            posts.sort(key=calc_hot_score, reverse=True)
+        return top_posts    

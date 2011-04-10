@@ -128,7 +128,7 @@ def handle_post_delete(request):
                     manager.remove(post)
             
             except ObjectDoesNotExist:
-                print 'Tried to delete non-existent object.' + err_loc
+                print 'Error: Tried to delete non-existent object.' + err_loc
             
 def group_page(request, group_url):
     errorMsg = None

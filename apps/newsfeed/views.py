@@ -68,35 +68,32 @@ are not completely deleted from the database.
 '''
 @login_required
 def handle_post_delete(request):
-    err_loc = ' See handle_post_delete in the group_page views.py.'
+    err_loc = ' See handle_post_delete in the newsfeed views.py.'
     if request.method == 'POST':
         try:
-            user = request.user
+            profile = request.user.get_profile()
+        except AttributeError:
+            print 'Error: User is either None or Anonymous'
+            return
+        try:
             post_id = int(request.POST.get('post_id'))
             post_type = int(request.POST.get('post_type'))
         except:
-            print 'Wall post delete POST data were not valid integers.' + err_loc
-            return;
-        if group_id and post_id and post_type:
-            group_id = int(group_id)
-            group = Group.objects.get(id=group_id)
+            print 'Error: Wall post delete POST data were not integers.' + err_loc
+            return
+        
+        if subscriptions and post_id and post_type:
             try: 
                 if post_type == PostType.EVENT:
-                    manager = group.events
+                    post = Event.objects.get(id=post_id)
+                    profile.deleted_events.add(post)
                 elif post_type == PostType.ANNOUNCEMENT:
-                    manager = group.announcements                
+                    post = Announcement.objects.get(id=post_id)
+                    profile.deleted_announcements.add(post)                    
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
-                    return
-
-                post = manager.get(id=post_id)
-                if post.origin_group.id == group_id:
-                    post.delete()
-                else:
-                    manager.remove(post)
-            
             except ObjectDoesNotExist:
-                print 'Tried to delete non-existent object.' + err_loc
+                print 'Error: Tried to delete non-existent object.' + err_loc
 
 @login_required
 def newsfeed(request):
