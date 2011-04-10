@@ -92,8 +92,8 @@ class Filter:
         try:
             profile = user.get_profile()
             subscriptions = profile.subscriptions
-            deleted_events = profile.deleted_events
-            deleted_anns = profile.deleted_anns
+            removed_events = profile.removed_events
+            removed_anns = profile.removed_anns
         except AttributeError:
             print 'Error: User is either None or Anonymous'
             return None
@@ -108,10 +108,10 @@ class Filter:
             for post in posts:
                 # skip this post if it's been deleted
                 if post.post_type == PostType.EVENT and \
-                       deleted_events.filter(id=post.id):
+                       removed_events.filter(id=post.id):
                     continue
                 elif post.post_type == PostType.ANNOUNCEMENT and \
-                         deleted_anns.filter(id=post.id):
+                         removed_anns.filter(id=post.id):
                     continue
                 else:
                     pass

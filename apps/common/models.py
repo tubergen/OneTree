@@ -135,8 +135,8 @@ class UserProfile(models.Model):
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
     memberships = models.ManyToManyField('Group', related_name='members', blank=True)
 
-    deleted_events = models.ManyToManyField('Event', blank=True)
-    deleted_anns = models.ManyToManyField('Announcement', blank=True)
+    removed_events = models.ManyToManyField('Event', blank=True)
+    removed_anns = models.ManyToManyField('Announcement', blank=True)
     
     #other fields here
 

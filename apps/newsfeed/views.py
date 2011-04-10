@@ -86,10 +86,10 @@ def handle_post_delete(request):
             try: 
                 if post_type == PostType.EVENT:
                     post = Event.objects.get(id=post_id)
-                    profile.deleted_events.add(post)
+                    profile.removed_events.add(post)
                 elif post_type == PostType.ANNOUNCEMENT:
                     post = Announcement.objects.get(id=post_id)
-                    profile.deleted_anns.add(post)                    
+                    profile.removed_anns.add(post)                    
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
             except ObjectDoesNotExist:
