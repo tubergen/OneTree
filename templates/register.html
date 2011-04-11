@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+    <span id="title"><h1>User Account Creation</h1></span>
+{% endblock %}
+
+{% block main_content %}
+<p>[Development version] Warning: Passwords will be shown in plaintext on registration success.</p>
+
+    {% if form.errors %}
+        <p class="error-message">One or more fields below are either missing or filled out improperly.</p>
+
+    {% endif %}
+
+<form method="post" action=".">{% csrf_token %}
+  {{ form.as_p }}
+
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
