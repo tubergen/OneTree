@@ -10,16 +10,18 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils.hashcompat import sha_constructor
 
-from OneTree.registration.backends import get_backend
+
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 class RegistrationManager(models.Manager):
     def activate_user(self, activation_key):
+        print activation_key
         if SHA1_RE.search(activation_key):
             try:
                 profile = self.get(activation_key=activation_key)
             except self.model.DoesNotExist:
+                print "model does not exist"
                 return False
             if not profile.activation_key_expired():
                 user = profile.user
@@ -28,6 +30,7 @@ class RegistrationManager(models.Manager):
                 profile.activation_key = self.model.ACTIVATED
                 profile.save()
                 return user
+        print "not SHA"
         return False
 
     def create_inactive_user(self, username, email, password):
@@ -102,37 +105,16 @@ class RegistrationProfile(models.Model):
 
     def send_activation_email(self):
         """
-        ``registration/activation_email.txt``
+        registration/activation_email.txt
             This template will be used for the body of the email.
 
-        These templates will each receive the following context
-        variables:
-
-        ``activation_key``
-            The activation key for the new account.
-
-        ``expiration_days``
-            The number of days remaining during which the account may
-            be activated.
-
-        ``site``
-            An object representing the site on which the user
-            registered; depending on whether ``django.contrib.sites``
-            is installed, this may be an instance of either
-            ``django.contrib.sites.models.Site`` (if the sites
-            application is installed) or
-            ``django.contrib.sites.models.RequestSite`` (if
-            not). Consult the documentation for the Django sites
-            framework for details regarding these objects' interfaces.
-
         """
-        ctx_dict = { 'activation_key': self.activation_key,
-                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS }
-
+        activation_details = { 'activation_key': self.activation_key,
+                               'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS }
 
         subject = "Welcome to OneTree!" # must NOT contain new lines
         
         message = render_to_string('registration/activation_email.txt',
-                                   ctx_dict)
+                                   activation_details)
         
         self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)

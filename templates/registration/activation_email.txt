@@ -1,8 +1,10 @@
-{% load i18n %}
 Thank you for registering with onetree.princeton.edu!
 
 Please activate your account to access all the cool features on our site:
 
-http://onetree.princeton.edu{% url registration_activate activation_key %}
+http://localhost:8000{% url activator activation_key %}
 
-{% blocktrans %}Your activation link is valid for {{ expiration_days }} days.{% endblocktrans %}
+Your activation link is valid for {{ expiration_days }} days.
+
+Sincerely,
+OneTree Team
