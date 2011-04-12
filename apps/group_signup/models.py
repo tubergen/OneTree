@@ -19,7 +19,7 @@ class GroupForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ('name', 'parent', 'url',)
+        fields = ('name', 'parent', 'url', 'tags') #here
 
 
        
