@@ -3,11 +3,11 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse  
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
-from django.http import HttpResponse  
 
 @login_required
 def filter_newsfeed(request):
@@ -48,8 +48,9 @@ def change_subscribe(request):
     return HttpResponse()
 
 '''
-Looks at request. If request specifies a post should be deleted (ie: removed),
-then it's removed. Otherwise does nothing.
+Looks at request. If request specifies a post should be deleted / remmoved, then
+it's deleted if the requester is the administrator of the author group; if not,
+then the post is simply removed from the group's page. 
 
 Don't forget to add authentication to this. Some permissions should be required
 to be able to delete a post. 
@@ -67,20 +68,21 @@ would hide a bigger issue: that posts which are deleted on the creater's wall
 are not completely deleted from the database.
 '''
 @login_required
-def handle_post_delete(request):
-    err_loc = ' See handle_post_delete in the newsfeed views.py.'
+def remove_post(request):
+    err_loc = ' See remove_post in the newsfeed views.py.'
     if request.method == 'POST':
         try:
             profile = request.user.get_profile()
         except AttributeError:
             print 'Error: User is either None or Anonymous'
-            return
+            return HttpResponse(status=400)
+
         try:
             post_id = int(request.POST.get('post_id'))
             post_type = int(request.POST.get('post_type'))
         except:
             print 'Error: Wall post delete POST data were not integers.' + err_loc
-            return
+            return HttpResponse(status=400)
         
         if profile and post_id and post_type:
             try: 
@@ -92,16 +94,21 @@ def handle_post_delete(request):
                     profile.removed_anns.add(post)                    
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
+                    return HttpResponse(status=400)
+
+                return HttpResponse()
+
             except ObjectDoesNotExist:
                 print 'Error: Tried to delete non-existent object.' + err_loc
+            
+    return HttpResponse(status=400)
+
+    
+
 
 @login_required
 def newsfeed(request):
     errormsg = None
-
-    # handle a possible post deletion
-    if 'delete_submit' in request.POST:
-        handle_post_delete(request)
 
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
@@ -115,7 +122,8 @@ def newsfeed(request):
                               'errormsg': errormsg,
                               'submit_off': True,
                               'filter_list': newsfeed_filter_list,
-                              'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/'},
+                              'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',
+                              'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
                               context_instance=RequestContext(request))
 
     #return render_to_response('base_newsfeed.html');

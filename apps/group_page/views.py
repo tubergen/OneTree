@@ -2,6 +2,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.filter import Filter
@@ -42,7 +43,6 @@ def handle_submit(group, request):
                         minutes = '00'
                     else:
                         minutes = time[1]
-                    print minutes
                     if request.POST['timedrop'] == 'am':
                         if time[0] == '12':
                             new_time = '00:' + minutes
@@ -81,11 +81,16 @@ def handle_submit(group, request):
     return errormsg
 
 '''
-Looks at request. If request specifies a post should be deleted (ie: removed),
-then it's removed. Otherwise does nothing.
+Looks at request. If request specifies a post should be deleted / remmoved, then
+it's deleted if the requester is the administrator of the author group; if not,
+then the post is simply removed from the group's page. 
 
 Don't forget to add authentication to this. Some permissions should be required
 to be able to delete a post. 
+
+I realize generally you make server-side changes with POST, not GET. However,
+I see no reason to give the user a browser warning about "resubmission" here,
+as would be the case with POST.
 
 SPECIAL NOTE : if there's ever a bug where an event mysteriously appears on the
 wall only when "[this page]'s Posts Only" is selected, and it cannot be deleted,
@@ -99,8 +104,8 @@ etc. for each type of post. However, I am not doing this right now because it
 would hide a bigger issue: that posts which are deleted on the creater's wall
 are not completely deleted from the database.
 '''
-def handle_post_delete(request):
-    err_loc = ' See handle_post_delete in the group_page views.py.'
+def delete_post(request):
+    err_loc = ' See delete_post in the group_page views.py.'
     if request.method == 'POST':
         try:
             group_id = int(request.POST.get('group_id'))
@@ -108,7 +113,8 @@ def handle_post_delete(request):
             post_type = int(request.POST.get('post_type'))
         except:
             print 'Wall post delete POST data were not valid integers.' + err_loc
-            return;
+            return HttpResponse(status=400)
+            
         if group_id and post_id and post_type:
             group_id = int(group_id)
             group = Group.objects.get(id=group_id)
@@ -119,16 +125,20 @@ def handle_post_delete(request):
                     manager = group.announcements                
                 else:
                     print 'Tried to delete non-announcement non-event.' + err_loc
-                    return
+                    return HttpResponse(status=400)
 
                 post = manager.get(id=post_id)
                 if post.origin_group.id == group_id:
                     post.delete()
                 else:
                     manager.remove(post)
+
+                return HttpResponse()
             
             except ObjectDoesNotExist:
                 print 'Error: Tried to delete non-existent object.' + err_loc
+                
+    return HttpResponse(status=400)
             
 def group_page(request, group_url):
     errormsg = None
@@ -150,10 +160,6 @@ def group_page(request, group_url):
         if errormsg:
             print errormsg
 
-    # handle a possible post deletion
-    if 'delete_submit' in request.POST:
-        handle_post_delete(request)
-
     # get user's subscription status to this group
     try:
         request.user.get_profile().subscriptions.get(id=group.id)
@@ -174,7 +180,8 @@ def group_page(request, group_url):
                               'user_is_subscribed': user_is_subscribed,
                               'subscribe_view_url':'/_apps/newsfeed/views-change_subscribe/',
                               'filter_list': wall_filter_list,
-                              'filter_view_url': '/_apps/wall/views-filter_wall/',},
+                              'filter_view_url': '/_apps/wall/views-filter_wall/',
+                              'delete_post_view_url': '/_apps/group_page/views-delete_post/',},                              
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):

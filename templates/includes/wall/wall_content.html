@@ -22,10 +22,20 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             $('#vote-score-'+post_id).html(nextScore);
         });
     }
+
+    // deletes post specififed by post_id if it's being deleted by the author group
+    // otherwise simply removes the post from the wall
+    function delete_post(post_id, post_type)
+    {
+        var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
+        $.post("{{ delete_post_view_url }}", data, function() {
+            $('#post-box-'+post_id).hide();
+        });
+    }
 </script>
 
 {% for post in posts %}
-<div class="post-box">
+<div class="post-box" id="post-box-{{post.id}}">
     <div class="post-group">
         {% ifnotequal post.origin_group group %}
             <span class="post-via"></span>
@@ -34,12 +44,15 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {% endifnotequal %}
         <span class="post-group-name">{{ post.origin_group }}</div>
     <div class="post-content">
-      <form name="delete-info" class="post-delete" action="" method="POST">{% csrf_token %}
+        <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})">x</button>
+	{% comment %}
+        <form name="delete-info" class="post-delete" action="" method="POST">{% csrf_token %}
 	    <input type="hidden" name="group_id" value="{{group.id}}">
 	    <input type="hidden" name="post_id" value="{{post.id}}">
 	    <input type="hidden" name="post_type" value="{{post.post_type}}">
 	    <input type="submit" name="delete_submit" class="delete-button" value="x">
-	  </form>
+	</form>
+	{% endcomment %}
         <div class="post-votes">
             <ul>
                 <li>
