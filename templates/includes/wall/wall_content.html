@@ -9,6 +9,47 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
 <script type="text/javascript" charset="utf-8">
 
+    // binds update_vote_script to the button of type type
+    // type should be either the string 'up' or the string 'down'
+    function bind_vote(type, post_id, post_type)
+    {
+        $('#' + type + '-button-' + post_id).click(function() {
+            update_vote_script(type, post_id, post_type);
+        });
+    }
+
+    // Bind the correct functions to the buttons depending on whether 
+    // the user has logged in and voted on this post before
+    $(document).ready(function() {
+        {% for post in posts %}
+            {% if user.is_authenticated %}
+/*                if ({{ user.get_profile.voted_posts.vote }} == 1)
+                {
+                    $('#up-button-{{post.id}}').css('background-color: green');
+                    bind_vote('down', {{post.id}}, {{post.post_type}});
+                }
+                else if ({{ user.get_profile.voted_posts.vote }} == 2)
+                {
+                    $('#down-button-{{post.id}}').css('background-color: red');
+                    bind_vote('up', {{post.id}}, {{post.post_type}});
+                }
+                else 
+                {
+*/                  bind_vote('up', {{post.id}}, {{post.post_type}});
+                    bind_vote('down', {{post.id}}, {{post.post_type}});
+//                }
+            {% else %}
+                $('#down-button-{{post.id}}').click(function() {
+                    alert('Log in to vote !');
+                });
+
+                $('#up-button-{{post.id}}').click(function() {
+                    alert('Log in to vote !');
+                });
+            {% endif %}
+        {% endfor %}
+    });
+
     // vote_type specifies if this was up or down vote; post_id identifies post
     function update_vote_script(vote_type, post_id, post_type)
     {
@@ -56,9 +97,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         <div class="post-votes">
             <ul>
                 <li>
-                    <button type="button" class="up-button" onClick="update_vote_script('up', {{post.id}}, {{post.post_type}})">^_^</button></li>
+                    <button type="button" class="up-button" id="up-button-{{post.id}}">^_^</button></li>
                 <li><span class="vote-score" id="vote-score-{{post.id}}">{{ post.score }}</span></li>
-                <li><button type="button" class="down-button" onClick="update_vote_script('down', {{post.id}}, {{post.post_type}})">;_;</button></li>
+                <li><button type="button" class="down-button" id="down-button-{{post.id}}">;_;</button></li>
             </ul>
         </div>
 	{% if post.event_date %}

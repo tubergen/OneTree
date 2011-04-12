@@ -135,11 +135,18 @@ class UserProfile(models.Model):
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
     memberships = models.ManyToManyField('Group', related_name='members', blank=True)
 
+    # maybe condense these into two pairs into two models with a through?
     removed_events = models.ManyToManyField('Event', blank=True)
     removed_anns = models.ManyToManyField('Announcement', blank=True)
-    
-    #other fields here
 
+    #forget this crap for now... too complicated / i'm too sleepy
+    '''
+    voted_events = models.ManyToManyField('Event', related_name='voted_user_set',
+                                          through='VoteInfo', blank=True)
+    voted_anns = models.ManyToManyField('Announcement', related_name='voted_user_set',
+                                       through='VoteInfo', blank=True)    
+    '''
+    
     def __unicode__(self):
         return "%s's profile" % self.user
 
@@ -148,7 +155,15 @@ class UserProfile(models.Model):
             profile, created = UserProfile.objects.get_or_create(user=instance)
 
     post_save.connect(create_user_profile, sender=User)
-
+'''
+# ===============================
+# VoteInfo
+# ===============================
+class VoteInfo(models.Model):
+    user_profile = models.ForeignKey('UserProfile');
+    user_profile = models.ForeignKey('UserProfile');    
+    vote = models.IntegerField()
+'''
 # ===============================
 # MEMBERSHIP
 # ===============================
