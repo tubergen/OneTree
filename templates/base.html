@@ -4,7 +4,6 @@
     <title>{% block title %}Onetree.com{% endblock %}</title>
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-
     <script type="text/javascript" src="/static/javascripts/base.js"></script>
 
     {% block head %}{% endblock %}
@@ -22,6 +21,7 @@
                 <div id="header_nav">
                     <ul>
                         {% if user.is_authenticated %}
+                            <li><a href="/newsfeed/">News</a></li>
                             <li><a href="/profile/">{{ user.username }}</a></li>
                             <li><a href="/logout/">Logout</a></li>
                             <li><a href="/group-signup/">Group Signup</a></li>
