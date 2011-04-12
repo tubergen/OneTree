@@ -103,9 +103,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             </ul>
         </div>
 	{% if post.event_date %}
-	Event: <strong><a href="/group/{{ group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br>
+	Event: <strong><a href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br>
 	Where: {{ post.event_place }}<br>
-	Time: {{ post.event_date }}
+	Time: {{ post.event_date }}<br>
+	Flags: {{ post.flags.all|join:", " }}
 	<hr>
 	{% endif %}
         <div class="post-text">{{ post.text }}</div>

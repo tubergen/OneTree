@@ -84,10 +84,18 @@ class Flag(models.Model):
     def __unicode__(self):
         return self.name;
 
+
 # ===============================
 # GROUP
 # ===============================
 class Group(models.Model):
+    #tags?
+#    TAG_CHOICES = (
+#        (u'D', u'Dance'),
+#        (u'S', u'Singing'),
+#        (u'A', u'Athletics'),
+#    )
+
     name = models.CharField(max_length=30, verbose_name="name")
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
@@ -126,6 +134,7 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.name;
+
 
 # ===============================
 # USER PROFILE
