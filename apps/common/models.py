@@ -134,6 +134,7 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User)
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
     memberships = models.ManyToManyField('Group', related_name='members', blank=True)
+    #administrations = models.ManyToManyField('Group', related_name='administers', blank=True)
 
     # maybe condense these into two pairs into two models with a through?
     removed_events = models.ManyToManyField('Event', blank=True)
