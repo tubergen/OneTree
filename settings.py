@@ -7,7 +7,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('brian', 'brian.tubergen@gmail.com'),
+    # ('brian', 'brian.tubergen@gmail.com'),
     # ('Your Name', 'your_email@domain.com'),
 )
 
@@ -17,8 +17,8 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        #'HOST': 'onetree.princeton.edu',
-        'HOST': '',
+        'HOST': 'onetree.princeton.edu',
+        #'HOST': '',
         'PORT': '',      
     }
 }
