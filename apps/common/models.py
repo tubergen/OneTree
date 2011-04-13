@@ -159,7 +159,30 @@ class UserProfileManager(models.Manager):
             sub_manager.add(group)
         else:                        # then unsubscribe the user
             sub_manager.remove(group)
+
+    '''
+    Removes the post specified by post_id from the profile's newsfeed.
+    Returns True if removal is successful. Returns False otherwise.
+    '''
+    def remove_post(self, profile, post_id, post_type):
+        err_loc = ' See remove_post in the UserProfileManager model.'
         
+        try: 
+            if post_type == PostType.EVENT:
+                post = Event.objects.get(id=post_id)
+                profile.removed_events.add(post)
+            elif post_type == PostType.ANNOUNCEMENT:
+                post = Announcement.objects.get(id=post_id)
+                profile.removed_anns.add(post)                    
+            else:
+                print 'Tried to delete non-announcement non-event.' + err_loc
+                return False
+
+            return True
+
+        except ObjectDoesNotExist:
+            print 'Error: Tried to delete non-existent object.' + err_loc
+            return False
 
 
 

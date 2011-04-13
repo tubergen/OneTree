@@ -59,6 +59,7 @@ are not completely deleted from the database.
 def remove_post(request):
     err_loc = ' See remove_post in the newsfeed views.py.'
     if request.method == 'POST':
+        # validate data
         try:
             profile = request.user.get_profile()
         except AttributeError:
@@ -73,21 +74,8 @@ def remove_post(request):
             return HttpResponse(status=400)
         
         if profile and post_id and post_type:
-            try: 
-                if post_type == PostType.EVENT:
-                    post = Event.objects.get(id=post_id)
-                    profile.removed_events.add(post)
-                elif post_type == PostType.ANNOUNCEMENT:
-                    post = Announcement.objects.get(id=post_id)
-                    profile.removed_anns.add(post)                    
-                else:
-                    print 'Tried to delete non-announcement non-event.' + err_loc
-                    return HttpResponse(status=400)
-
-                return HttpResponse()
-
-            except ObjectDoesNotExist:
-                print 'Error: Tried to delete non-existent object.' + err_loc
+            if UserProfile.objects.remove_post(profile, post_id, post_type): 
+                return HttpResponse() # upon successful remove
             
     return HttpResponse(status=400)
 
