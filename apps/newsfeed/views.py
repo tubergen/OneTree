@@ -30,19 +30,7 @@ def change_subscribe(request):
         user = request.user;
         group_id = request.GET.get("group_id")
         if group_id and user:
-            manager = user.get_profile().subscriptions;
-            
-            # check to see if user is already subscribed
-            try:
-                subscribed_group = manager.get(id=group_id)
-            except Group.DoesNotExist:
-                subscribed_group = None
-
-            group = Group.objects.get(id=group_id)
-            if subscribed_group == None: # then subscribe the user
-                manager.add(group)
-            else:                 # then unsubscribe the user
-                manager.remove(group)
+            UserProfile.objects.change_subscribe(user, group_id)
         else:
             return HttpResponse(status=400)
     return HttpResponse()

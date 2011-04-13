@@ -4,6 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 
+{% if user.is_authenticated %}
     $(document).ready(function() {
 
         {% if user_is_subscribed %}
@@ -37,11 +38,13 @@
             user_is_subscribed = !user_is_subscribed;
         });
     }
-
+{% endif %}
 
 </script>
 
-    <button type="button" id="subscribe-button">Subscribed</button>
+    {% if user.is_authenticated %}
+        <button type="button" id="subscribe-button">Subscribed</button>
+    {% endif %}
     <div id="group-name-nav">
     {% if group.parent %}
         <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>

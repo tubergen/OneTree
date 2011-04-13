@@ -135,11 +135,40 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
+# ===============================
+# USER PROFILE MANAGER
+# ===============================
+class UserProfileManager(models.Manager):
+
+    '''
+    Changes the subscription status of the specified user for the
+    specified group. If the user is already subscribed, he is
+    unsubscribed. If not subscribed, he is subscribed.
+    '''
+    def change_subscribe(self, user, group_id):
+        sub_manager = user.get_profile().subscriptions;
+        
+        # check to see if user is already subscribed
+        try:
+            subscribed_group = sub_manager.get(id=group_id)
+        except Group.DoesNotExist:
+            subscribed_group = None
+
+        group = Group.objects.get(id=group_id)
+        if subscribed_group == None: # then subscribe the user
+            sub_manager.add(group)
+        else:                        # then unsubscribe the user
+            sub_manager.remove(group)
+        
+
+
 
 # ===============================
 # USER PROFILE
 # ===============================
 class UserProfile(models.Model):
+    objects = UserProfileManager()
+    
     user = models.ForeignKey(User)
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
     memberships = models.ManyToManyField('Group', related_name='members', blank=True)
