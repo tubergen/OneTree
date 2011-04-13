@@ -32,7 +32,7 @@
         var data = {};
         data["group_id"] = {{ group.id }};
 
-        $.get(url, data, function() {
+        $.post(url, data, function() {
 
             $('#subscribe-button').css('background-color', next_background)
             user_is_subscribed = !user_is_subscribed;

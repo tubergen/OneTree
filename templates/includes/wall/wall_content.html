@@ -23,21 +23,24 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     $(document).ready(function() {
         {% for post in posts %}
             {% if user.is_authenticated %}
-/*                if ({{ user.get_profile.objects.get_vote }} == 1)
+                //var vote = {{ user.get_profile.get_vote }};
+                var vote = 2;
+                alert('vote');
+                if (vote == 1)
                 {
-                    $('#up-button-{{post.id}}').css('background-color: green');
-                    bind_vote('down', {{post.id}}, {{post.post_type}});
+                    //#$('#up-button-{{post.id}}').css('background-color: green');
+                    //bind_vote('down', {{post.id}}, {{post.post_type}});
                 }
-                else if ({{ user.get_profile.voted_posts.vote }} == 2)
+                else if (vote == 2)
                 {
-                    $('#down-button-{{post.id}}').css('background-color: red');
-                    bind_vote('up', {{post.id}}, {{post.post_type}});
+                    //$('#down-button-{{post.id}}').css('background-color: red');
+                    //bind_vote('up', {{post.id}}, {{post.post_type}});
                 }
                 else 
                 {
-*/                  bind_vote('up', {{post.id}}, {{post.post_type}});
-                    bind_vote('down', {{post.id}}, {{post.post_type}});
-//                }
+                    //bind_vote('up', {{post.id}}, {{post.post_type}});
+                    //bind_vote('down', {{post.id}}, {{post.post_type}});
+                }
             {% else %}
                 $('#down-button-{{post.id}}').click(function() {
                     alert('Log in to vote !');

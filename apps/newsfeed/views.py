@@ -26,14 +26,15 @@ def filter_newsfeed(request):
 
 @login_required
 def change_subscribe(request):
-    if request.is_ajax():
-        user = request.user;
-        group_id = request.GET.get("group_id")
-        if group_id and user:
-            UserProfile.objects.change_subscribe(user, group_id)
-        else:
-            return HttpResponse(status=400)
-    return HttpResponse()
+    if request.is_ajax() and request.method == 'POST':
+        profile = request.user.get_profile();
+        group_id = request.POST.get("group_id")
+        if group_id and profile:
+            profile.change_subscribe(group_id)
+            return HttpResponse()
+
+    return HttpResponse(status=400)
+    
 
 '''
 Looks at request. If request specifies a post should be deleted / remmoved, then
@@ -74,7 +75,7 @@ def remove_post(request):
             return HttpResponse(status=400)
         
         if profile and post_id and post_type:
-            if UserProfile.objects.remove_post(profile, post_id, post_type): 
+            if profile.remove_post(post_id, post_type): 
                 return HttpResponse() # upon successful remove
             
     return HttpResponse(status=400)

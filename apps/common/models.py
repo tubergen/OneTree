@@ -135,24 +135,43 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
+                    
 # ===============================
-# USER PROFILE MANAGER
+# USER PROFILE
 # ===============================
-'''
-These functions rely on the user object actually being valid. The caller
-ought to check to make sure the user is valid, since that is not really
-"model" logic and the caller should really be checking regardless (should
-not be relying on somebody else's implementation to validate users properly).
-'''
-class UserProfileManager(models.Manager):
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
+    memberships = models.ManyToManyField('Group', related_name='members', blank=True)
+    #administrations = models.ManyToManyField('Group', related_name='administers', blank=True)
+
+    # maybe condense these into two pairs into two models with a through?
+    removed_events = models.ManyToManyField('Event', blank=True)
+    removed_anns = models.ManyToManyField('Announcement', blank=True)
+
+    voted_events = models.ManyToManyField('Event', related_name='voted_user_set',
+                                          through='EventVote', blank=True)
+    voted_anns = models.ManyToManyField('Announcement', related_name='voted_user_set',
+                                       through='AnnVote', blank=True)    
+    
+    def __unicode__(self):
+        return "%s's profile" % self.user
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            profile, created = UserProfile.objects.get_or_create(user=instance)
+
+    post_save.connect(create_user_profile, sender=User)
 
     '''
-    Changes the subscription status of the specified user for the
+    Changes the subscription status of this profile's user for the
     specified group. If the user is already subscribed, he is
     unsubscribed. If not subscribed, he is subscribed.
     '''
-    def change_subscribe(self, user, group_id):
-        sub_manager = user.get_profile().subscriptions;
+    def change_subscribe(self, group_id):
+        sub_manager = self.subscriptions;
+
+        print "a"
         
         # check to see if user is already subscribed
         try:
@@ -167,19 +186,19 @@ class UserProfileManager(models.Manager):
             sub_manager.remove(group)
 
     '''
-    Removes the post specified by post_id from the profile's newsfeed.
+    Removes the post specified by post_id from this profile's newsfeed.
     Returns True if removal is successful. Returns False otherwise.
     '''
-    def remove_post(self, profile, post_id, post_type):
-        err_loc = ' See remove_post in the UserProfileManager model.'
+    def remove_post(self, post_id, post_type):
+        err_loc = ' See remove_post in the UserProfile model.'
         
         try: 
             if post_type == PostType.EVENT:
                 post = Event.objects.get(id=post_id)
-                profile.removed_events.add(post)
+                self.removed_events.add(post)
             elif post_type == PostType.ANNOUNCEMENT:
                 post = Announcement.objects.get(id=post_id)
-                profile.removed_anns.add(post)                    
+                self.removed_anns.add(post)                    
             else:
                 print 'Tried to delete non-announcement non-event.' + err_loc
                 return False
@@ -190,8 +209,9 @@ class UserProfileManager(models.Manager):
             print 'Error: Tried to delete non-existent object.' + err_loc
             return False
 
+
     def change_vote(self, user, post_id, post_type, vote_type):
-        err_loc = ' See change_vote in the UserProfileManager model.'
+        err_loc = ' See change_vote in the UserProfile model.'
 
         # testing crap, can ignore
         '''
@@ -240,7 +260,7 @@ class UserProfileManager(models.Manager):
     down if it was down, and None if the user hasn't voted before.
     '''
     def get_vote(self, user, post_id, post_type):
-        err_loc = ' See get_vote in the UserProfileManager model.'        
+        err_loc = ' See get_vote in the UserProfile model.'        
         if post_type == PostType.EVENT:
             try:
                 return profile.annvote_set.get(user_profile=profile, ann=ann).vote
@@ -254,35 +274,7 @@ class UserProfileManager(models.Manager):
         else:
             print 'Cannot vote on non-announcement non-event.' + err_loc
             return None
-                    
-# ===============================
-# USER PROFILE
-# ===============================
-class UserProfile(models.Model):
-    objects = UserProfileManager()
-    
-    user = models.ForeignKey(User)
-    subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
-    memberships = models.ManyToManyField('Group', related_name='members', blank=True)
-    #administrations = models.ManyToManyField('Group', related_name='administers', blank=True)
 
-    # maybe condense these into two pairs into two models with a through?
-    removed_events = models.ManyToManyField('Event', blank=True)
-    removed_anns = models.ManyToManyField('Announcement', blank=True)
-
-    voted_events = models.ManyToManyField('Event', related_name='voted_user_set',
-                                          through='EventVote', blank=True)
-    voted_anns = models.ManyToManyField('Announcement', related_name='voted_user_set',
-                                       through='AnnVote', blank=True)    
-    
-    def __unicode__(self):
-        return "%s's profile" % self.user
-
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            profile, created = UserProfile.objects.get_or_create(user=instance)
-
-    post_save.connect(create_user_profile, sender=User)
 
 # ===============================
 # EventVote
