@@ -4,3 +4,8 @@ class PostType:
     POST = 0
     EVENT = 1
     ANNOUNCEMENT = 2
+
+class VoteType:
+    NONE = 0
+    UP = 1
+    DOWN = 2

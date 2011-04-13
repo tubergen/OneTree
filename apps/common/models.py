@@ -1,7 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 from OneTree.apps.helpers.rank_posts import calc_hot_score
-from OneTree.apps.helpers.enums import PostType
+from OneTree.apps.helpers.enums import *
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -190,12 +190,70 @@ class UserProfileManager(models.Manager):
             print 'Error: Tried to delete non-existent object.' + err_loc
             return False
 
-    def change_vote(self, user):
+    def change_vote(self, user, post_id, post_type, vote_type):
+        err_loc = ' See change_vote in the UserProfileManager model.'
+
+        # testing crap, can ignore
+        '''
         ann = Announcement()
+        ann.text="yoyo"
+        ann.save()
+        print ann.id
+        #av = AnnVote.objects.create(ann=ann, user_profile=user.get_profile(), vote=1)
+        #av.save()
         #user.get_profile().voted_anns.add(ann)
         #user.get_profile().voted_anns.save()
-        #print user.get_profile().voted_anns.get(id=0).vote
-    
+        try:
+            print user.get_profile().annvote_set.get(user_profile=user.get_profile(), ann=ann).vote
+        except AnnVote.DoesNotExist:
+            pass
+        '''
+        
+        profile = user.get_profile()
+        if post_type == PostType.EVENT:
+            try:
+                post_vote = profile.annvote_set.get(user_profile=profile, ann=ann)
+            except EventVote.DoesNotExist:                
+                post_vote = AnnVote.objects.create(ann=ann, user_profile=profile,
+                                                   vote=vote_type)
+                post_vote.save()
+                return True
+        elif post_type == PostType.ANNOUNCEMENT:
+            try:
+                post_vote = profile.annvote_set.get(user_profile=profile, ann=ann)
+            except AnnVote.DoesNotExist:                
+                post_vote = AnnVote.objects.create(ann=ann, user_profile=profile,
+                                                   vote=vote_type)
+                post_vote.save()
+                return True
+        else:
+            print 'Tried to vote on non-announcement non-event.' + err_loc
+            return False
+
+        # update the actual vote
+        post_vote.vote = vote_type
+        post_vote.save()
+        return True
+
+    '''
+    Returns 'up' if the user's most recent vote on this post was up,
+    down if it was down, and None if the user hasn't voted before.
+    '''
+    def get_vote(self, user, post_id, post_type):
+        err_loc = ' See get_vote in the UserProfileManager model.'        
+        if post_type == PostType.EVENT:
+            try:
+                return profile.annvote_set.get(user_profile=profile, ann=ann).vote
+            except EventVote.DoesNotExist:                
+                return None
+        elif post_type == PostType.ANNOUNCEMENT:
+            try:
+                return profile.annvote_set.get(user_profile=profile, ann=ann).vote
+            except AnnVote.DoesNotExist:                
+                return None
+        else:
+            print 'Cannot vote on non-announcement non-event.' + err_loc
+            return None
                     
 # ===============================
 # USER PROFILE
@@ -233,7 +291,7 @@ class EventVote(models.Model):
     user_profile = models.ForeignKey('UserProfile');
     event = models.ForeignKey('Event');
     # 0 => has not voted, 1 => up voted, 2 => down voted
-    vote = models.IntegerField(blank=True, null=True)
+    vote = models.IntegerField()
 
 # ===============================
 # AnnVote
@@ -242,7 +300,7 @@ class AnnVote(models.Model):
     user_profile = models.ForeignKey('UserProfile');
     ann = models.ForeignKey('Announcement');
     # 0 => has not voted, 1 => up voted, 2 => down voted
-    vote = models.IntegerField(blank=True, null=True)
+    vote = models.IntegerField()
 
 # ===============================
 # MEMBERSHIP
