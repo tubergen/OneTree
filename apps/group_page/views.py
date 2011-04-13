@@ -100,6 +100,9 @@ def delete_post(request):
     return HttpResponse(status=400)
             
 def group_page(request, group_url):
+
+    #print UserProfile.objects.change_vote(request.user)
+
     errormsg = None
 
     # check that the url corresponds to a valid group

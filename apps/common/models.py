@@ -138,6 +138,12 @@ class Group(models.Model):
 # ===============================
 # USER PROFILE MANAGER
 # ===============================
+'''
+These functions rely on the user object actually being valid. The caller
+ought to check to make sure the user is valid, since that is not really
+"model" logic and the caller should really be checking regardless (should
+not be relying on somebody else's implementation to validate users properly).
+'''
 class UserProfileManager(models.Manager):
 
     '''
@@ -184,8 +190,13 @@ class UserProfileManager(models.Manager):
             print 'Error: Tried to delete non-existent object.' + err_loc
             return False
 
-
-
+    def change_vote(self, user):
+        ann = Announcement()
+        #user.get_profile().voted_anns.add(ann)
+        #user.get_profile().voted_anns.save()
+        #print user.get_profile().voted_anns.get(id=0).vote
+    
+                    
 # ===============================
 # USER PROFILE
 # ===============================
@@ -201,13 +212,10 @@ class UserProfile(models.Model):
     removed_events = models.ManyToManyField('Event', blank=True)
     removed_anns = models.ManyToManyField('Announcement', blank=True)
 
-    #forget this crap for now... too complicated / i'm too sleepy
-    '''
     voted_events = models.ManyToManyField('Event', related_name='voted_user_set',
-                                          through='VoteInfo', blank=True)
+                                          through='EventVote', blank=True)
     voted_anns = models.ManyToManyField('Announcement', related_name='voted_user_set',
-                                       through='VoteInfo', blank=True)    
-    '''
+                                       through='AnnVote', blank=True)    
     
     def __unicode__(self):
         return "%s's profile" % self.user
@@ -217,15 +225,25 @@ class UserProfile(models.Model):
             profile, created = UserProfile.objects.get_or_create(user=instance)
 
     post_save.connect(create_user_profile, sender=User)
-'''
+
 # ===============================
-# VoteInfo
+# EventVote
 # ===============================
-class VoteInfo(models.Model):
+class EventVote(models.Model):
     user_profile = models.ForeignKey('UserProfile');
-    user_profile = models.ForeignKey('UserProfile');    
-    vote = models.IntegerField()
-'''
+    event = models.ForeignKey('Event');
+    # 0 => has not voted, 1 => up voted, 2 => down voted
+    vote = models.IntegerField(blank=True, null=True)
+
+# ===============================
+# AnnVote
+# ===============================
+class AnnVote(models.Model):
+    user_profile = models.ForeignKey('UserProfile');
+    ann = models.ForeignKey('Announcement');
+    # 0 => has not voted, 1 => up voted, 2 => down voted
+    vote = models.IntegerField(blank=True, null=True)
+
 # ===============================
 # MEMBERSHIP
 # ===============================
