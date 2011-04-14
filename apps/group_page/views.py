@@ -157,9 +157,11 @@ def group_page(request, group_url):
     if request.user in groupadmins:
         is_admin = True
         submit_off = False
+        print "submit on"
     else:
         is_admin = False
         submit_off = True
+        print "submit off"
 
 
     return render_to_response('group/base_group.html',
