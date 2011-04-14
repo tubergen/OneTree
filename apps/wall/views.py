@@ -3,10 +3,25 @@
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.enums import PostType, VoteType
 from OneTree.apps.helpers.filter import Filter
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+
+@login_required
+def post_comment(request):
+    # security: sanitize input?
+    post_id = request.POST.get("post_id")
+    redirect = request.POST.get("next")
+    comment_text = request.POST.get("comment_text")
+    if post_id and comment_text and request.user.is_authenticated():
+        post = Announcement.objects.get(id=post_id)
+        if post:
+            new_comment = Comment(text = comment_text,
+                    announcement = post, author = request.user)
+            new_comment.save()
+
+    return HttpResponseRedirect(redirect)
 
 def group(request):
     pass

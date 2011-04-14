@@ -1,6 +1,3 @@
-#from django.contrib import admin
-#admin.autodiscover()
-
 # Django settings for onetree project.
 
 DEBUG = True
@@ -95,6 +92,7 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
      "django.contrib.auth.context_processors.auth",
+     'django.core.context_processors.request',
     
 # the internet said to include the following to get csrf working, but it
 # gave me an error

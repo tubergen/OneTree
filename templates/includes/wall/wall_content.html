@@ -113,6 +113,22 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     }
 </script>
 
+
+<script type="text/javascript" charset="utf-8">
+// this code is for posting of comments
+
+// don't hide comments
+    function toggle_comment_reply() {
+        this
+    }
+
+// make it hidden at first
+    $(document).ready(function() { 
+        $('#comment-reply').hide();
+        clear_fields(); /* to avoid strange behavior with browser back button */
+      });
+</script>
+
 {% for post in posts %}
 <div class="post-box" id="post-box-{{post.id}}">
     <div class="post-group">
@@ -156,8 +172,19 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <span class="comment-content">{{ comment.text }}</span>
         </div>
         {% endfor %}
+        {% if user.is_authenticated %}
         {# now allow for posting after all comments are displayed #}
-            {% include "includes/forms/forms.html" %}
+        <form name="comment_post_{{ post.id }}" class="comment-post" action="/post/comment/" method="post">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}"></input>
+            <input type="hidden" name="post_id" value="{{ post.id }}"></input>
+            <input type="hidden" name="comment_author" value="{{ user.username }}"></input>
+            <label for="comment_text_id_{{ post.id }}" class="comment-label"></label>
+            <textarea id="comment_text_id_{{ post.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
+            <input type="submit" value="Post!"></input>
+        </form>
+        {% else %}
+        <span style="font-size: small;">(login to post a comment)</span>
+        {% endif %}
     {# DO IT #}
 </div>
 {% endfor %}
