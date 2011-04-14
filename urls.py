@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name="activator"),
 
     (r'^accounts/', include('OneTree.registration.backends.default.urls')),
+    (r'^post/comment/$', post_comment),
 
 )
 

@@ -101,11 +101,17 @@ class Event(Post):
 # ===============================
 # COMMENT
 # ===============================
-# We should only associate a comment with either an event or an announcement
-# Not both
 class Comment(Post):
-    announcement = models.ForeignKey('Announcement')
-    event = models.ForeignKey('Event')
+    announcement = models.ForeignKey('Announcement', blank=True, null=True)
+    event = models.ForeignKey('Event', blank=True, null=True)
+    parent_comment = models.ForeignKey('Comment', blank=True, null=True)
+    # only one of these three should be true... this is a stupid way to do it.
+    # can we somehow access any Posts? maybe we really should just combine them
+    # all
+    
+    level = models.IntegerField()
+
+    post_type = PostType.COMMENT
 
 class Flag(models.Model):
     name = models.CharField(max_length=30)
@@ -120,12 +126,6 @@ class Flag(models.Model):
 # GROUP
 # ===============================
 class Group(models.Model):
-    #tags?
-#    TAG_CHOICES = (
-#        (u'D', u'Dance'),
-#        (u'S', u'Singing'),
-#        (u'A', u'Athletics'),
-#    )
 
     name = models.CharField(max_length=30, verbose_name="name", unique=True)
     inactive_parent = models.ForeignKey('Group', related_name="inactive_children",
@@ -146,6 +146,8 @@ class Group(models.Model):
     #email_subscribers = models.ManyToManyField('User')
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
+    # bridge b/t group and tags?
+    keywords = models.CharField(max_length=30, blank=True, null=True)
     groupinfo = models.OneToOneField('GroupInfo', blank=True, null=True)
     url = models.SlugField(max_length=30, 
                            unique=True, 
@@ -403,7 +405,10 @@ class Membership(models.Model):
 # TAG 
 # ===============================
 class Tag(models.Model):
-    tag = models.CharField(max_length=30)
+    tag = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.tag
 
 # ===============================
 # GROUPINFO

@@ -113,6 +113,23 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     }
 </script>
 
+
+<script type="text/javascript" charset="utf-8">
+// this code is for posting of comments
+
+// don't hide comments
+    function show_reply_box(id) {
+        $('#'+id).show();
+    }
+
+// make it hidden at first
+    $(document).ready(function() { 
+        $('.comment-post').hide();
+        $('.comment-level-0').show();
+        clear_fields(); /* to avoid strange behavior with browser back button */
+      });
+</script>
+
 {% for post in posts %}
 <div class="post-box" id="post-box-{{post.id}}">
     <div class="post-group">
@@ -121,7 +138,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {% else %}
             <span class="post-by-same-group"></span>
         {% endifnotequal %}
-        <span class="post-group-name">{{ post.origin_group }}</div>
+        <span class="post-group-name"><a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a></div>
     <div class="post-content">
         <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})">x</button>
 	{% comment %}
@@ -149,5 +166,46 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 	{% endif %}
         <div class="post-text">{{ post.text }}</div>
     </div>
+
+    {# CHANGE THIS JORGE. CHANGE IT!!!! #}
+        {% if user.is_authenticated %}
+        {# now allow for posting of comment #}
+        <form name="comment_post_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}"></input>
+            <input type="hidden" name="post_id" value="{{ post.id }}"></input>
+            <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
+            <label for="comment_text_id_{{ post.id }}" class="comment-label"></label>
+            <textarea id="comment_text_id_{{ post.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
+            <input type="submit" value="Post!"></input>
+        </form>
+        {% else %}
+        <span style="font-size: small;">(login to post a comment)</span>
+        {% endif %}
+
+        {% for comment in post.comment_set.all %}
+        <div class="comment comment-level-{{ comment.level }} {% if forloop.first %}comment-0-first{% endif %}">
+            <span class="comment-author">{{ comment.author }}</span>
+            <span class="comment-content">{{ comment.text }}</span>
+            <div style="float: right; border: 1px solid; padding: .2em; background: #FFFFFF;">
+                <a style="cursor: pointer;"onclick="show_reply_box('comment_post_id_{{ comment.id }}')">Reply!</a>
+            </div>
+        </div>
+        {# posting of a reply to a comment #}
+        <form name="comment_post_{{ comment.id }}" id="comment_post_id_{{ comment.id }}" class="comment-post comment-level-1" action="/post/comment/" method="post">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}"></input>
+            <input type="hidden" name="post_id" value="{{ comment.id }}"></input>
+            <input type="hidden" name="post_type" value="{{ comment.post_type }}"></input>
+            <label for="comment_text_id_{{ comment.id }}" class="comment-label"></label>
+            <textarea id="comment_text_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
+            <input type="submit" value="Post!"></input>
+        </form>
+        {% for comment_child in comment.comment_set.all %}
+        <div class="comment comment-level-{{ comment_child.level }} {% if forloop.first %}comment-1-first{% endif %}">
+                <span class="comment-author">{{ comment_child.author }}</span>
+                <span class="comment-content">{{ comment_child.text }}</span>
+            </div>
+        {% endfor %}
+        {% endfor %}
+    {# DO IT #}
 </div>
 {% endfor %}

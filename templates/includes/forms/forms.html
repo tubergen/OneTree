@@ -3,7 +3,15 @@
 {% else %}<div class="form-field">
 {% endif %}
 {% if field.label != "Onetree.princeton.edu/group/" %} 
-{{ field.label_tag }}: {{ field }}
+
+{# testing #}
+{% if field.label == "Keywords" %}
+<p>Type in keywords associated with your group and/or select keyword(s) from the Tags box below. Hold Ctrl to select multiple keywords. </p>
+{{ field.label_tag }}:{{ field }}
+{% else %}
+{{ field.label_tag }}: {{ field }} {# keep intact #}
+{% endif %} {# end test #}
+
 {% else %}
 
 {{ field.label_tag|lower }} {{ field }}

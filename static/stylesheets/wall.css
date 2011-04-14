@@ -99,9 +99,57 @@
     height: 1.3em;
 }
 
+.comment, .comment-post {
+    background: #F3F3F3;
+    border: 1px solid;
+    margin: 0;
+    margin-top: -1px;
+    text-align: left;
+    padding: .5em;
+    margin-left: 2.5em;
+    overflow: hidden;
+}
+
+.comment-level-1 {
+    margin-left:5em;
+    background: #FBFBFB;
+}
+
+.comment-1-first, .comment-0-first {
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-author:after {
+    content: ":";
+}
+
+.comment-post {
+    padding-top: .8em;
+    text-align: right;
+    overflow: hidden;
+    padding-right: 2em;
+}
+
+.comment-label {
+    font-size: small;
+    font-style: italic;
+    display: block;
+    padding-left: 2em;
+}
+
+.comment-post textarea {
+    float: left;
+}
+
+.comment-post input {
+}
+
 .delete-button:hover/*, .up-button:hover, .down-button:hover*/ {
-   /* background-color: #FFC600;    orange */
-   background-color: #e14adf;
+    /* background-color: #FFC600;    orange */
+    background-color: #e14adf;
 }
 
 .up-button:hover, .down-button:hover {

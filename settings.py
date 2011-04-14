@@ -1,6 +1,3 @@
-#from django.contrib import admin
-#admin.autodiscover()
-
 # Django settings for onetree project.
 
 DEBUG = True
@@ -17,7 +14,7 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': '',
+        'HOST': 'onetree.princeton.edu',
         #'HOST': '',
         'PORT': '',      
     }
@@ -95,6 +92,7 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
      "django.contrib.auth.context_processors.auth",
+     'django.core.context_processors.request',
     
 # the internet said to include the following to get csrf working, but it
 # gave me an error
@@ -130,4 +128,5 @@ AUTH_PROFILE_MODULE = 'common.UserProfile'
 
 # default login / logout urls
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/newsfeed/'
 LOGOUT_URL = '/logout/'

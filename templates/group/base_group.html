@@ -57,5 +57,16 @@
         {% endfor %}
         </ul>
     {% endif %}
+	
+	{# testing tags #}
+	<div class="grouptags">
+	  {% if group.tags %}
+	  <strong>Tags: </strong>
+	  {% for tag in group.tags.all %}
+	  {{ tag.tag }} 
+	  {% endfor %}
+	  {% endif %}
+	</div>
+	
     </div>    
 {% endblock %}
