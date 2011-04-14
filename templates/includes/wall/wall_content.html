@@ -9,11 +9,19 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
 <script type="text/javascript" charset="utf-8">
 
+    // unbinds click() on the button specified by function params
+    // type should be either the string 'up' or the string 'down'
+    // NOTE: this function goes unused and is untested
+    function bind_vote(type, post_id, post_type)
+    {
+        $('#' + type + '-button-' + post_type + '-' + post_id).click('');
+    }
+
     // binds update_vote_script to the button of type type
     // type should be either the string 'up' or the string 'down'
     function bind_vote(type, post_id, post_type)
     {
-        $('#' + type + '-button-' + post_id).click(function() {
+        $('#' + type + '-button-' + post_type + '-' + post_id).click(function() {
             update_vote_script(type, post_id, post_type);
         });
     }
@@ -21,49 +29,76 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     // Bind the correct functions to the buttons depending on whether 
     // the user has logged in and voted on this post before
     $(document).ready(function() {
-        {% for post in posts %}
-            {% if user.is_authenticated %}
-                //var vote = {{ user.get_profile.get_vote }};
-                var vote = 2;
-                alert('vote');
+        {% if user.is_authenticated %}
+            // make all posts' voting active
+            {% for post in posts %}
+                bind_vote('up', {{post.id}}, {{post.post_type}});
+                bind_vote('down', {{post.id}}, {{post.post_type}});
+            {% endfor %}
+
+            // retroactively remove voting from some of them
+            {% for post_vote in voted_post_set %}
+                var vote = {{ post_vote.vote }};
+                var post_id = {{ post_vote.post.id }};
+                var post_type = {{post_vote.post.post_type}};
+
                 if (vote == 1)
                 {
-                    //#$('#up-button-{{post.id}}').css('background-color: green');
-                    //bind_vote('down', {{post.id}}, {{post.post_type}});
+                    $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
                 }
                 else if (vote == 2)
                 {
-                    //$('#down-button-{{post.id}}').css('background-color: red');
-                    //bind_vote('up', {{post.id}}, {{post.post_type}});
+                    $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
                 }
                 else 
                 {
-                    //bind_vote('up', {{post.id}}, {{post.post_type}});
-                    //bind_vote('down', {{post.id}}, {{post.post_type}});
                 }
-            {% else %}
-                $('#down-button-{{post.id}}').click(function() {
+            {% endfor %}
+        {% else %}
+            {% for post in posts %}
+                $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
                     alert('Log in to vote !');
                 });
 
-                $('#up-button-{{post.id}}').click(function() {
+                $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
                     alert('Log in to vote !');
                 });
-            {% endif %}
-        {% endfor %}
+    
+            {% endfor %}
+        {% endif %}
     });
 
     // vote_type specifies if this was up or down vote; post_id identifies post
     function update_vote_script(vote_type, post_id, post_type)
     {
-        var nextScore = parseInt($('#vote-score-'+post_id).html());
-        if (vote_type == 'up')
-            nextScore += 1;
-        else
-            nextScore -= 1;
+        var score_id = '#vote-score-' + post_type + '-' + post_id;
+        var old_score = parseInt($(score_id).html());
+
         var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
-        $.get("/_apps/wall/views-update_vote/", data, function() {
-            $('#vote-score-'+post_id).html(nextScore);
+
+        $.post("/_apps/wall/views-update_vote/", data, function(data) {
+            var change = parseInt(data)
+            $(score_id).html(old_score + change);
+
+            var up_but = '#up-button-' + post_type + '-' + post_id;
+            var down_but = '#down-button-' + post_type + '-' + post_id;
+    
+            if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
+            {
+                $(up_but).addClass('up-selected')
+                $(down_but).removeClass('down-selected')
+            }
+            else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
+            {
+                $(up_but).removeClass('up-selected')
+                $(down_but).addClass('down-selected')
+            }
+            else
+            {
+                $(up_but).removeClass('up-selected')
+                $(down_but).removeClass('down-selected')
+            }
+
         });
     }
 
@@ -100,9 +135,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         <div class="post-votes">
             <ul>
                 <li>
-                    <button type="button" class="up-button" id="up-button-{{post.id}}">^_^</button></li>
-                <li><span class="vote-score" id="vote-score-{{post.id}}">{{ post.score }}</span></li>
-                <li><button type="button" class="down-button" id="down-button-{{post.id}}">;_;</button></li>
+                    <button type="button" class="up-button" id="up-button-{{post.post_type}}-{{post.id}}">^_^</button></li>
+                <li><span class="vote-score" id="vote-score-{{post.post_type}}-{{post.id}}">{{ post.score }}</span></li>
+                <li><button type="button" class="down-button" id="down-button-{{post.post_type}}-{{post.id}}">;_;</button></li>
             </ul>
         </div>
 	{% if post.event_date %}

@@ -99,9 +99,13 @@
     height: 1.3em;
 }
 
-.delete-button:hover, .up-button:hover, .down-button:hover {
+.delete-button:hover/*, .up-button:hover, .down-button:hover*/ {
    /* background-color: #FFC600;    orange */
    background-color: #e14adf;
+}
+
+.up-button:hover, .down-button:hover {
+    color: #FFC600;
 }
 
 #wall-submit {
@@ -115,6 +119,14 @@
 
 .selected {
     background-color: #FFC600;
+}
+
+.up-selected {
+    background-color: green;
+}
+
+.down-selected {
+    background-color: red;
 }
 
 #subscribe-button {

@@ -94,10 +94,13 @@ def newsfeed(request):
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
+    voted_post_set = request.user.get_profile().get_voted_posts();
+
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errormsg,
                               'submit_off': True,
+                              'voted_post_set': voted_post_set,
                               'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',
                               'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},

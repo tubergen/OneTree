@@ -1,11 +1,12 @@
+from OneTree.apps.helpers.rank_posts import calc_hot_score
+from OneTree.apps.helpers.enums import PostType, VoteType
 from django.db import models
 from django.forms import ModelForm
-from OneTree.apps.helpers.rank_posts import calc_hot_score
-from OneTree.apps.helpers.enums import *
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 # from django import forms # for experimentation
+from itertools import chain
 
 '''
 I temporarily allowed some of the following fields to be blank. We should
@@ -48,6 +49,32 @@ class Post(models.Model):
     def hotscore(self):
         return calc_hot_score(self)
 
+    '''
+    Changes this post's upvote or downvote score by amount.
+    Amount must be either 1 or -1 for function to have an effect.
+    '''
+    def update_vote(self, vote_type, amount):
+        err_loc = ' Error occured at update_vote() in model Post.'
+    
+        if amount == None or amount == 0:
+            return
+
+        if amount != -1 and amount != 1:
+            print 'Error: amount not -1 or 1.' + err_loc
+        if vote_type == VoteType.UP:
+            if self.upvotes == None:
+                self.upvotes = amount
+            else:
+                self.upvotes += amount
+        elif vote_type == VoteType.DOWN:
+            if self.downvotes == None:
+                self.downvotes = amount
+            else:
+                self.downvotes += amount
+        else:
+            print 'Error: invalid vote type.' + err_loc
+        self.save()
+   
     def __unicode__(self):
         return self.text # temporary since other fields can be blank
         #return "Post by" + self.author + "on" + self.date;
@@ -135,7 +162,6 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-                    
 # ===============================
 # USER PROFILE
 # ===============================
@@ -149,9 +175,9 @@ class UserProfile(models.Model):
     removed_events = models.ManyToManyField('Event', blank=True)
     removed_anns = models.ManyToManyField('Announcement', blank=True)
 
-    voted_events = models.ManyToManyField('Event', related_name='voted_user_set',
+    voted_events = models.ManyToManyField('Event', related_name='voted_event_user_set',
                                           through='EventVote', blank=True)
-    voted_anns = models.ManyToManyField('Announcement', related_name='voted_user_set',
+    voted_anns = models.ManyToManyField('Announcement', related_name='voted_ann_user_set',
                                        through='AnnVote', blank=True)    
     
     def __unicode__(self):
@@ -210,65 +236,130 @@ class UserProfile(models.Model):
             return False
 
 
-    def change_vote(self, user, post_id, post_type, vote_type):
+    '''
+    Changes the profile's vote for the post specified based on a click of
+    type vote_type (ie: up or down), taking into account the current state.
+    
+    Creates the [PostType]Vote object if it doesn't already exist.
+
+    Returns a tuple (up_score_change, down_score_change), which indicates to
+    the caller how these scores ought to change.
+    
+    Returns None, None if there's an error.
+    '''
+    def change_vote(self, post_id, post_type, vote_type):
         err_loc = ' See change_vote in the UserProfile model.'
 
-        # testing crap, can ignore
-        '''
-        ann = Announcement()
-        ann.text="yoyo"
-        ann.save()
-        print ann.id
-        #av = AnnVote.objects.create(ann=ann, user_profile=user.get_profile(), vote=1)
-        #av.save()
-        #user.get_profile().voted_anns.add(ann)
-        #user.get_profile().voted_anns.save()
-        try:
-            print user.get_profile().annvote_set.get(user_profile=user.get_profile(), ann=ann).vote
-        except AnnVote.DoesNotExist:
-            pass
-        '''
-        
-        profile = user.get_profile()
+        print post_type
+
+        # get the vote, being careful to make sure the [PostType]Vote object exists
         if post_type == PostType.EVENT:
+            this_event = Event.objects.get(id=post_id)
             try:
-                post_vote = profile.annvote_set.get(user_profile=profile, ann=ann)
-            except EventVote.DoesNotExist:                
-                post_vote = AnnVote.objects.create(ann=ann, user_profile=profile,
-                                                   vote=vote_type)
-                post_vote.save()
-                return True
+                post_vote = self.eventvote_set.get(user_profile=self, post=this_event)
+                if post_vote.vote != VoteType.NONE:
+                    already_voted = True
+                else:
+                    already_voted = False
+            except EventVote.DoesNotExist:
+                post_vote = EventVote.objects.create(user_profile=self, post=this_event,
+                                                     vote=vote_type)
+                already_voted = False
         elif post_type == PostType.ANNOUNCEMENT:
+            this_ann = Announcement.objects.get(id=post_id)
             try:
-                post_vote = profile.annvote_set.get(user_profile=profile, ann=ann)
-            except AnnVote.DoesNotExist:                
-                post_vote = AnnVote.objects.create(ann=ann, user_profile=profile,
+                post_vote = self.annvote_set.get(user_profile=self, post=this_ann)
+                if post_vote.vote != VoteType.NONE:
+                    already_voted = True
+                else:
+                    already_voted = False
+            except AnnVote.DoesNotExist:
+                post_vote = AnnVote.objects.create(user_profile=self, post=this_ann, 
                                                    vote=vote_type)
-                post_vote.save()
-                return True
+                already_voted = False
         else:
             print 'Tried to vote on non-announcement non-event.' + err_loc
-            return False
+            return None, None
 
-        # update the actual vote
+        # first check if this is an "unselect vote" click
+        if post_vote.vote == vote_type:
+            post_vote.vote = VoteType.NONE # no vote is selected
+            post_vote.save()
+            if vote_type == VoteType.UP:
+                return (-1, 0)
+            elif vote_type == VoteType.DOWN:
+                return (0, -1)
+            else:
+                print 'Invalid Vote Type.' + err_loc
+                return None, None
+
+       
+        # it's not an "unselect" click, so update the vote and figure out the
+        # the return value
+
+        # not an unselect, so update the actual vote
         post_vote.vote = vote_type
         post_vote.save()
-        return True
+
+        # figure out the return value
+        if vote_type == VoteType.UP:
+            if already_voted == True:
+                return (1, -1)
+            else:
+                return (1, 0)
+        if vote_type == VoteType.DOWN:
+            if already_voted == True:
+                return (-1, 1)
+            else:
+                return (0, 1)
 
     '''
-    Returns 'up' if the user's most recent vote on this post was up,
-    down if it was down, and None if the user hasn't voted before.
+    Returns the set of voted_events chained with the list of voted announcements
+    For efficiency, we may ultimately want to only return the first X members
+    of these sets, which will be the ones displayed on the page.
     '''
-    def get_vote(self, user, post_id, post_type):
+    def get_voted_posts(self, group=None):
+        if group:
+            announcements = group.announcements.all()
+            events = group.events.all()
+            relevant_events = self.eventvote_set.filter(post__in=events)
+            relevant_anns = self.annvote_set.filter(post__in=announcements)
+            return list(chain(relevant_anns, relevant_events));
+        else:
+            # not sure if list() is necessary
+            return list(chain(self.annvote_set.all(), self.eventvote_set.all()));
+
+        '''
+        
+            announcements = group.announcements.filter(annvote__vote__in=valid_votes)
+            events = group.events.filter(eventvote__vote__in=valid_votes)
+            a = list(chain(announcements, events))
+            print a
+            return a
+        else:
+            #announcements = self.subscriptions.filter(membership__vote__in=valid_votes)
+            #events = self.subscriptions.filter(membership__vote__in=valid_votes)
+
+            # not sure if list() is necessary
+            #return list(chain(announcements, events))
+            pass
+        '''
+
+    '''
+    Returns the  user's last vote, or None if the user hasn't voted before.
+    Nothing calls this method as of 4/13/10. It's untested.
+    '''
+    def get_vote(self, post_id, post_type):
+        print 'here'
         err_loc = ' See get_vote in the UserProfile model.'        
         if post_type == PostType.EVENT:
             try:
-                return profile.annvote_set.get(user_profile=profile, ann=ann).vote
+                return self.eventvote_set.get(user_profile=self, post=ann).vote
             except EventVote.DoesNotExist:                
                 return None
         elif post_type == PostType.ANNOUNCEMENT:
             try:
-                return profile.annvote_set.get(user_profile=profile, ann=ann).vote
+                return self.annvote_set.get(user_profile=self, post=ann).vote
             except AnnVote.DoesNotExist:                
                 return None
         else:
@@ -281,7 +372,7 @@ class UserProfile(models.Model):
 # ===============================
 class EventVote(models.Model):
     user_profile = models.ForeignKey('UserProfile');
-    event = models.ForeignKey('Event');
+    post = models.ForeignKey('Event');
     # 0 => has not voted, 1 => up voted, 2 => down voted
     vote = models.IntegerField()
 
@@ -290,7 +381,7 @@ class EventVote(models.Model):
 # ===============================
 class AnnVote(models.Model):
     user_profile = models.ForeignKey('UserProfile');
-    ann = models.ForeignKey('Announcement');
+    post = models.ForeignKey('Announcement');
     # 0 => has not voted, 1 => up voted, 2 => down voted
     vote = models.IntegerField()
 

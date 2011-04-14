@@ -120,12 +120,21 @@ def group_page(request, group_url):
             print errormsg
 
     # get user's subscription status to this group
+    #    Note: I deliberately do not catch Profile.DoesNotExist here,
+    #    since all logged in users should have a profile
     try:
         request.user.get_profile().subscriptions.get(id=group.id)
         user_is_subscribed = True
     except (Group.DoesNotExist, AttributeError): 
         # Note: attribute error occurs when user is AnonymousUser
         user_is_subscribed = False
+
+    # get user's list of voted posts
+    try:
+        voted_post_set = request.user.get_profile().get_voted_posts(group)
+    except (AttributeError):
+        # Note: attribute error occurs when user is AnonymousUser
+        voted_post_set = None
 
     children = group.child_set.all()
     posts = Filter().get_posts(group) # runs posts through an empty filter
@@ -140,7 +149,8 @@ def group_page(request, group_url):
                               'subscribe_view_url':'/_apps/newsfeed/views-change_subscribe/',
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
-                              'delete_post_view_url': '/_apps/group_page/views-delete_post/',},                              
+                              'delete_post_view_url': '/_apps/group_page/views-delete_post/',
+                               'voted_post_set': voted_post_set,},
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):

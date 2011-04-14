@@ -1,21 +1,24 @@
 # Create your views here.
 
 from OneTree.apps.common.models import *
-from OneTree.apps.helpers.enums import PostType
+from OneTree.apps.helpers.enums import PostType, VoteType
 from OneTree.apps.helpers.filter import Filter
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 
 def group(request):
     pass
 
+@login_required
 def update_vote(request):
-    if request.is_ajax():
-        post_id = request.GET.get("post_id")
-        vote_type = request.GET.get("vote_type")
-        post_type = int(request.GET.get("post_type"))
-        if post_id and vote_type and post_type:
+    if request.is_ajax() and request.method == 'POST':
+        post_id = request.POST.get("post_id")
+        vote_type = request.POST.get("vote_type")
+        post_type = int(request.POST.get("post_type"))
+        profile = request.user.get_profile()
+        if post_id and vote_type and post_type and profile:
             if post_type == PostType.ANNOUNCEMENT:
                 post = Announcement.objects.get(id=post_id)
             elif post_type == PostType.EVENT:
@@ -25,19 +28,19 @@ def update_vote(request):
             
             if post:
                 if vote_type == 'up':
-                    if post.upvotes == None:
-                        post.upvotes = 1
-                    else:
-                        post.upvotes += 1
+                    vt = VoteType.UP
                 else:
-                    if post.downvotes == None:
-                        post.downvotes = 1
-                    else:
-                        post.downvotes += 1
-                post.save()
-                return HttpResponse()
-                #score = post.upvotes - post.downvotes;
-                #return HttpResponse(score, mimetype="application/javascript")
+                    vt = VoteType.DOWN
+                    
+                (up_change, down_change) = profile.change_vote(post_id, post_type, vt)
+
+                if up_change == None and down_change == None:
+                    return HttpResponse(status=400) # there was an error
+
+                post.update_vote(VoteType.UP, up_change)
+                post.update_vote(VoteType.DOWN, down_change)
+                change = up_change + down_change * -1; # lol math
+                return HttpResponse(str(change))
 
     return HttpResponse(status=400)
 
