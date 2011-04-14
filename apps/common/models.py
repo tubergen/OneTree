@@ -99,11 +99,17 @@ class Event(Post):
 # ===============================
 # COMMENT
 # ===============================
-# Jorge 4/12: I removed commenting on events for now to just get it
-# working on one.
 class Comment(Post):
-    announcement = models.ForeignKey('Announcement')
-    # event = models.ForeignKey('Event')
+    announcement = models.ForeignKey('Announcement', blank=True, null=True)
+    event = models.ForeignKey('Event', blank=True, null=True)
+    parent_comment = models.ForeignKey('Comment', blank=True, null=True)
+    # only one of these three should be true... this is a stupid way to do it.
+    # can we somehow access any Posts? maybe we really should just combine them
+    # all
+    
+    level = models.IntegerField()
+
+    post_type = PostType.COMMENT
 
 class Flag(models.Model):
     name = models.CharField(max_length=30)

@@ -100,12 +100,22 @@
 }
 
 .comment, .comment-post {
-    background: #EFEFEF;
+    background: #F3F3F3;
     border: 1px solid;
-    border-top: 0;
+    margin: 0;
+    margin-top: -1px;
     text-align: left;
     padding: .5em;
-    margin-left: 3em;
+    margin-left: 2.5em;
+    overflow: hidden;
+}
+
+.comment-level-1 {
+    margin-left:5em;
+    background: #FBFBFB;
+}
+
+.comment-1-first, .comment-0-first {
 }
 
 .comment-author {
