@@ -9,6 +9,7 @@
 <p>
   <strong>Where: </strong>{{ event.event_place }}<br>
   <strong>When: </strong>{{ event.event_date }}<br>
+  <strong>Flags: </strong>{{ event.flags.all|join:", " }}
   <hr>
   More info:<br>
   {{ event.text }}

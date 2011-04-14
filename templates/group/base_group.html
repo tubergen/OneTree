@@ -4,6 +4,7 @@
 
 <script type="text/javascript" charset="utf-8">
 
+{% if user.is_authenticated %}
     $(document).ready(function() {
 
         {% if user_is_subscribed %}
@@ -31,17 +32,19 @@
         var data = {};
         data["group_id"] = {{ group.id }};
 
-        $.get(url, data, function() {
+        $.post(url, data, function() {
 
             $('#subscribe-button').css('background-color', next_background)
             user_is_subscribed = !user_is_subscribed;
         });
     }
-
+{% endif %}
 
 </script>
 
-    <button type="button" id="subscribe-button">Subscribed</button>
+    {% if user.is_authenticated %}
+        <button type="button" id="subscribe-button">Subscribed</button>
+    {% endif %}
     <div id="group-name-nav">
     {% if group.parent %}
         <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
@@ -54,5 +57,16 @@
         {% endfor %}
         </ul>
     {% endif %}
+	
+	{# testing tags #}
+	<div class="grouptags">
+	  {% if group.tags %}
+	  <strong>Tags: </strong>
+	  {% for tag in group.tags.all %}
+	  {{ tag.tag }} 
+	  {% endfor %}
+	  {% endif %}
+	</div>
+	
     </div>    
 {% endblock %}

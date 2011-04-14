@@ -1,4 +1,5 @@
 from OneTree.apps.group_signup.models import GroupForm
+from OneTree.apps.common.models import Tag # testing
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
@@ -14,9 +15,21 @@ def create_group(request):
     if not request.user.is_authenticated():
         return render_to_response("base_loginerror.html", RequestContext(request));
     if request.method == 'POST':        
+
         form = GroupForm(request.POST) # Form bound to POST data
         if form.is_valid():   # NEED TO ADD VALIDATION!
-            form.save()
+
+            taglist = request.POST['keywords'].split()
+            new_tags = []
+            for tags in taglist:
+                new_tag, created = Tag.objects.get_or_create(tag=tags)
+                if created:
+                    new_tag.save()
+                new_tags.append(new_tag)
+
+            new_group = form.save()
+            for tag in new_tags:
+                new_group.tags.add(tag)
 
             #name = form.cleaned_data['name']
             #parent = form.cleaned_data['parent']

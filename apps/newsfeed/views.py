@@ -26,26 +26,15 @@ def filter_newsfeed(request):
 
 @login_required
 def change_subscribe(request):
-    if request.is_ajax():
-        user = request.user;
-        group_id = request.GET.get("group_id")
-        if group_id and user:
-            manager = user.get_profile().subscriptions;
-            
-            # check to see if user is already subscribed
-            try:
-                subscribed_group = manager.get(id=group_id)
-            except Group.DoesNotExist:
-                subscribed_group = None
+    if request.is_ajax() and request.method == 'POST':
+        profile = request.user.get_profile();
+        group_id = request.POST.get("group_id")
+        if group_id and profile:
+            profile.change_subscribe(group_id)
+            return HttpResponse()
 
-            group = Group.objects.get(id=group_id)
-            if subscribed_group == None: # then subscribe the user
-                manager.add(group)
-            else:                 # then unsubscribe the user
-                manager.remove(group)
-        else:
-            return HttpResponse(status=400)
-    return HttpResponse()
+    return HttpResponse(status=400)
+    
 
 '''
 Looks at request. If request specifies a post should be deleted / remmoved, then
@@ -71,6 +60,7 @@ are not completely deleted from the database.
 def remove_post(request):
     err_loc = ' See remove_post in the newsfeed views.py.'
     if request.method == 'POST':
+        # validate data
         try:
             profile = request.user.get_profile()
         except AttributeError:
@@ -85,21 +75,8 @@ def remove_post(request):
             return HttpResponse(status=400)
         
         if profile and post_id and post_type:
-            try: 
-                if post_type == PostType.EVENT:
-                    post = Event.objects.get(id=post_id)
-                    profile.removed_events.add(post)
-                elif post_type == PostType.ANNOUNCEMENT:
-                    post = Announcement.objects.get(id=post_id)
-                    profile.removed_anns.add(post)                    
-                else:
-                    print 'Tried to delete non-announcement non-event.' + err_loc
-                    return HttpResponse(status=400)
-
-                return HttpResponse()
-
-            except ObjectDoesNotExist:
-                print 'Error: Tried to delete non-existent object.' + err_loc
+            if profile.remove_post(post_id, post_type): 
+                return HttpResponse() # upon successful remove
             
     return HttpResponse(status=400)
 
@@ -117,10 +94,13 @@ def newsfeed(request):
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
+    voted_post_set = request.user.get_profile().get_voted_posts();
+
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errormsg,
                               'submit_off': True,
+                              'voted_post_set': voted_post_set,
                               'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',
                               'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
