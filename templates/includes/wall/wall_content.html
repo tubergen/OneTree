@@ -42,7 +42,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {% else %}
             <span class="post-by-same-group"></span>
         {% endifnotequal %}
-        <span class="post-group-name">{{ post.origin_group }}</div>
+        <span class="post-group-name"><a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a></div>
     <div class="post-content">
         <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})">x</button>
 	{% comment %}
@@ -70,5 +70,15 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 	{% endif %}
         <div class="post-text">{{ post.text }}</div>
     </div>
+    {# CHANGE THIS JORGE. CHANGE IT!!!! #}
+        {% for comment in post.comment_set.all %}
+        <div class="comment">
+            <span class="comment-author">{{ comment.author }}</span>
+            <span class="comment-content">{{ comment.text }}</span>
+        </div>
+        {% endfor %}
+        {# now allow for posting after all comments are displayed #}
+            {% include "includes/forms/forms.html" %}
+    {# DO IT #}
 </div>
 {% endfor %}

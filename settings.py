@@ -17,8 +17,8 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'onetree.princeton.edu',
-        #'HOST': '',
+        #'HOST': 'onetree.princeton.edu',
+        'HOST': '',
         'PORT': '',      
     }
 }
@@ -130,4 +130,5 @@ AUTH_PROFILE_MODULE = 'common.UserProfile'
 
 # default login / logout urls
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/newsfeed/'
 LOGOUT_URL = '/logout/'

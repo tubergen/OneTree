@@ -72,11 +72,11 @@ class Event(Post):
 # ===============================
 # COMMENT
 # ===============================
-# We should only associate a comment with either an event or an announcement
-# Not both
+# Jorge 4/12: I removed commenting on events for now to just get it
+# working on one.
 class Comment(Post):
     announcement = models.ForeignKey('Announcement')
-    event = models.ForeignKey('Event')
+    # event = models.ForeignKey('Event')
 
 class Flag(models.Model):
     name = models.CharField(max_length=30)

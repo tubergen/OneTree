@@ -99,6 +99,22 @@
     height: 1.3em;
 }
 
+.comment {
+    border: 1px solid;
+    border-top: 0;
+    text-align: left;
+    padding: .5em;
+    margin-left: 3em;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-author:after {
+    content: ":";
+}
+
 .delete-button:hover, .up-button:hover, .down-button:hover {
    /* background-color: #FFC600;    orange */
    background-color: #e14adf;
