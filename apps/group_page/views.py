@@ -64,8 +64,11 @@ would hide a bigger issue: that posts which are deleted on the creater's wall
 are not completely deleted from the database.
 '''
 def delete_post(request):
+    print 'in delete_post'
+
     err_loc = ' See delete_post in the group_page views.py.'
     if request.method == 'POST':
+        # Get parameters
         try:
             group_id = int(request.POST.get('group_id'))
             post_id = int(request.POST.get('post_id'))
@@ -74,9 +77,11 @@ def delete_post(request):
             print 'Wall post delete POST data were not valid integers.' + err_loc
             return HttpResponse(status=400)
             
+
         if group_id and post_id and post_type:
             group_id = int(group_id)
             group = Group.objects.get(id=group_id)
+
             try: 
                 if post_type == PostType.EVENT:
                     manager = group.events
@@ -88,7 +93,10 @@ def delete_post(request):
 
                 post = manager.get(id=post_id)
                 if post.origin_group.id == group_id:
-                    post.delete()
+                    if request.user in group.admins.all():
+                        post.delete()
+#                    else:
+#                        print "Not allowed to delete post"
                 else:
                     manager.remove(post)
 
@@ -98,7 +106,10 @@ def delete_post(request):
                 print 'Error: Tried to delete non-existent object.' + err_loc
                 
     return HttpResponse(status=400)
-            
+
+#######################################
+# GROUP PAGE
+#######################################
 def group_page(request, group_url):
     errormsg = None
 
@@ -140,8 +151,21 @@ def group_page(request, group_url):
     posts = Filter().get_posts(group) # runs posts through an empty filter
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
+
+    groupadmins = group.admins.all()
+
+    if request.user in groupadmins:
+        is_admin = True
+        submit_off = False
+    else:
+        is_admin = False
+        submit_off = True
+
+
     return render_to_response('group/base_group.html',
                               {'posts': posts,
+                               'is_admin': is_admin,
+                               'submit_off': submit_off,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,

@@ -8,14 +8,39 @@ from django.contrib.auth.models import User
 import datetime
 
 def user_page(request, username):
+    print "In user_page"
     errormsg = None
 
     if not username: # no username means they're trying to view their own profile
         if request.user.is_authenticated():
             user = request.user
+
+            try: # may not need try because filter seems to return empty set when no result is found
+                print "OK"
+                groups = Group.objects.filter(admins=user)
+
+                if groups:
+                    for group in groups:
+                        if group.inactive_parent is not None:
+                            print "Group with inactive parent:",
+                            print group.name
+                else:
+                    print "No groups found"
+            except:
+                print "No groups detected"
+                
+            return render_to_response('base_user.html',
+                                      {'user': user, 
+                                       'groups': groups, },
+                                      context_instance=RequestContext(request))        
+
+
         else:
             return render_to_response('base_loginerror.html', 
                     context_instance=RequestContext(request));
+
+
+
     else:
         # check that the url corresponds to a valid user
         user = User.objects.filter(username=username)
@@ -28,6 +53,7 @@ def user_page(request, username):
         else:
             user = user[0] # only one element in query
 
+
     return render_to_response('base_user.html',
-                              {'user': user},
+                              {'user': user, },
                               context_instance=RequestContext(request))

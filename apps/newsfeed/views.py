@@ -96,6 +96,9 @@ def newsfeed(request):
 
     voted_post_set = request.user.get_profile().get_voted_posts();
 
+    # for debugging
+    print request.user
+
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errormsg,

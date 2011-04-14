@@ -1,0 +1,56 @@
+{% extends "base_page_with_wall.html" %}
+
+{% block top_content %}
+
+<script type="text/javascript" charset="utf-8">
+
+    $(document).ready(function() {
+
+        {% if user_is_subscribed %}
+            user_is_subscribed = true;
+            $('#subscribe-button').css('background-color', 'green')
+        {% else %} 
+            user_is_subscribed = false;
+            $('#subscribe-button').css('background-color', 'red')
+        {% endif %}
+
+        $('#subscribe-button').click(function(event) {
+            if (user_is_subscribed) {
+                next_background = 'red'
+            }
+            else {
+                next_background = 'green'
+            }
+            send_subscribe_change()
+        });
+    });
+
+    function send_subscribe_change()
+    {
+        var url = "{{ subscribe_view_url }}";
+        var data = {};
+        data["group_id"] = {{ group.id }};
+
+        $.get(url, data, function() {
+
+            $('#subscribe-button').css('background-color', next_background)
+            user_is_subscribed = !user_is_subscribed;
+        });
+    }
+</script>
+
+    <button type="button" id="subscribe-button">Subscribed</button>
+    <div id="group-name-nav">
+    {% if group.parent %}
+        <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+    {% endif %}
+    <h1 id="group-title">{{ group.name }}</h1>
+    {% if children %}
+        <ul class="child-list">
+        {% for child in children %}
+            <li><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </div>    
+{% endblock %}

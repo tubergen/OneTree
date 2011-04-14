@@ -2,6 +2,8 @@ from OneTree.apps.group_signup.models import GroupForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
+from OneTree.apps.common.models import Group
+
 
 # REFERENCES:
 # http://docs.djangoproject.com/en/dev/topics/forms/modelforms/
@@ -16,8 +18,40 @@ def create_group(request):
     if request.method == 'POST':        
         form = GroupForm(request.POST) # Form bound to POST data
         if form.is_valid():   # NEED TO ADD VALIDATION!
-            form.save()
+            # Save information of group to be registered
+            new_group = form.save(commit=False)
 
+            print new_group.parent
+
+            # Get parent group
+            try:
+                parent = Group.objects.get(name=new_group.parent)
+                print 'parent is: ',
+                print parent
+            except:
+                pass 
+
+            # Create the group but prevent parent from being created
+            new_group.parent = None
+            new_group.save()
+
+            # Add parent to inactive parent list
+            try: 
+                group = Group.objects.get(url=new_group.url)
+                print 'New group created: ',
+                print group
+                group.inactive_parent = parent
+                group.save()
+            except:
+                pass
+            
+
+
+            # there is probably a more elegant way to associate admin to a group
+            currentgroup = Group.objects.get(name=form.cleaned_data['name'])
+            currentgroup.addAdmin(request.user)
+            currentgroup.save()
+                                            
             #name = form.cleaned_data['name']
             #parent = form.cleaned_data['parent']
             #url = form.cleaned_data['url']

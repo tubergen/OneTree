@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 # from django import forms # for experimentation
 from itertools import chain
+from OneTree.apps.user_signup.models import RegistrationProfile
+
 
 '''
 I temporarily allowed some of the following fields to be blank. We should
@@ -112,6 +114,8 @@ class Flag(models.Model):
         return self.name;
 
 
+
+
 # ===============================
 # GROUP
 # ===============================
@@ -123,19 +127,21 @@ class Group(models.Model):
 #        (u'A', u'Athletics'),
 #    )
 
-    name = models.CharField(max_length=30, verbose_name="name")
+    name = models.CharField(max_length=30, verbose_name="name", unique=True)
+    inactive_parent = models.ForeignKey('Group', related_name="inactive_children",
+                                        blank=True, unique=True, null=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
-                               null=True, verbose_name="parent")
+                               null=True, unique=True, verbose_name="parent")
 
-    users = models.ManyToManyField(auth.models.User, through='Membership', blank=True,
-                                    null=True)
+    users = models.ManyToManyField(auth.models.User, through='Membership', 
+                                   blank=True, null=True, related_name='users')
 
     # A group can have many posts. A post can appear on many groups.
     announcements = models.ManyToManyField('Announcement', blank=True, null=True)
     events = models.ManyToManyField('Event', blank=True, null=True)
 
     #members = models.ManyToManyField('User', through='Membership')
-    #admins = models.ManyToManyField('User', through='Administrators')
+    admins = models.ManyToManyField(auth.models.User, related_name='admins')
     #subscribers = models.ManyToManyField('User')
     #email_subscribers = models.ManyToManyField('User')
     
@@ -145,6 +151,12 @@ class Group(models.Model):
                            unique=True, 
                            verbose_name="onetree.princeton.edu/group/", 
                            )
+
+
+    def addAdmin(self, user):
+        curNode = self
+        curNode.admins.add(user)
+            
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
@@ -159,6 +171,13 @@ class Group(models.Model):
             curNode.events.add(event)
             curNode = curNode.parent
 
+    def add_inactive_parent(self, parent):
+        curNode = self
+        curNode.inactive_parent.add(parent)
+        
+
+
+
     def __unicode__(self):
         return self.name;
 
@@ -166,7 +185,7 @@ class Group(models.Model):
 # USER PROFILE
 # ===============================
 class UserProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(auth.models.User)
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
     memberships = models.ManyToManyField('Group', related_name='members', blank=True)
     #administrations = models.ManyToManyField('Group', related_name='administers', blank=True)
@@ -187,7 +206,7 @@ class UserProfile(models.Model):
         if created:
             profile, created = UserProfile.objects.get_or_create(user=instance)
 
-    post_save.connect(create_user_profile, sender=User)
+    post_save.connect(create_user_profile, sender=auth.models.User)
 
     '''
     Changes the subscription status of this profile's user for the
