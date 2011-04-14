@@ -263,7 +263,7 @@ class UserProfile(models.Model):
                     already_voted = False
             except EventVote.DoesNotExist:
                 post_vote = EventVote.objects.create(user_profile=self, post=this_event,
-                                                     vote=vote_type)
+                                                     vote=VoteType.NONE)
                 already_voted = False
         elif post_type == PostType.ANNOUNCEMENT:
             this_ann = Announcement.objects.get(id=post_id)
@@ -275,7 +275,7 @@ class UserProfile(models.Model):
                     already_voted = False
             except AnnVote.DoesNotExist:
                 post_vote = AnnVote.objects.create(user_profile=self, post=this_ann, 
-                                                   vote=vote_type)
+                                                   vote=VoteType.NONE)
                 already_voted = False
         else:
             print 'Tried to vote on non-announcement non-event.' + err_loc
@@ -328,22 +328,6 @@ class UserProfile(models.Model):
         else:
             # not sure if list() is necessary
             return list(chain(self.annvote_set.all(), self.eventvote_set.all()));
-
-        '''
-        
-            announcements = group.announcements.filter(annvote__vote__in=valid_votes)
-            events = group.events.filter(eventvote__vote__in=valid_votes)
-            a = list(chain(announcements, events))
-            print a
-            return a
-        else:
-            #announcements = self.subscriptions.filter(membership__vote__in=valid_votes)
-            #events = self.subscriptions.filter(membership__vote__in=valid_votes)
-
-            # not sure if list() is necessary
-            #return list(chain(announcements, events))
-            pass
-        '''
 
     '''
     Returns the  user's last vote, or None if the user hasn't voted before.

@@ -1,1 +1,13 @@
 wherever I have a wall, I'm going to need to send in this post_vote object, for instance. annoying eh/
+
+confusing error message if you're creating an account that already exists
+
+still not logged in after registering
+
+unhandled error page if i create duplicate events
+
+if i'm not logged in, and i go to the "http://onetree.princeton.edu/" page, and
+there are no groups
+i get: Sorry, there are no groups yet. Why don't you go ahead and make one
+
+^ but it's not obvious how tomake one if i'm not logged in
