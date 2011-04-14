@@ -116,12 +116,6 @@ class Flag(models.Model):
 # GROUP
 # ===============================
 class Group(models.Model):
-    #tags?
-#    TAG_CHOICES = (
-#        (u'D', u'Dance'),
-#        (u'S', u'Singing'),
-#        (u'A', u'Athletics'),
-#    )
 
     name = models.CharField(max_length=30, verbose_name="name")
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
@@ -140,6 +134,8 @@ class Group(models.Model):
     #email_subscribers = models.ManyToManyField('User')
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
+    # bridge b/t group and tags?
+    keywords = models.CharField(max_length=30, blank=True, null=True)
     groupinfo = models.OneToOneField('GroupInfo', blank=True, null=True)
     url = models.SlugField(max_length=30, 
                            unique=True, 
@@ -384,7 +380,10 @@ class Membership(models.Model):
 # TAG 
 # ===============================
 class Tag(models.Model):
-    tag = models.CharField(max_length=30)
+    tag = models.CharField(max_length=30, unique=True)
+
+    def __unicode__(self):
+        return self.tag
 
 # ===============================
 # GROUPINFO

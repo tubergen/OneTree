@@ -21,7 +21,7 @@ def handle_event(group, request):
             new_flag = Flag(name=flag)
             new_flag.save()
             new_flags.append(new_flag)
-            # messy time code; perhaps move it somewhere else?
+        # messy time code; perhaps move it somewhere else?
         time = request.POST['time'].split(':')
         if len(time) == 1:
             minutes = '00'
@@ -56,8 +56,8 @@ def handle_event(group, request):
         new_event.save()
         for flag in new_flags:
             new_event.flags.add(flag)
-            group.events.add(new_event)
-            group.addEventToParent(new_event)
+        group.events.add(new_event)
+        group.addEventToParent(new_event)
 
     return errormsg
 
