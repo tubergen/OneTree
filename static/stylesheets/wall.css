@@ -124,10 +124,6 @@
     overflow: hidden;
 }
 
-.comment-post {
-    display: hidden;
-}
-
 .comment-login-text {
     font-size: x-small;
 }
@@ -150,6 +146,7 @@
     text-align: right;
     overflow: hidden;
     padding-right: 2em;
+    display: none;
 }
 
 .comment-label {
