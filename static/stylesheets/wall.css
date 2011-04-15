@@ -124,6 +124,10 @@
     overflow: hidden;
 }
 
+.comment-post {
+    display: hidden;
+}
+
 .comment-login-text {
     font-size: x-small;
 }
