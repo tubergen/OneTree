@@ -20,14 +20,14 @@
 }
 
 .post-box {
-    padding: .7em;
-    margin: 1em;
+    padding: .4em;
+    margin: 0 0 .5em 0;
 }
 
 .post-group {
     border: 1px solid;
     background-color: #FFC600;
-    padding: .3em;
+    padding: .1em;
 }
 
 .post-group-name {
@@ -49,7 +49,7 @@
 .post-content {
     border: 1px solid;
     border-top: 0px;
-    padding: .8em;
+    padding: .32em;
     text-align: left;
     background-color: #FFE073;
     overflow: hidden;
@@ -58,7 +58,8 @@
 .post-votes {
     text-align: center;
     float: left;
-    padding-right: 1em;
+    padding-right: .5em;
+    font-size: small;
     width: 8%;
 }
 
@@ -73,33 +74,46 @@
     background-color: #FFFFFF;
     /* html buttons seem to have padding / margins built in by default */
     border: 1px solid;
+    font-size: x-small;
     padding: .3em;
     margin-top: 0; 
 }
 
 .post-text {
     float: left;
+    font-size: small;
     width: 82%;
 }
 
 .post-delete {
     float: right;
-    margin: -.5em -.5em 0 0;
+    margin: 0;
     padding-left: .8em;
     width: 5%;
 }
 
 .delete-button {
     font-family: Monospace;
-    font-size: large;
+    font-size: small;
     background-color: #FFFFFF;
     border: 1px solid;
     padding: 0;
-    width: 1.3em;
-    height: 1.3em;
+    width: 1.5em;
+    height: 1.5em;
 }
 
-.comment, .comment-post {
+.comment-reply-button, .post-reply-button {
+    clear: both;
+    float: right;
+    padding: .1em;
+    background-color: #FFFFFF;
+    border: 1px solid;
+    margin-top: .2em;
+    font-size: 8pt;
+    cursor: pointer;
+}
+
+.comment, .comment-post, .comment-login {
     background: #F3F3F3;
     border: 1px solid;
     margin: 0;
@@ -110,12 +124,13 @@
     overflow: hidden;
 }
 
+.comment-login-text {
+    font-size: x-small;
+}
+
 .comment-level-1 {
     margin-left:5em;
     background: #FBFBFB;
-}
-
-.comment-1-first, .comment-0-first {
 }
 
 .comment-author {
@@ -145,6 +160,10 @@
 }
 
 .comment-post input {
+}
+
+.comment-is-yours>.comment-author a {
+    color: blue; /* special color or whatever for your own username... */
 }
 
 .delete-button:hover/*, .up-button:hover, .down-button:hover*/ {

@@ -118,14 +118,20 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 // this code is for posting of comments
 
 // don't hide comments
-    function show_reply_box(id) {
-        $('#'+id).show();
+    function toggle_reply_box(id, reference) {
+        if (!reference.is_shown) {
+            $('#'+id).show();
+            reference.is_shown = true;
+        } else {
+            $('#'+id).hide();
+            reference.is_shown = false;
+        }
     }
 
 // make it hidden at first
     $(document).ready(function() { 
         $('.comment-post').hide();
-        $('.comment-level-0').show();
+       // $('.comment-level-0').show();
         clear_fields(); /* to avoid strange behavior with browser back button */
       });
 </script>
@@ -165,12 +171,17 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 	<hr>
 	{% endif %}
         <div class="post-text">{{ post.text }}</div>
+        <div class="post-reply-button">{% if user.is_authenticated %}
+                <a onclick="toggle_reply_box('comment_post_id_{{ post.id }}', this);">Comment!</a>
+                {% else %}
+                <a href="/login/?next={{ request.path }}">Login to comment!</a>
+                {% endif %}</div>
     </div>
 
     {# CHANGE THIS JORGE. CHANGE IT!!!! #}
         {% if user.is_authenticated %}
         {# now allow for posting of comment #}
-        <form name="comment_post_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
+        <form name="comment_post_{{ post.id }}" id="comment_post_id_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}"></input>
             <input type="hidden" name="post_id" value="{{ post.id }}"></input>
             <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
@@ -178,16 +189,18 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <textarea id="comment_text_id_{{ post.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
-        {% else %}
-        <span style="font-size: small;">(login to post a comment)</span>
         {% endif %}
 
         {% for comment in post.comment_set.all %}
-        <div class="comment comment-level-{{ comment.level }} {% if forloop.first %}comment-0-first{% endif %}">
-            <span class="comment-author">{{ comment.author }}</span>
+        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %}">
+            <span class="comment-author"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             <span class="comment-content">{{ comment.text }}</span>
-            <div style="float: right; border: 1px solid; padding: .2em; background: #FFFFFF;">
-                <a style="cursor: pointer;"onclick="show_reply_box('comment_post_id_{{ comment.id }}')">Reply!</a>
+            <div class="comment-reply-button">
+                {% if user.is_authenticated %}
+                <a onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">Reply!</a>
+                {% else %}
+                <a href="/login/?next={{ request.path }}">Login to reply!</a>
+                {% endif %}
             </div>
         </div>
         {# posting of a reply to a comment #}
@@ -200,8 +213,8 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <input type="submit" value="Post!"></input>
         </form>
         {% for comment_child in comment.comment_set.all %}
-        <div class="comment comment-level-{{ comment_child.level }} {% if forloop.first %}comment-1-first{% endif %}">
-                <span class="comment-author">{{ comment_child.author }}</span>
+        <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
+                <span class="comment-author"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
                 <span class="comment-content">{{ comment_child.text }}</span>
             </div>
         {% endfor %}

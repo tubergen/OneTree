@@ -24,8 +24,6 @@ def create_group(request):
             # Save information of group to be registered
             new_group = form.save(commit=False)
 
-            print new_group.parent
-
             # Get parent group
             try:
                 parent = Group.objects.get(name=new_group.parent)
@@ -35,7 +33,7 @@ def create_group(request):
                 pass 
 
             # Create the group but prevent parent from being created
-            new_group.parent = None
+            new_group.parent = parent
             new_group.save()
 
             # Add parent to inactive parent list

@@ -3,6 +3,7 @@ body {
     background-image: url(/static/images/bgflowers.jpg);
     background-attachment: fixed;
     font-family: Helvetica, Arial, sans-serif;
+    font-size: 10pt;
 }
 
 textarea, input {
@@ -37,6 +38,7 @@ textarea, input {
     text-align: right;
     margin: 0;
     padding: 0;
+    font-size: 12pt;
 }
 
 #header_nav ul {
@@ -106,7 +108,7 @@ textarea, input {
 .main-container {
     word-break: break-word;
     text-align: center;
-    width: 90%;
+    width: 60%;
     margin: 1em auto 1em auto;
     border: 0;/* 4px double; */
 }
