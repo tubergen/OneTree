@@ -119,9 +119,6 @@ class Flag(models.Model):
     def __unicode__(self):
         return self.name;
 
-
-
-
 # ===============================
 # GROUP
 # ===============================
@@ -131,7 +128,7 @@ class Group(models.Model):
     inactive_parent = models.ForeignKey('Group', related_name="inactive_children",
                                         blank=True, unique=True, null=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
-                               null=True, unique=True, verbose_name="parent")
+                               null=True, verbose_name="parent")
 
     users = models.ManyToManyField(auth.models.User, through='Membership', 
                                    blank=True, null=True, related_name='users')

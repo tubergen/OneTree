@@ -1,5 +1,5 @@
 {% for field in form %}
-{% if field.errors %}<div class="form-field form-error">
+{% if field.errors %}<div class="form-field form-error">{{field.errors}}
 {% else %}<div class="form-field">
 {% endif %}
 {% if field.label != "Onetree.princeton.edu/group/" %} 

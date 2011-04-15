@@ -9,17 +9,10 @@ id "wall-content".
    </p> 
 {% endif %}
 
-{# hope you can change this submit_off boolean to admin only w/o breaking newsfeed #}
+{# Ming says: hope you can change this submit_off boolean to admin only w/o breaking newsfeed #}
 
 {% if not submit_off %}
-   <p>submit is not off</p>
    {% include "includes/wall/wall_submit.html" %}
-{% endif %}
-
-{% if is_admin %}
-   <p>Hi Admin!</p>
-{% else %}
-   <p>You are not the admin of this group!</p>
 {% endif %}
 
 <div class="main-container">

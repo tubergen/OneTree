@@ -30,7 +30,8 @@ def create_group(request):
                 print 'parent is: ',
                 print parent
             except:
-                pass 
+                parent = None
+                # is this really the best way to handle it =\
 
             # Create the group but prevent parent from being created
             new_group.parent = parent
@@ -44,8 +45,7 @@ def create_group(request):
                 group.inactive_parent = parent
                 group.save()
             except:
-                pass
-            
+                pass      
 
             taglist = request.POST['keywords'].split()
             new_tags = []
@@ -74,6 +74,7 @@ def create_group(request):
             return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
 
         else:
+            print 'wtf'
             return render_to_response('base_groupsignup.html', {'form': form,},
                     RequestContext(request)) # change redirect destination
     else:

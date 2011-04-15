@@ -4,8 +4,6 @@ from django import forms
 from OneTree.apps.common.models import Group
 from django.forms.util import ErrorList
 
-
-
 # Create your models here.
 class GroupForm(ModelForm):
 #    def is_valid(self):

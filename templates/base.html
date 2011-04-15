@@ -23,13 +23,12 @@
                         {% if user.is_authenticated %}
                             <li><a href="/newsfeed/">News</a></li>
                             <li><a href="/profile/">{{ user.username }}</a></li>
-                            <li><a href="{% url auth_logout_next request.path %}">Logout</a></li>
                             <li><a href="/group-signup/">Group Signup</a></li>
+                            <li><a href="{% url auth_logout_next request.path %}">Logout</a></li>
                         {% else %}
                             <li><a href="/user-signup/">Register</a></li>
                             <li><a href="/login/?next={{ request.path }}">Login</a></li>
                         {% endif %}
-                        <li>Search</li>
                     </ul>
                 </div>
             {% endblock %}

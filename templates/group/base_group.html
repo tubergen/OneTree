@@ -60,7 +60,7 @@
 	
 	{# testing tags #}
 	<div class="grouptags">
-	  {% if group.tags %}
+	  {% if group.tags.all %}
 	  <strong>Tags: </strong>
 	  {% for tag in group.tags.all %}
 	  {{ tag.tag }} 
