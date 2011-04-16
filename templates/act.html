@@ -6,9 +6,17 @@
 <p>Your activation key is {{ activation_key }}.</p>
 
 <p>To activate, please provide the email and password that correspond to this key:</p>
-    {% if form.errors %}
-        <p class="error-message">Sorry, that's not a valid username or password</p>
-    {% endif %}
+
+{% if error_msg %}
+<p>{{ error_msg }}</p>
+{% endif %}
+
+<form action="" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Activate!" />
+</form>
+
+{% comment %}
 <form class="main-container" action="" method="post">{% csrf_token %}
   <p><label for="username">Email:</label>
     <input type="text" name="username" value="" id="username" />
@@ -21,5 +29,5 @@
     <input type="submit" value="Activate!" />
   </p>
 </form>
-
+{% endcomment %}
 {% endblock %}

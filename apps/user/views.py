@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
-from OneTree.apps.user.forms import RegistrationForm
+from OneTree.apps.user.forms import RegistrationForm, ActivationForm
 from OneTree.apps.user.models import RegistrationProfile
 
 from OneTree.apps.common.models import *
@@ -35,7 +35,8 @@ def create_user(request):
 
             print "login done"
             return render_to_response("base_user.html",
-                                      { 'email': "secret signup email", 'password': "secret signup password"} 
+                                      { 'email': "secret signup email", 
+                                        'password': "secret signup password"} 
                                       )
     else:
         form = UserCreationForm()
@@ -44,7 +45,7 @@ def create_user(request):
 
 def register(request):
     context = RequestContext(request)
-
+    
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -74,13 +75,14 @@ def register(request):
                               context_instance=context)
 
 def activate(request, activation_key):
+    # ADD: need to check if activation key has expired
     context = RequestContext(request)
-    
+    form = ActivationForm()
+    error_msg = False
+
     # First, validate activation key
     try:
         profile = RegistrationProfile.objects.get(activation_key=activation_key)
-        print "PROFILE: ",
-        print profile
 
     # If activation key is not found
     except:
@@ -89,38 +91,39 @@ def activate(request, activation_key):
                                   activation_key,
                                   context_instance=context)
     
-    
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            account = verify_key(request, activation_key)
-            
-            if account:
-                login(request, user)
-                return redirect("reg_complete", context_instance=context)
-        else:
-            pass
+        form = ActivationForm(request.POST)
 
+        # If username and password are valid (i.e. valid account)
+        if form.is_valid(): 
+            username = request.POST['username']
+            password = request.POST['password']
+
+            # If activation and account do not match
+            if profile.user.username == username:
+
+                # Get the user 
+                # (actual authentication has been done in ActivationForm)
+                user = authenticate(username=username, password=password)
+
+                # Activate!
+                user.is_active = True
+                user.save()
+                
+                login(request, user)
+                return render_to_response("reg_complete.html", 
+                                          context_instance=context)
+
+            else:
+                error_msg = "The activation key does not correspond to your account."
 
     return render_to_response("act.html", 
-                              { 'activation_key': activation_key, },
+                              { 'activation_key': activation_key, 
+                                'form': form,
+                                'error_msg': error_msg,
+                                },
                               context_instance=context
                               )
-
-
-
-
-def verify_key(request, activation_key):
-    """
-    Given an an activation key, look up and activate the user
-    account corresponding to that key (if possible).
-    
-    """
-    activated = RegistrationProfile.objects.activate_user(activation_key)
-    return activated
-
 
 @login_required
 def user_page(request, username):

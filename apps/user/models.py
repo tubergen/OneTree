@@ -15,7 +15,9 @@ from django.utils.hashcompat import sha_constructor
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 class RegistrationManager(models.Manager):
+    # not used at the moment
     def activate_user(self, activation_key):
+        print "IN ACTIVATE USER"
         print activation_key
         if SHA1_RE.search(activation_key):
             try:
@@ -24,9 +26,15 @@ class RegistrationManager(models.Manager):
                 print "model does not exist"
                 return False
             if not profile.activation_key_expired():
+                print "here"
                 user = profile.user
+                print "user: ",
+                print user
                 user.is_active = True
                 user.save()
+                print "activation status: ",
+                print user.is_active
+
                 profile.activation_key = self.model.ACTIVATED
                 profile.save()
                 return user
@@ -111,7 +119,7 @@ class RegistrationProfile(models.Model):
         """
         activation_details = { 'activation_key': self.activation_key,
                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS }
-
+        print self.activation_key
         subject = "Welcome to OneTree!" # must NOT contain new lines
         
         message = render_to_string('registration/activation_email.txt',
