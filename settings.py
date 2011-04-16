@@ -113,7 +113,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 #    'OneTree.registration',
-    'OneTree.apps.user_signup',
+    'OneTree.apps.user',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 2
