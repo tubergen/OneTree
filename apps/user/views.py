@@ -43,6 +43,8 @@ def create_user(request):
         'form': form}, RequestContext(request))
 
 def register(request):
+    context = RequestContext(request)
+
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -59,16 +61,54 @@ def register(request):
                 login(request, user)
 
             return render_to_response("registration_success.html",
-                                      { 'email':email, 'password':password } 
+                                      { 'email':email, 'password':password },
+                                      context_instance=context
                                       )
     else:
         form = RegistrationForm()
 
-    context = RequestContext(request)
+
 
     return render_to_response("register.html",
                               {'form': form},
                               context_instance=context)
+
+def activate(request, activation_key):
+    context = RequestContext(request)
+    
+    # First, validate activation key
+    try:
+        profile = RegistrationProfile.objects.get(activation_key=activation_key)
+        print "PROFILE: ",
+        print profile
+
+    # If activation key is not found
+    except:
+        print "Bad activation key"
+        return render_to_response("activate_n.html",
+                                  activation_key,
+                                  context_instance=context)
+    
+    
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            account = verify_key(request, activation_key)
+            
+            if account:
+                login(request, user)
+                return redirect("reg_complete", context_instance=context)
+        else:
+            pass
+
+
+    return render_to_response("act.html", 
+                              { 'activation_key': activation_key, },
+                              context_instance=context
+                              )
+
 
 
 
@@ -80,23 +120,6 @@ def verify_key(request, activation_key):
     """
     activated = RegistrationProfile.objects.activate_user(activation_key)
     return activated
-
-
-
-
-
-def activate(request, **kwargs):
-    
-    account = verify_key(request, **kwargs)
-
-    if account:
-        return redirect("reg_complete")
-
-    context = RequestContext(request)
-
-    return render_to_response("activate_n.html",
-                              kwargs,
-                              context_instance=context)
 
 
 @login_required

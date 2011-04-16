@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     (r'^$', homepage),
     (r'^register/$', register),
 
+    # activate/complete must come before activate/activation_key
     url(r'^activate/complete/$', 
         direct_to_template, {'template':'registration/activation_complete.html'},
         name="reg_complete"),

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<p>This is the activation page.</p>
+
+<p>Your activation key is {{ activation_key }}.</p>
+
+<p>To activate, please provide the email and password that correspond to this key:</p>
+    {% if form.errors %}
+        <p class="error-message">Sorry, that's not a valid username or password</p>
+    {% endif %}
+<form class="main-container" action="" method="post">{% csrf_token %}
+  <p><label for="username">Email:</label>
+    <input type="text" name="username" value="" id="username" />
+  </p>
+  <p>
+    <label for="password">Password:</label>
+    <input type="password" name="password" value="" id="password" />
+  </p>
+  <p>
+    <input type="submit" value="Activate!" />
+  </p>
+</form>
+
+{% endblock %}
