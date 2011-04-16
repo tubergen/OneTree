@@ -64,7 +64,7 @@ class RegistrationManager(models.Manager):
 class RegistrationProfile(models.Model):
     ACTIVATED = u"ALREADY_ACTIVATED"
 
-    user = models.ForeignKey(User, unique=True, verbose_name="user")
+    user = models.ForeignKey(User, unique=True)
     activation_key = models.CharField(max_length=40)
     
     objects = RegistrationManager()

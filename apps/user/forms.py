@@ -18,12 +18,10 @@ class RegistrationForm(forms.Form):
     registration backend.
     
     """
-    username = forms.RegexField(regex=r'^\w+$', max_length=30,
-                                widget=forms.TextInput(attrs=attrs_dict),
-                                label="Username",
-                                error_messages={'invalid': "This value must contain only letters, numbers and underscores."})
+    username = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
+                                label="Your Email")
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
-                             label="Email address")
+                              label="Re-enter Email")
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
                                 label="Password")
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
@@ -36,7 +34,13 @@ class RegistrationForm(forms.Form):
             return self.cleaned_data['username']
         raise forms.ValidationError("A user with that username already exists.")
 
+
+
     def clean(self):
+        if 'username' in self.cleaned_data and 'email' in self.cleaned_data:
+            if self.cleaned_data['username'] != self.cleaned_data['email']:
+                raise forms.ValidationError("Your email fields didn't match.")
+
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError("The two password fields didn't match.")

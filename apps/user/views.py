@@ -10,6 +10,9 @@ from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.models import *
 from django.contrib.auth.models import User
 
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 import datetime
 
 
@@ -18,7 +21,22 @@ def create_user(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            return HttpResponseRedirect("/user/" + new_user.username)
+            print new_user
+
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password1"]
+
+            user = authenticate(username=username, password=password)
+            if user is None:
+                print "Sorry"
+            else:
+                print "hey ",
+                print login(request, user)
+
+            print "login done"
+            return render_to_response("base_user.html",
+                                      { 'email': "secret signup email", 'password': "secret signup password"} 
+                                      )
     else:
         form = UserCreationForm()
     return render_to_response("base_usersignup.html", {
@@ -33,12 +51,18 @@ def register(request):
             password = form.cleaned_data["password1"]
 
             new_user = RegistrationProfile.objects.create_inactive_user(username, email, password)
+            
+            user = authenticate(username=username, password=password)
+            if user is None:
+                print "Sorry"
+            else:
+                login(request, user)
+
             return render_to_response("registration_success.html",
-                                      { 'username': username, 'email':email, 'password':password} 
+                                      { 'email':email, 'password':password } 
                                       )
     else:
         form = RegistrationForm()
-        
 
     context = RequestContext(request)
 
@@ -75,7 +99,7 @@ def activate(request, **kwargs):
                               context_instance=context)
 
 
-
+@login_required
 def user_page(request, username):
     print "In user_page"
     errormsg = None
@@ -83,9 +107,8 @@ def user_page(request, username):
     if not username: # no username means they're trying to view their own profile
         if request.user.is_authenticated():
             user = request.user
-
+            
             try: # may not need try because filter seems to return empty set when no result is found
-                print "OK"
                 groups = Group.objects.filter(admins=user)
 
                 if groups:
@@ -100,7 +123,8 @@ def user_page(request, username):
                 
             return render_to_response('base_user.html',
                                       {'user': user, 
-                                       'groups': groups, },
+                                       'groups': groups, 
+                                       'active': user.is_active },
                                       context_instance=RequestContext(request))        
 
 
@@ -109,7 +133,7 @@ def user_page(request, username):
                     context_instance=RequestContext(request));
 
 
-
+        # I don't think we need this else?
     else:
         # check that the url corresponds to a valid user
         user = User.objects.filter(username=username)
@@ -126,3 +150,9 @@ def user_page(request, username):
     return render_to_response('base_user.html',
                               {'user': user, },
                               context_instance=RequestContext(request))
+
+def user_account(request, username):
+    if not username:
+        print "cool"
+    else:
+        print "ok"

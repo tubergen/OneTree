@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from OneTree.apps.group.views import group_page, event_page, delete_post
-from OneTree.apps.user.views import user_page, create_user, register, activate
+from OneTree.apps.user.views import *
 
 from OneTree.apps.group.views import create_group
 from OneTree.apps.common.views import homepage
@@ -37,21 +37,25 @@ urlpatterns = patterns('',
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
     (r'^_apps/group_page/views-delete_post/$', delete_post),  
 
-    (r'^user/(\w+)/$', user_page),
-    (r'^user-signup/$', create_user),
+    # User
+    (r'^secret-signup/$', create_user),
+    (r'^user-signup/$', register),
+
     url(r'^login/$',  login, {'template_name': 'base_login.html'}, name='auth_login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='auth_logout',),
     url(r'^logout/(?P<next_page>.*)/$', logout, name='auth_logout_next'),
     (r'^profile/$', user_page, {'username': ''}),
+    (r'^profile/account/$', user_account, {'username': ''}),
     (r'^newsfeed/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
+
     url(r'^activate/complete/$', 
         direct_to_template, {'template':'registration/activation_complete.html'},
         name="reg_complete"),
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name="activator"),
 
-    (r'^accounts/', include('OneTree.registration.backends.default.urls')),
+
     (r'^post/comment/$', post_comment),
 
 )
