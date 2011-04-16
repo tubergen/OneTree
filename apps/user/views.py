@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 
 import datetime
 
@@ -130,55 +131,32 @@ def user_page(request, username):
     print "In user_page"
     errormsg = None
 
-    if not username: # no username means they're trying to view their own profile
-        if request.user.is_authenticated():
-            user = request.user
-            
-            try: # may not need try because filter seems to return empty set when no result is found
-                groups = Group.objects.filter(admins=user)
-
-                if groups:
-                    for group in groups:
-                        if group.inactive_parent is not None:
-                            print "Group with inactive parent:",
-                            print group.name
-                else:
-                    print "No groups found"
-            except:
-                print "No groups detected"
-                
-            return render_to_response('base_user.html',
-                                      {'user': user, 
-                                       'groups': groups, 
-                                       'active': user.is_active },
-                                      context_instance=RequestContext(request))        
-
-
-        else:
-            return render_to_response('base_loginerror.html', 
-                    context_instance=RequestContext(request));
-
-
-        # I don't think we need this else?
+    user = request.user
+    
+    groups = Group.objects.filter(admins=user)
+        
+    if groups:
+        print "Group(s) with children awaiting approval:",
+        for group in groups:
+            if group.inactive_child is not None:
+                print group.name,
+        print ""
     else:
-        # check that the url corresponds to a valid user
-        user = User.objects.filter(username=username)
-        if len(user) > 1:
-            errormsg = "Database Error. URL mapped to multiple users."
-            return render_to_response('error_page.html', {'errormsg': errormsg, })
-        elif len(user) == 0:
-            errormsg = "User %s doesn't exist" % username # SHOULD CLEAN THIS?
-            return render_to_response('error_page.html', {'errormsg': errormsg, })
-        else:
-            user = user[0] # only one element in query
+        print "No groups found"
 
-
+        
     return render_to_response('base_user.html',
-                              {'user': user, },
-                              context_instance=RequestContext(request))
+                              {'user': user, 
+                               'groups': groups, 
+                               'active': user.is_active },
+                              context_instance=RequestContext(request))    
 
+@login_required
 def user_account(request, username):
-    if not username:
-        print "cool"
-    else:
-        print "ok"
+    context_instance=RequestContext(request)
+
+    return render_to_response('account.html',
+                              { 'user': request.user },
+                              context_instance=RequestContext(request)
+                              )
+

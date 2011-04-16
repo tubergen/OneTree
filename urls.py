@@ -7,8 +7,9 @@ from OneTree.apps.common.views import homepage
 from OneTree.apps.newsfeed.views import newsfeed, change_subscribe, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
 from django.conf import settings
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import login, logout, password_change, password_change_done
 from django.views.generic.simple import direct_to_template
+
 
 
 # Uncomment the next two lines to enable the admin:
@@ -46,9 +47,12 @@ urlpatterns = patterns('',
     url(r'^logout/(?P<next_page>.*)/$', logout, name='auth_logout_next'),
     (r'^profile/$', user_page, {'username': ''}),
     (r'^profile/account/$', user_account, {'username': ''}),
+    url(r'^profile/account/changepwd/$', password_change, {'template_name': 'change_password.html', 'post_change_redirect': '' }, name='password_change'),
+
+
+
     (r'^newsfeed/$', newsfeed),
     (r'^$', homepage),
-    (r'^register/$', register),
 
     # activate/complete must come before activate/activation_key
     url(r'^activate/complete/$', 

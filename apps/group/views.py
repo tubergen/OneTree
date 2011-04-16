@@ -10,7 +10,7 @@ from OneTree.apps.helpers.enums import PostType
 from OneTree.apps.group.helpers import *
 from OneTree.apps.common.group import Group, GroupForm
 
-
+from django.contrib.auth.decorators import login_required
 import datetime
 import string
 
@@ -109,22 +109,39 @@ def delete_post(request):
                 
     return HttpResponse(status=400)
 
+
+def verify_admin(request, group):
+    groupadmins = group.admins.all()
+
+    if request.user in groupadmins:
+        return True
+    else:
+        return False
+
+def verify_group(group):
+    errormsg = None
+
+    if len(group) > 1:
+        errormsg = 'Database Error. URL mapped to multiple groups.'
+    elif len(group) == 0:
+        errormsg = "Group doesn't exist."        
+
+    return errormsg
+
 #######################################
 # GROUP PAGE
 #######################################
 def group_page(request, group_url):
     errormsg = None
+    context = RequestContext(request)
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
-    if len(group) > 1:
-        errormsg = 'Database Error. URL mapped to multiple groups.'
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    elif len(group) == 0:
-        errormsg = "Group doesn't exist."
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    else:
-        group = group[0] # only one element in queryset
+    check = verify_group(group)
+    if check:
+        return render_to_response('error_page.html', {'errormsg': check,}, 
+                                  context_instance=context)
+    group = group[0] # only one element in queryset
 
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
@@ -154,18 +171,13 @@ def group_page(request, group_url):
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
 
-    groupadmins = group.admins.all()
+    submit_off = True
+    is_admin = False
 
-    if request.user in groupadmins:
+    if verify_admin:
         is_admin = True
         submit_off = False
-        print "submit on"
-    else:
-        is_admin = False
-        submit_off = True
-        print "submit off"
-
-
+  
     return render_to_response('group/base_group.html',
                               {'posts': posts,
                                'is_admin': is_admin,
@@ -198,7 +210,7 @@ def event_page(request, groupname, title):
     return render_to_response('base_event.html',
                               {'errormsg': errormsg,
                                'event': this_event},
-                              context_instance=RequestContext(request))
+                              context_instance=context)
 
 
 # REFERENCES:
@@ -208,39 +220,31 @@ def event_page(request, groupname, title):
 # http://docs.djangoproject.com/en/dev/topics/forms/
 # http://docs.djangoproject.com/en/dev/ref/forms/api/#ref-forms-api-bound-unbound
 
+@login_required
 def create_group(request):
-    if not request.user.is_authenticated():
-        return render_to_response("base_loginerror.html", RequestContext(request));
     if request.method == 'POST':        
-
         form = GroupForm(request.POST) # Form bound to POST data
-        if form.is_valid():   # NEED TO ADD VALIDATION!
+        if form.is_valid(): 
 
-            # Save information of group to be registered
+            # Save information of group to be registered but do not commit 
+            # to database yet
             new_group = form.save(commit=False)
 
-            # Get parent group
-            try:
-                parent = Group.objects.get(name=new_group.parent)
-                print 'parent is: ',
-                print parent
-            except:
-                parent = None
-                # is this really the best way to handle it =\
-
             # Create the group but prevent parent from being created
-            new_group.parent = parent
+            inactive_parent = new_group.parent
+            new_group.parent = None
             new_group.save()
 
-            # Add parent to inactive parent list
-            try: 
-                group = Group.objects.get(url=new_group.url)
-                print 'New group created: ',
-                print group
-                group.inactive_parent = parent
-                group.save()
+            # Notify parent group
+            try:
+                parent = Group.objects.get(name=inactive_parent)
             except:
-                pass      
+                parent = None
+
+            if parent:
+                parent.inactive_child.add(group)
+
+
 
             taglist = request.POST['keywords'].split()
             new_tags = []

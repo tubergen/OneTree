@@ -18,11 +18,10 @@ from django.forms.util import ErrorList
 class Group(models.Model):
 
     name = models.CharField(max_length=30, verbose_name="name", unique=True)
-    inactive_parent = models.ForeignKey('Group', related_name="inactive_children",
-                                        blank=True, unique=True, null=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
-
+    inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
+                                            blank=True, null=True)
     users = models.ManyToManyField(auth.models.User, through='Membership', 
                                    blank=True, null=True, related_name='users')
 
@@ -83,6 +82,9 @@ class GroupForm(ModelForm):
 #        return False
 #
 # do we have to do this? it seems like it validates already...
+    
+    # NEEDS VALIDATION?
+
     error_css_class = 'error'
     required_css_class = 'required'
 
