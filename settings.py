@@ -14,7 +14,7 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        #'HOST': 'onetree.princeton.edu',
+#        'HOST': 'onetree.princeton.edu',
         'HOST': '',
         'PORT': '',      
     }
@@ -113,8 +113,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-#    'OneTree.registration',
-    'OneTree.apps.user_signup',
+    'OneTree.apps.user',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 2

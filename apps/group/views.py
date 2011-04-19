@@ -2,13 +2,15 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
-from OneTree.apps.group_page.helpers import *
+from OneTree.apps.group.helpers import *
+from OneTree.apps.common.group import Group, GroupForm
 
+from django.contrib.auth.decorators import login_required
 import datetime
 import string
 
@@ -107,22 +109,39 @@ def delete_post(request):
                 
     return HttpResponse(status=400)
 
+
+def verify_admin(request, group):
+    groupadmins = group.admins.all()
+
+    if request.user in groupadmins:
+        return True
+    else:
+        return False
+
+def verify_group(group):
+    errormsg = None
+
+    if len(group) > 1:
+        errormsg = 'Database Error. URL mapped to multiple groups.'
+    elif len(group) == 0:
+        errormsg = "Group doesn't exist."        
+
+    return errormsg
+
 #######################################
 # GROUP PAGE
 #######################################
 def group_page(request, group_url):
     errormsg = None
+    context = RequestContext(request)
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
-    if len(group) > 1:
-        errormsg = 'Database Error. URL mapped to multiple groups.'
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    elif len(group) == 0:
-        errormsg = "Group doesn't exist."
-        return render_to_response('error_page.html', {'errormsg': errormsg,})
-    else:
-        group = group[0] # only one element in queryset
+    check = verify_group(group)
+    if check:
+        return render_to_response('error_page.html', {'errormsg': check,}, 
+                                  context_instance=context)
+    group = group[0] # only one element in queryset
 
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
@@ -152,18 +171,13 @@ def group_page(request, group_url):
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
 
-    groupadmins = group.admins.all()
+    submit_off = True
+    is_admin = False
 
-    if request.user in groupadmins:
+    if verify_admin:
         is_admin = True
         submit_off = False
-        print "submit on"
-    else:
-        is_admin = False
-        submit_off = True
-        print "submit off"
-
-
+  
     return render_to_response('group/base_group.html',
                               {'posts': posts,
                                'is_admin': is_admin,
@@ -196,4 +210,73 @@ def event_page(request, groupname, title):
     return render_to_response('base_event.html',
                               {'errormsg': errormsg,
                                'event': this_event},
-                              context_instance=RequestContext(request))
+                              context_instance=context)
+
+
+# REFERENCES:
+# http://docs.djangoproject.com/en/dev/topics/forms/modelforms/
+#     the above one has info on changing existing objects
+#     that should be useful later on when editing content.
+# http://docs.djangoproject.com/en/dev/topics/forms/
+# http://docs.djangoproject.com/en/dev/ref/forms/api/#ref-forms-api-bound-unbound
+
+@login_required
+def create_group(request):
+    if request.method == 'POST':        
+        form = GroupForm(request.POST) # Form bound to POST data
+        if form.is_valid(): 
+
+            # Save information of group to be registered but do not commit 
+            # to database yet
+            new_group = form.save(commit=False)
+
+            # Create the group but prevent parent from being created
+            inactive_parent = new_group.parent
+            new_group.parent = None
+            new_group.save()
+
+            # Notify parent group
+            try:
+                parent = Group.objects.get(name=inactive_parent)
+            except:
+                parent = None
+
+            if parent:
+                parent.inactive_child.add(group)
+
+
+
+            taglist = request.POST['keywords'].split()
+            new_tags = []
+            for tags in taglist:
+                new_tag, created = Tag.objects.get_or_create(tag=tags)
+                if created:
+                    new_tag.save()
+                new_tags.append(new_tag)
+
+            new_group = form.save()
+            for tag in new_tags:
+                new_group.tags.add(tag)
+
+
+            # there is probably a more elegant way to associate admin to a group
+            currentgroup = Group.objects.get(name=form.cleaned_data['name'])
+            currentgroup.addAdmin(request.user)
+            currentgroup.save()
+                                            
+            #name = form.cleaned_data['name']
+            #parent = form.cleaned_data['parent']
+            #url = form.cleaned_data['url']
+
+            # is this all? should we "clean the data"? what does
+            # validation actually do?? it seems to work.
+            return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
+
+        else:
+            print 'wtf'
+            return render_to_response('base_groupsignup.html', {'form': form,},
+                    RequestContext(request)) # change redirect destination
+    else:
+        form = GroupForm() # An unbound form - can use this for error messages
+
+    return render_to_response('base_groupsignup.html', {'form': form,}, RequestContext(request))
