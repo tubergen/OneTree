@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'OneTree.apps.wall',
     'OneTree.apps.common',
     'OneTree.apps.newsfeed',
+    'haystack',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -130,3 +131,8 @@ AUTH_PROFILE_MODULE = 'common.UserProfile'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/newsfeed/'
 LOGOUT_URL = '/logout/'
+
+# necessary for haystack to work
+HAYSTACK_SITECONF = 'OneTree.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = '/home/jlugo/mysite_index'

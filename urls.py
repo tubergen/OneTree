@@ -11,6 +11,7 @@ from django.contrib.auth.views import login, logout
 
 from OneTree.apps.user_signup.views import register, activate
 from django.views.generic.simple import direct_to_template
+import haystack
 
 
 # Uncomment the next two lines to enable the admin:
@@ -45,14 +46,13 @@ urlpatterns = patterns('',
     (r'^newsfeed/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
+    (r'^search/', include('haystack.urls')),
     url(r'^activate/complete/$', 
         direct_to_template, {'template':'registration/activation_complete.html'},
         name="reg_complete"),
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name="activator"),
-
     (r'^accounts/', include('OneTree.registration.backends.default.urls')),
     (r'^post/comment/$', post_comment),
-
 )
 
 # on our own computers, serve static files properly
