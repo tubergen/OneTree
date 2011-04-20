@@ -29,21 +29,34 @@
                             <li><a href="/user-signup/">Register</a></li>
                             <li><a href="/login/?next={{ request.path }}">Login</a></li>
                         {% endif %}
+                            <li>
+                                <form action='/search/' method='GET'>{% csrf_token %}
+                                    <input name="query" class="search-bar" type="text"value="search groups" style="color: gray;" onfocus="this.value=''; this.style.color='black'; this.onfocus=null;"></input>
+                                </form>
+                            </li>
                     </ul>
                 </div>
             {% endblock %}
         </div>
 
         <div id="content">
-            {% block top_content %}
-                {# contains title, arrows, calendar #}
-                <span id="title">
-                    <h1>Page title</h1>
-                </span>
-            {% endblock %}
-            {% block main_content %}
-                {# contains wall, post, and right bar #}
-            {% endblock %}
+            <div id="left-content">
+                {% block left_content %}
+                {% endblock %}
+            </div>
+            <div id="right-content">
+                <div id="top-content">
+                    {% block top_content %}
+                        {# contains title, arrows, calendar #}
+                            <h1 id="title">Page title</h1>
+                    {% endblock %}
+                </div>
+                <div id="main-content">
+                    {% block main_content %}
+                        {# contains wall, post, and right bar #}
+                    {% endblock %}
+                </div>
+            </div>
             {% block content %}
             {% endblock %}
         </div>

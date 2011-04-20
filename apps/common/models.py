@@ -158,3 +158,8 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.tag
 
+# OTHER -- WE MAY OR MAY NOT WANT TO PUT THIS HERE?
+class GroupInfo(models.Model):
+    pass
+class UserInfo(models.Model):
+    pass

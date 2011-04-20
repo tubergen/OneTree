@@ -6,8 +6,15 @@
 {% endblock %}
 
 {% block top_content %}
-    {# username or group name #}
-    {# put a calendar here #}
+    <div id="group-title-div">
+        {% block top_title %}
+            {# username or group name #}
+        {% endblock %}
+    </div>
+    {% block calendar %}
+        {# put a calendar here #}
+        <div id="top-calendar"><span style="position: absolute; top: 50%; margin-top: -.5em; left: 50%; margin-left: -1.9em;">calendar</span></div>
+    {% endblock %}
 {% endblock %}
 
 {% block main_content %}

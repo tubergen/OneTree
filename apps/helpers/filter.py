@@ -5,7 +5,7 @@ from operator import attrgetter
 import Queue
 
 wall_filter_ids = ['this_group_only', 'events_only', 'anns_only'];
-wall_filter_descrips = ["{{group}}'s Posts Only", 'Events Only', 'Announcements Only']
+wall_filter_descrips = ["{{group}}'s posts", 'events', 'announcements']
 
 class Filter:
     @staticmethod

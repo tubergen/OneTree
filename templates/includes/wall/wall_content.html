@@ -138,38 +138,34 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
 {% for post in posts %}
 <div class="post-box" id="post-box-{{post.id}}">
-    <div class="post-group">
-        {% ifnotequal post.origin_group group %}
-            <span class="post-via"></span>
-        {% else %}
-            <span class="post-by-same-group"></span>
-        {% endifnotequal %}
-        <span class="post-group-name"><a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a></div>
     <div class="post-content">
         <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})">x</button>
-	{% comment %}
-        <form name="delete-info" class="post-delete" action="" method="POST">{% csrf_token %}
-	    <input type="hidden" name="group_id" value="{{group.id}}">
-	    <input type="hidden" name="post_id" value="{{post.id}}">
-	    <input type="hidden" name="post_type" value="{{post.post_type}}">
-	    <input type="submit" name="delete_submit" class="delete-button" value="x">
-	</form>
-	{% endcomment %}
         <div class="post-votes">
             <ul>
                 <li>
-                    <button type="button" class="up-button" id="up-button-{{post.post_type}}-{{post.id}}">^_^</button></li>
-                <li><span class="vote-score" id="vote-score-{{post.post_type}}-{{post.id}}">{{ post.score }}</span></li>
-                <li><button type="button" class="down-button" id="down-button-{{post.post_type}}-{{post.id}}">;_;</button></li>
+                    <button type="button" class="up-button" id="up-button-{{post.post_type}}-{{post.id}}"></button></li>
+                <li><button type="button" class="down-button" id="down-button-{{post.post_type}}-{{post.id}}"></button></li>
             </ul>
+                <span class="vote-score" id="vote-score-{{post.post_type}}-{{post.id}}">{{ post.score }}</span>
         </div>
+
+        <div class="post-group-name">
+            {% ifnotequal post.origin_group group %}
+                <span class="post-via"></span>
+            {% else %}
+                <span class="post-by-same-group"></span>
+            {% endifnotequal %}
+            <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>
+        </div>
+
 	{% if post.event_date %}
-	Event: <strong><a href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br>
-	Where: {{ post.event_place }}<br>
-	Time: {{ post.event_date }}<br>
+	Event: <strong><a href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br />
+	Where: {{ post.event_place }}<br />
+	Time: {{ post.event_date }}<br />
 	Flags: {{ post.flags.all|join:", " }}
-	<hr>
+	<hr />
 	{% endif %}
+
         <div class="post-text">{{ post.text }}</div>
         <div class="post-reply-button">{% if user.is_authenticated %}
                 <a onclick="toggle_reply_box('post_id_{{ post.id }}', this);">Comment!</a>
@@ -186,13 +182,15 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <input type="hidden" name="post_id" value="{{ post.id }}"></input>
             <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
             <label for="comment_text_id_{{ post.id }}" class="comment-label"></label>
-            <textarea id="comment_text_id_{{ post.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
+            <textarea id="comment_text_id_{{ post.id }}" name="comment_text" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
         {% endif %}
 
+    {% if post.comment_set.all %}
+    <div class="comments-all-div">
         {% for comment in post.comment_set.all %}
-        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %}">
+        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
             <span class="comment-author"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             <span class="comment-content">{{ comment.text }}</span>
             <div class="comment-reply-button">
@@ -218,7 +216,12 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <span class="comment-content">{{ comment_child.text }}</span>
             </div>
         {% endfor %}
+        {% if not forloop.last %}
+            <hr />
+        {% endif %}
         {% endfor %}
+    </div>
+    {% endif %}
     {# DO IT #}
 </div>
 {% endfor %}

@@ -6,14 +6,20 @@ from OneTree.apps.group.views import create_group
 from OneTree.apps.common.views import homepage
 from OneTree.apps.newsfeed.views import newsfeed, change_subscribe, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
+from OneTree.apps.search.views import search
 from django.conf import settings
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 from django.views.generic.simple import direct_to_template
+
 import haystack
+import djapian
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+# get djapian indexing
+djapian.load_indexes()
 
 urlpatterns = patterns('',
     # Example:
@@ -50,7 +56,10 @@ urlpatterns = patterns('',
     (r'^newsfeed/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
-    (r'^search/', include('haystack.urls')),
+
+    # searching
+    #(r'^search/', include('haystack.urls')),
+    url(r'^search/$', search, name='search'),
 
     # activate/complete must come before activate/activation_key
     url(r'^activate/complete/$', 
