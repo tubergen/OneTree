@@ -24,18 +24,6 @@ def filter_newsfeed(request):
     print 'HTTP 400 returned in filter_newsfeed()'
     return HttpResponse(status=400)
 
-@login_required
-def change_subscribe(request):
-    if request.is_ajax() and request.method == 'POST':
-        profile = request.user.get_profile();
-        group_id = request.POST.get("group_id")
-        if group_id and profile:
-            profile.change_subscribe(group_id)
-            return HttpResponse()
-
-    return HttpResponse(status=400)
-    
-
 '''
 Looks at request. If request specifies a post should be deleted / remmoved, then
 it's deleted if the requester is the administrator of the author group; if not,

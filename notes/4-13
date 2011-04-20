@@ -4,10 +4,16 @@ confusing error message if you're creating an account that already exists
 
 still not logged in after registering
 
-unhandled error page if i create duplicate events
+unhandled error page if i create duplicate events (events with same url)
+IntegrityError at /group/bob/
+(1062, "Duplicate entry 'sdf' for key 'event_url'")
+
+If i do make an error filling out a time field for event creation, can we
+make it so that the other fields are auto repopulated with the stuff I entered?
+
 
 if i'm not logged in, and i go to the "http://onetree.princeton.edu/" page, and
-there are no groups
+there are no groups,
 i get: Sorry, there are no groups yet. Why don't you go ahead and make one
 
 ^ but it's not obvious how tomake one if i'm not logged in

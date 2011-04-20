@@ -19,14 +19,22 @@ Note: In common or something, we should keep all of these string
 literals in a text.en file
 '''
 
+@login_required
+def change_subscribe(request):
+    if request.is_ajax() and request.method == 'POST':
+        profile = request.user.get_profile();
+        group_id = request.POST.get("group_id")
+        if group_id and profile:
+            profile.change_subscribe(group_id)
+            return HttpResponse()
+
+    return HttpResponse(status=400)
 
 '''
 Looks at the wall post that was potentially submitted and, if any data was
 submitted, adds that data to the database. Returns an errorMsg if there was a
 error, which can be rendered. Returns None otherwise.
 '''
-
-
 def handle_submit(group, request):
     errormsg = None
     if request.method == 'POST':
@@ -186,10 +194,10 @@ def group_page(request, group_url):
                               'group': group,
                               'children': children,
                               'user_is_subscribed': user_is_subscribed,
-                              'subscribe_view_url':'/_apps/newsfeed/views-change_subscribe/',
+                              'subscribe_view_url':'/_apps/group/views-change_subscribe/',
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
-                              'delete_post_view_url': '/_apps/group_page/views-delete_post/',
+                              'delete_post_view_url': '/_apps/group/views-delete_post/',
                                'voted_post_set': voted_post_set,},
                               context_instance=RequestContext(request))
 

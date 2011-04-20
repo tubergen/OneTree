@@ -1,17 +1,17 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.group.views import group_page, event_page, delete_post
+from OneTree.apps.group.views import group_page, event_page, delete_post, change_subscribe
 from OneTree.apps.user.views import *
 
 from OneTree.apps.group.views import create_group
 from OneTree.apps.common.views import homepage
-from OneTree.apps.newsfeed.views import newsfeed, change_subscribe, filter_newsfeed, remove_post
+from OneTree.apps.newsfeed.views import newsfeed, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
 from OneTree.apps.search.views import search
 from django.conf import settings
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 from django.views.generic.simple import direct_to_template
 
-import haystack
+#import haystack
 import djapian
 
 # Uncomment the next two lines to enable the admin:
@@ -38,10 +38,10 @@ urlpatterns = patterns('',
     (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
-    (r'^_apps/newsfeed/views-change_subscribe/$', change_subscribe),
+    (r'^_apps/group/views-change_subscribe/$', change_subscribe),
     (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
-    (r'^_apps/group_page/views-delete_post/$', delete_post),  
+    (r'^_apps/group/views-delete_post/$', delete_post),  
 
     # User
     (r'^secret-signup/$', create_user),
