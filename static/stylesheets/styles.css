@@ -1,9 +1,11 @@
 body {
     /* background-color: #FFE073;    light orange 
     background-image: url(/static/images/bgflowers.jpg); */
-    background-image: url(/static/images/tree.jpg);
-    background-color: #D1D1D1;
+    background-image: url(/static/images/tree.gif);
+    background-color: #358196;/*#D1D1D1;*/
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: left bottom; 
     font-family: Helvetica, Arial, sans-serif;
     font-size: 10pt;
     margin: 0;
@@ -80,21 +82,9 @@ hr {
     -webkit-border-radius: 10px;
 }
 
-#left-content {
-    padding: 1em;
-    float: left;
-    height: 100%;
-    width: 17%;
-}
-
-#right-content {
-    margin-left: 17%;
-}
-
 #top-content, #main-content {
     width: 90%;
-    margin: .8em;
-    margin-bottom: 1em;
+    margin: .8em auto;
     position: relative;
     overflow: hidden;
 }
@@ -109,19 +99,6 @@ hr {
 #group-title-div {
     float: left;
     width: 60%;
-}
-
-/* I'm so sorry... I hate floats */
-#top-calendar {
-    position: absolute;
-    top: 50%;
-    left: 95%;
-    margin-left: -100px;
-    margin-top: -50px;
-    width: 100px;
-    height: 100px;
-    border: 1px solid;
-    float: right;
 }
 
 #group-title {
@@ -211,5 +188,5 @@ hr {
 a {
   /*  color: #e14adf; /* pink 
     color: #3F3F3F; /* grey */
-  color: green;
+  color: blue;
 }

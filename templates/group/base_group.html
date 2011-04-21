@@ -28,21 +28,29 @@
     {% endif %}
     <div id="group-name-nav">
         {% if group.parent %}
-            <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+            <h3 class="parent-word">Parent</h3>
+            <ul class="parent-list">
+                <li>
+                    <a class="parent-name" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+                </li>
+            </ul>
+        {% else %}
+            <h3 class="parent-none"></h3>
         {% endif %}
         {% if children %}
+            {% ifequal children|length 1 %} 
+                <h3 class="child-word">Child</h3>
+            {% else %}
+                <h3 class="child-word">Children</h3>
+            {% endifequal %}
             <ul class="child-list">
             {% for child in children %}
-                <li><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+                <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
             {% endfor %}
             </ul>
+        {% else %}
+            <h3 class="child-none">No children</h3>
         {% endif %}
-        Children example:
-        <ul class="child-list">
-            <li>one</li>
-            <li>two</li>
-            <li>three</li>
-        </ul>
         
         {% comment %}
         <div class="grouptags">
