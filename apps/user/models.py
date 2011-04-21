@@ -121,7 +121,7 @@ class RegistrationProfile(models.Model):
                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS }
         print self.activation_key
         subject = "Welcome to OneTree!" # must NOT contain new lines
-        
+
         message = render_to_string('registration/activation_email.txt',
                                    activation_details)
         

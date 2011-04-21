@@ -292,10 +292,15 @@ def create_group(request):
                     new_tag.save()
                 new_tags.append(new_tag)
 
-            new_group = form.save()
-            for tag in new_tags:
-                new_group.tags.add(tag)
+     #       new_group = form.save()
+     #       for tag in new_tags:
+     #           new_group.tags.add(tag)
 
+            # associating groupinfo with a group
+            info = ''
+            groupinfo = GroupInfo(group=new_group,
+                                  data=info)
+            groupinfo.save()
 
             # there is probably a more elegant way to associate admin to a group
             currentgroup = Group.objects.get(name=form.cleaned_data['name'])
@@ -318,3 +323,30 @@ def create_group(request):
         form = GroupForm() # An unbound form - can use this for error messages
 
     return render_to_response('base_groupsignup.html', {'form': form,}, RequestContext(request))
+
+
+# groupinfo page
+def groupinfo_page(request, groupname):
+    errormsg = None
+    context = RequestContext(request)
+
+    #print groupname
+    this_group = Group.objects.get(name=groupname)
+    #print this_group
+    groupinfo = GroupInfo.objects.filter(group=this_group)
+
+    # this shouldn't happen
+    if not groupinfo:
+        groupinfo = GroupInfo(group=this_group,
+                              data='This needs to be editable.')
+        groupinfo.save()
+
+    # this SHOULD happen 
+    else:
+        groupinfo = groupinfo[0]
+
+    #print groupinfo
+    return render_to_response('base_groupinfo.html',
+                              {'errormsg': errormsg,
+                               'groupinfo': groupinfo},
+                              context_instance=context)

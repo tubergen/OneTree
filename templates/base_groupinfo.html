@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+<span id="title"><h1>{{ groupinfo.group }}</h1></span>
+{% endblock %}
+
+{% block main_content %}
+<p>
+<strong>Info: </strong>{{ groupinfo.data }}<br>
+</p>
+<br>
+<br>
+Back to <a href="/group/{{ groupinfo.group }}">{{ groupinfo.group }}</a>
+{% endblock %}

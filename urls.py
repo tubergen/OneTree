@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.group.views import group_page, event_page, delete_post, change_subscribe
+from OneTree.apps.group.views import group_page, event_page, delete_post, change_subscribe, groupinfo_page
 from OneTree.apps.user.views import *
 from OneTree.apps.notifications.views import notification_page, answer_notif
 from OneTree.apps.group.views import create_group, req_membership
@@ -34,6 +34,7 @@ urlpatterns = patterns('',
     # Group 
     #(r'^group/$', group_page),
     (r'^group/(\w+)/$', group_page),
+    (r'^group/(\w+)/info/$', groupinfo_page),
     (r'^group/(\w+)/(.*)/$', event_page),
     (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
