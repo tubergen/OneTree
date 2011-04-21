@@ -199,7 +199,7 @@ def admin_approve(request):
     print "In admin_approve -- groups",
     print groups
 
-    return render_to_response('base_approve.html',
+    return render_to_response('user/base_approve.html',
                               { 'groups': groups, 
                                 },
                               context_instance=context
