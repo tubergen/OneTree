@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+<h1 id="title">{{ user.username }}</h1>
+{% endblock %}
+
+{% block main_content %}
+<h2>Approve/Disapprove Children</h2>
+
+<form action="" method="POST">
+<ul class="group-approve-list">
+{% for group in groups %}
+    <li>{{ group.name }} {% if group.inactive_child.all %}has inactive children:{% else %}has no inactive children{% endif%}
+        <ul class="group-approve-children">
+            {% for child in group.inactive_child.all %}
+                <li><input type="checkbox" name="{{group.name}}" value="{{child.name}}" />{{ child.name }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+</ul>
+{% endfor %}
+<input type="submit" value="submit">
+</form>
+{% endblock %}

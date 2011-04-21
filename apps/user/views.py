@@ -132,7 +132,9 @@ def user_page(request, username):
     errormsg = None
 
     user = request.user
-    
+    userprofile = UserProfile.objects.get(user=request.user)
+    print "========= USERPROFILE =========="
+    print userprofile.subscriptions.all()
     groups = Group.objects.filter(admins=user)
         
     if groups:
@@ -144,19 +146,61 @@ def user_page(request, username):
     else:
         print "No groups found"
 
-        
-    return render_to_response('base_user.html',
+    print "List of groups: ",
+    print groups
+
+    return render_to_response('user/base_user.html',
                               {'user': user, 
+                               'userprofile': userprofile,
                                'groups': groups, 
-                               'active': user.is_active },
+                               'inactive_children': groups,
+                               'active': user.is_active, },
                               context_instance=RequestContext(request))    
 
 @login_required
 def user_account(request, username):
-    context_instance=RequestContext(request)
+    context=RequestContext(request)
 
     return render_to_response('account.html',
                               { 'user': request.user },
-                              context_instance=RequestContext(request)
+                              context_instance=context
                               )
 
+@login_required
+def complete_profile(request):
+    context=RequestContext(request)
+
+    return render_to_response('complete_profile.html',
+                              {
+
+                              },
+                              context_instance=context
+                              )
+
+    
+@login_required
+def admin_approve(request):
+    context=RequestContext(request)
+
+    user = request.user
+    groups = Group.objects.filter(admins=user)
+        
+    if groups:
+        print "Group(s) with children awaiting approval:"
+        for group in groups:
+            if group.inactive_child is not None:
+                print group.name,
+                print ": ",
+                print group.inactive_child.all()
+        print ""
+    else:
+        print "No groups found"
+
+    print "In admin_approve -- groups",
+    print groups
+
+    return render_to_response('base_approve.html',
+                              { 'groups': groups, 
+                                },
+                              context_instance=context
+                              )

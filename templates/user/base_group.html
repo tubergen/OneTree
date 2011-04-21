@@ -1,0 +1,84 @@
+{% extends "base_page_with_wall.html" %}
+
+{% block left_content %}
+    {% if user.is_authenticated %}
+        <button type="button" id="subscribe-button">Subscribed</button>
+    {% endif %}
+    <div id="group-name-nav">
+        {% if group.parent %}
+            <a id="parent" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+        {% endif %}
+        {% if children %}
+            <ul class="child-list">
+            {% for child in children %}
+                <li><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        Children example:
+        <ul class="child-list">
+            <li>one</li>
+            <li>two</li>
+            <li>three</li>
+        </ul>
+        
+        {% comment %}
+        <div class="grouptags">
+          {% if group.tags.all %}
+          <strong>Tags: </strong>
+          {% for tag in group.tags.all %}
+          {{ tag.tag }} 
+          {% endfor %}
+          {% endif %}
+        </div>
+        {% endcomment %}
+        
+    </div>
+{% endblock %}
+
+
+{% block top_title %}
+
+<script type="text/javascript" charset="utf-8">
+
+{% if user.is_authenticated %}
+    $(document).ready(function() {
+
+        {% if user_is_subscribed %}
+            user_is_subscribed = true;
+            $('#subscribe-button').css('background-color', 'green')
+        {% else %} 
+            user_is_subscribed = false;
+            $('#subscribe-button').css('background-color', 'red')
+        {% endif %}
+
+        $('#subscribe-button').click(function(event) {
+            if (user_is_subscribed) {
+                next_background = 'red'
+            }
+            else {
+                next_background = 'green'
+            }
+            send_subscribe_change()
+        });
+    });
+
+    function send_subscribe_change()
+    {
+        var url = "{{ subscribe_view_url }}";
+        var data = {};
+        data["group_id"] = {{ group.id }};
+
+        $.post(url, data, function() {
+
+            $('#subscribe-button').css('background-color', next_background)
+            user_is_subscribed = !user_is_subscribed;
+        });
+    }
+{% endif %}
+
+</script>
+
+    <h1 id="group-title">{{ group.name }}</h1>
+    <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+{% endblock %}

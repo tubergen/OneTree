@@ -243,6 +243,11 @@ def create_group(request):
             new_group.parent = None
             new_group.save()
 
+            print "=========DATA========="
+            print new_group
+
+            print ">>> END <<<"
+
             # Notify parent group
             try:
                 parent = Group.objects.get(name=inactive_parent)
@@ -250,7 +255,7 @@ def create_group(request):
                 parent = None
 
             if parent:
-                parent.inactive_child.add(group)
+                parent.inactive_child.add(new_group)
 
 
 

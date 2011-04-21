@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+<span id="title"><h1>{{ user.username }}</h1></span>
+{% endblock %}
+
+{% block main_content %}
+<strong>Approve/Disapprove Children</strong>
+
+{% for group in groups %}
+
+
+{% for child in group.inactive_child.all %}
+    <p>{{ group }} has inactive children:</p>
+    
+    <p>{{ child }}</p>
+{% endfor %}
+
+
+
+
+
+
+{% endfor %}
+
+{% endblock %}
