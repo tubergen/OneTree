@@ -13,3 +13,4 @@ parts
 media/uploads
 tmp
 .DS_Store
+djapian_spaces
