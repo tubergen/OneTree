@@ -1,3 +1,43 @@
+/*--- make room for the left navigation and calendar ---*/
+
+#left-content {
+    padding: 1em;
+    float: left;
+    height: 100%;
+    width: 17%;
+}
+
+#right-content {
+    margin-left: 17%;
+}
+
+#top-content, #main-content {
+    width: 90%;
+    margin: .8em;
+    margin-bottom: 1em;
+    position: relative;
+    overflow: hidden;
+}
+
+/* I'm so sorry... I hate floats */
+#top-calendar {
+    position: absolute;
+    top: 50%;
+    left: 95%;
+    margin-left: -150px;
+    margin-top: -75px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid;
+    float: right;
+}
+
+#top-content {
+    min-height: 155px; /* this is to match the height of the calendar which I currently set to 150px... sorry if there's a cleaner way to do that */
+}
+
+/*----------------------------------------*/
+
 .parent-name, .group-name {
 }
 
