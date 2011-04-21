@@ -35,7 +35,7 @@ def create_user(request):
                 print login(request, user)
 
             print "login done"
-            return render_to_response("base_user.html",
+            return render_to_response("user/base_user.html",
                                       { 'email': "secret signup email", 
                                         'password': "secret signup password"} 
                                       )
@@ -130,17 +130,27 @@ def activate(request, activation_key):
 def user_page(request, username):
     print "In user_page"
     errormsg = None
+    need_approval = False
 
     user = request.user
     userprofile = UserProfile.objects.get(user=request.user)
+
+
     print "========= USERPROFILE =========="
     print userprofile.subscriptions.all()
     groups = Group.objects.filter(admins=user)
         
     if groups:
-        print "Group(s) with children awaiting approval:",
+        print "Group(s) with children awaiting approval:"
         for group in groups:
-            if group.inactive_child is not None:
+            print "inactive child: ",
+            print group.inactive_child.all()
+            if group.inactive_child:
+                print "WITH INACTIVE CHILD"
+                pass
+            else:
+                print "WTHOUT"
+                need_approval = True
                 print group.name,
         print ""
     else:
@@ -153,7 +163,7 @@ def user_page(request, username):
                               {'user': user, 
                                'userprofile': userprofile,
                                'groups': groups, 
-                               'inactive_children': groups,
+                               'need_approval': need_approval,
                                'active': user.is_active, },
                               context_instance=RequestContext(request))    
 
@@ -184,7 +194,8 @@ def admin_approve(request):
 
     user = request.user
     groups = Group.objects.filter(admins=user)
-        
+
+    # FOR DEBUGGING ############
     if groups:
         print "Group(s) with children awaiting approval:"
         for group in groups:
@@ -198,6 +209,31 @@ def admin_approve(request):
 
     print "In admin_approve -- groups",
     print groups
+    ############################
+
+
+    if request.method == 'POST':
+        data = request.POST
+
+        print ">>>>>>>>>>>"
+
+
+        user = request.user
+        groups = Group.objects.filter(admins=user)
+        
+        for group in groups:
+            for child in data.getlist(group.name):
+                childgroup = Group.objects.get(name=child)
+                group.inactive_child.remove(childgroup)
+
+                childgroup.parent = group
+                group.save()
+                childgroup.save()
+                print "SAVED"
+                
+                        
+
+        print ">>>>>>>>>>"
 
     return render_to_response('user/base_approve.html',
                               { 'groups': groups, 

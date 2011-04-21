@@ -7,7 +7,7 @@
 {% block main_content %}
 <h2>Approve/Disapprove Children</h2>
 
-<form action="" method="POST">
+<form action="" method="POST">{% csrf_token %}
 <ul class="group-approve-list">
 {% for group in groups %}
     <li>{{ group.name }} {% if group.inactive_child.all %}has inactive children:{% else %}has no inactive children{% endif%}
