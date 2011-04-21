@@ -1,8 +1,9 @@
 *~
-*.orig
-*.pyc
-*.rej
-.installed.cfg
+*\.orig
+*\.pyc
+*\.rej
+*\.swp
+\.installed\.cfg
 __minitage__*
 bin/*
 develop-eggs
