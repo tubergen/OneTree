@@ -10,15 +10,12 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 
-
-
 # ===============================
 # USER PROFILE
 # ===============================
 class UserProfile(models.Model):
     user = models.ForeignKey(auth.models.User)
     subscriptions = models.ManyToManyField('Group', related_name='subscribers', blank=True)
-    memberships = models.ManyToManyField('Group', related_name='members', blank=True)
     #administrations = models.ManyToManyField('Group', related_name='administers', blank=True)
 
     # maybe condense these into two pairs into two models with a through?
@@ -28,8 +25,11 @@ class UserProfile(models.Model):
     voted_events = models.ManyToManyField('Event', related_name='voted_event_user_set',
                                           through='EventVote', blank=True)
     voted_anns = models.ManyToManyField('Announcement', related_name='voted_ann_user_set',
-                                       through='AnnVote', blank=True)    
-    
+                                       through='AnnVote', blank=True)
+
+    memberships = models.ManyToManyField('Group', related_name='members', blank=True)
+    pending_member_reqs = models.ManyToManyField('Group', related_name='member_requests',
+                                                 blank=True)
     def __unicode__(self):
         return "%s's profile" % self.user
 
@@ -39,6 +39,12 @@ class UserProfile(models.Model):
 
     post_save.connect(create_user_profile, sender=auth.models.User)
 
+    ''' Returns true if user is a member of group; false otherwise '''
+    def is_member_of(self, group):
+        ''' i literally couldn't remember how to do this '''
+        #return self.memberships.get(group=group)
+        pass
+
     '''
     Changes the subscription status of this profile's user for the
     specified group. If the user is already subscribed, he is
@@ -47,8 +53,6 @@ class UserProfile(models.Model):
     def change_subscribe(self, group_id):
         sub_manager = self.subscriptions;
 
-        print "a"
-        
         # check to see if user is already subscribed
         try:
             subscribed_group = sub_manager.get(id=group_id)
@@ -199,4 +203,3 @@ class UserProfile(models.Model):
         else:
             print 'Cannot vote on non-announcement non-event.' + err_loc
             return None
-

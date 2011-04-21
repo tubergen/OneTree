@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 
 from OneTree.apps.common.models import *
+from OneTree.apps.common.notifications import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
 from OneTree.apps.group.helpers import *
@@ -30,6 +31,28 @@ def change_subscribe(request):
 
     return HttpResponse(status=400)
 
+@login_required
+def req_membership(request):
+    err_loc = ' Error at req_membership in group/views.py.'
+    if request.is_ajax() and request.method == 'POST':
+        try:
+            group_id = int(request.POST.get('group_id'))
+        except ValueError:
+            print 'group_id not int.' + err_loc
+            return HttpResponse(status=400)
+        if group_id:
+            group = Group.objects.get(id=group_id)
+            pending_mem_req = MembershipReq.objects.filter(sender=request.user,
+                                                           group=group,
+                                                           new=True)
+            if not pending_mem_req:
+                mem_req = MembershipReq(sender=request.user, group=group)
+                mem_req.save()
+            else:
+                print 'Already a pending membership request.'
+            return HttpResponse()
+    return HttpResponse(status=400)        
+        
 '''
 Looks at the wall post that was potentially submitted and, if any data was
 submitted, adds that data to the database. Returns an errorMsg if there was a
@@ -185,6 +208,9 @@ def group_page(request, group_url):
     if verify_admin:
         is_admin = True
         submit_off = False
+
+    #is_member = request.user.get_profile.memberships.exists()
+    ''' call is_member_of, which i forgot how to do '''
   
     return render_to_response('group/base_group.html',
                               {'posts': posts,

@@ -10,6 +10,11 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 from OneTree.apps.common.user import UserProfile
+from django.contrib.contenttypes.models import ContentType
+
+# the order of these two files matters
+#from OneTree.apps.common.inheritance import InheritanceCastModel
+from OneTree.apps.common.notification import Notification
 '''
 I temporarily allowed some of the following fields to be blank. We should
 go back through and figure out which ones we actually want to be blank.

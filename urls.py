@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import *
 from OneTree.apps.group.views import group_page, event_page, delete_post, change_subscribe
 from OneTree.apps.user.views import *
-
-from OneTree.apps.group.views import create_group
+from OneTree.apps.notifications.views import notification_page, answer_notif
+from OneTree.apps.group.views import create_group, req_membership
 from OneTree.apps.common.views import homepage
 from OneTree.apps.newsfeed.views import newsfeed, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
@@ -39,6 +39,7 @@ urlpatterns = patterns('',
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
     (r'^_apps/group/views-change_subscribe/$', change_subscribe),
+    (r'^_apps/group/views-req_membership/$', req_membership),                       
     (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
     (r'^_apps/group/views-delete_post/$', delete_post),  
@@ -57,6 +58,10 @@ urlpatterns = patterns('',
     (r'^$', homepage),
     (r'^register/$', register),
 
+    # Notifications
+    (r'^notifications/$', notification_page),
+    (r'^_apps/notifications/views-answer_notif/$', answer_notif),
+                       
     # searching
     #(r'^search/', include('haystack.urls')),
     url(r'^search/$', search, name='search'),
