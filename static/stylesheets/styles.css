@@ -2,8 +2,10 @@ body {
     /* background-color: #FFE073;    light orange 
     background-image: url(/static/images/bgflowers.jpg); */
     background-image: url(/static/images/tree.jpg);
-    background-color: #D1D1D1;
+    background-color: #FFFFFF;/*#D1D1D1;*/
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: left bottom; 
     font-family: Helvetica, Arial, sans-serif;
     font-size: 10pt;
     margin: 0;
