@@ -216,8 +216,10 @@ def group_page(request, group_url):
 
     if verify_admin(request, group):
         is_admin = True
-
-    membership_status = request.user.get_profile().get_membership_status(group)
+    
+    membership_status = "notmember"
+    if request.user.is_authenticated():
+        membership_status = request.user.get_profile().get_membership_status(group)
   
     return render_to_response('group/base_group.html',
                               {'posts': posts,

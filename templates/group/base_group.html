@@ -1,94 +1,79 @@
 {% extends "base_page_with_wall.html" %}
 
 {% comment %}
-Code here is kind of sloppy now where I've hard-coded messages in 
-html plain text, and text is repeated in javascript code.
+    Code here is kind of sloppy now where I've hard-coded messages in 
+    html plain text, and text is repeated in javascript code.
 {% endcomment %}
 
 {% block left_content %}
 
-<script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
 
-  function req_membership()
-  {
-     var data = {"group_id":'{{group.id}}'};
-     $.post("/_apps/group/views-req_membership/", data, function(data) {
-       $('#mem_status').html('Membership Pending...');
-     });
-  }
+    function req_membership()
+    {
+        var data = {"group_id":'{{group.id}}'};
+        $.post("/_apps/group/views-req_membership/", data, function(data) {
+            $('#mem_status').html('Membership Pending...');
+        });
+    }
 
 </script>
 
-    {% if user.is_authenticated %}
-        <button type="button" id="subscribe-button">Subscribed</button>
-	<div id="mem_status">
-	    {% ifequal membership_status "member" %}
-	       You're a Member
-	    {% else %}
-   	       {% ifequal membership_status "pending" %}
-                  Membership Pending...
-	       {% else %}
-                  <button type="button" id="membership-button"
-	             onClick="req_membership()">Request Membership</button>
-               {% endifequal %}
-            {% endifequal %}
-	</div>
+<div id="group-name-nav">
+    {% if group.parent %}
+        <h3 class="parent-word">parent</h3>
+        <ul class="parent-list">
+            <li>
+                <span class="child-list-border"></span>&nbsp;<a class="parent-name" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+            </li>
+        </ul>
+    {% else %}
+        <h3 class="parent-none">no parent</h3>
     {% endif %}
-    <div id="group-name-nav">
-        {% if group.parent %}
-            <h3 class="parent-word">Parent</h3>
-            <ul class="parent-list">
-                <li>
-                    <span class="child-list-border"></span>&nbsp;<a class="parent-name" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
-                </li>
-            </ul>
+    {% if children %}
+        {% ifequal children|length 1 %} 
+            <h3 class="child-word">child</h3>
         {% else %}
-            <h3 class="parent-none"></h3>
-        {% endif %}
-        {% if children %}
-            {% ifequal children|length 1 %} 
-                <h3 class="child-word">Child</h3>
-            {% else %}
-                <h3 class="child-word">Children</h3>
-            {% endifequal %}
-            <ul class="child-list">
+            <h3 class="child-word">children</h3>
+        {% endifequal %}
+        <ul class="child-list">
             {% for child in children %}
                 <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
             {% endfor %}
-            </ul>
-        {% else %}
-            <h3 class="child-none">No children</h3>
-        {% endif %}
-        
-        {% comment %}
+        </ul>
+    {% else %}
+        <h3 class="child-none">no children</h3>
+    {% endif %}
+
+    {% comment %}
         <div class="grouptags">
-          {% if group.tags.all %}
-          <strong>Tags: </strong>
-          {% for tag in group.tags.all %}
-          {{ tag.tag }} 
-          {% endfor %}
-          {% endif %}
+            {% if group.tags.all %}
+                <strong>Tags: </strong>
+                {% for tag in group.tags.all %}
+                    {{ tag.tag }} 
+                {% endfor %}
+            {% endif %}
         </div>
-        {% endcomment %}
-        
-    </div>
+    {% endcomment %}
+
+</div>
 {% endblock %}
 
 
 {% block top_title %}
 
-<script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
 
-{% if user.is_authenticated %}
+    {% if user.is_authenticated %}
     $(document).ready(function() {
 
         {% if user_is_subscribed %}
-            user_is_subscribed = true;
-            $('#subscribe-button').css('background-color', 'green')
-            $('#subscribe-button').css('color', 'white')
+        user_is_subscribed = true;
+        $('#subscribe-button').css('background-color', 'green')
+        $('#subscribe-button').css('color', 'white')
         {% else %} 
-            user_is_subscribed = false;
-            $('#subscribe-button').css('background-color', '')
+        user_is_subscribed = false;
+        $('#subscribe-button').css('background-color', '')
         {% endif %}
 
         $('#subscribe-button').click(function(event) {
@@ -117,15 +102,34 @@ html plain text, and text is repeated in javascript code.
             user_is_subscribed = !user_is_subscribed;
         });
     }
-{% endif %}
+    {% endif %}
 
 </script>
 
-    <h1 id="group-title">{{ group.name }}</h1><br>
-    <a href="/group/{{ group.name }}/info">Info</a>
-    {% if groupinfo.data %}
+<div id="group-name-blurb">
+<h1 id="group-title">{{ group.name }}</h1>
+{% if groupinfo.data %}
     <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
-      {% else %}
-    <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).      
-	{% endif %}
+    {% else %}
+        <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+        {% endif %}{% if is_admin %}<a href="/group/{{ group.name }}/info">(edit info)</a>{% endif %}</p>
+</div>
+
+<ul class="group-interaction-buttons">
+    {% if user.is_authenticated %}
+        <li><button type="button" id="subscribe-button">subscribe</button></li>
+        <div id="mem_status">
+            {% ifequal membership_status "member" %}
+                <li>you're a member</li>
+            {% else %}
+                {% ifequal membership_status "pending" %}
+                    <li>membership pending</li>
+                {% else %}
+                    <li><button type="button" id="membership-button"
+                                onClick="req_membership()">request membership</button></li>
+                {% endifequal %}
+            {% endifequal %}
+        </div>
+    {% endif %}
+</ul>
 {% endblock %}

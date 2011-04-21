@@ -2,15 +2,15 @@
     padding: 1em;
     float: left;
     height: 100%;
-    width: 17%;
+    width: 20%;
 }
 
 #right-content {
-    margin-left: 17%;
+    margin-left: 20%;
 }
 
 #top-content, #main-content {
-    width: 90%;
+    width: 95%;
     margin: .8em;
     margin-bottom: 1em;
     position: relative;

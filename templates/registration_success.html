@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <span id="title"><h1>Registration Success!</h1></span>
+    <h1 id="title">Activation Email Sent!</h1>
 {% endblock %}
 
 {% block main_content %}
-<p>{{ email }}</p>
-<p>{{ password }}</p>
+    <div class="main-container">
+        <p><strong>username:</strong>{{ user }}</p>
+        <p><strong>email:</strong> {{ email }}</p>
+        <p><strong>password:</strong> {{ password }}</p>
 
-<p>You are now registered. An activation e-mail has been sent to {{ email }}.</p>
-
+        <p>Thanks for registering! An activation e-mail has been sent to {{ email }}. Please click the link in that email to complete your registration.</p>
+    </div>
 {% endblock %}
 
 
