@@ -4,3 +4,5 @@ pending_mem_req = MembershipReq.objects.filter(sender=request.user,
 		group = group, pending=True)
 
 ^in common/user.py this query is needlessly inefficent i htink
+
+users should be logged in when they reigster; they just shouldn't be allowed to do stuff
