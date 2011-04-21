@@ -139,7 +139,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 {% for post in posts %}
 <div class="post-box" id="post-box-{{post.id}}">
     <div class="post-content">
-        <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})">x</button>
+        <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
         <div class="post-votes">
             <ul>
                 <li>
@@ -151,20 +151,21 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
         <div class="post-group-name">
             {% ifnotequal post.origin_group group %}
-                <span class="post-via"></span>
+                <span class="post-by-child-group">
             {% else %}
-                <span class="post-by-same-group"></span>
+                <span class="post-by-same-group">
             {% endifnotequal %}
-            <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>
+            {% if post.event_title %}
+                 <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>: <a class="event-title" href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a>
+                {% else %}
+                    <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>
+            {% endif %}
+            </span>
         </div>
-
-	{% if post.event_date %}
-	Event: <strong><a href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a></strong><br />
-	Where: {{ post.event_place }}<br />
-	Time: {{ post.event_date }}<br />
-	Flags: {{ post.flags.all|join:", " }}
-	<hr />
-	{% endif %}
+        {% if post.event_date %}
+            <p class="event-details">at <span class="event-place">{{ post.event_place }}</span> on <span class="event-date">{{ post.event_date }}</span></p>
+            {% if post.flags.all %} <p class="event-flags">{{ post.flags.all|join:", " }}</p>{% endif %}
+        {% endif %}
 
         <div class="post-text">{{ post.text }}</div>
         <div class="post-reply-button">{% if user.is_authenticated %}

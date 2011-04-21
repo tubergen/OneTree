@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'OneTree.apps.wall',
     'OneTree.apps.common',
     'OneTree.apps.newsfeed',
+    'OneTree.apps.notifications',
      #'haystack',
     'djapian',
     # Uncomment the next line to enable the admin:
