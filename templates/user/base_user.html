@@ -4,6 +4,12 @@
 <span id="title"><h1>{{ user.username }}</h1></span>
 {% endblock %}
 
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
+{% endblock %}
+
 {% block left_content %}
 
 <strong><p>Subscribed Groups</p></strong>
@@ -15,13 +21,7 @@
 Not subscribed to any groups at the moment
 {% endfor %}
 
-
-
-
 {% endblock %}
-
-
-
 
 {% block main_content %}
 
