@@ -7,6 +7,8 @@
 {% block main_content %}
 <h2>Approve/Disapprove Children</h2>
 
+{% if need_approval %}
+
 <form action="" method="POST">{% csrf_token %}
 <ul class="group-approve-list">
 {% for group in groups %}
@@ -21,4 +23,9 @@
 {% endfor %}
 <input type="submit" value="submit">
 </form>
+
+{% else %}
+<p>Sad... no group wants to be a child of your group</p>
+
+{% endif %}
 {% endblock %}

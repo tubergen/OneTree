@@ -63,7 +63,8 @@ def register(request):
                 login(request, user)
 
             return render_to_response("registration_success.html",
-                                      { 'email':email, 'password':password },
+                                      { 'username': username,
+                                        'email':email, 'password':password },
                                       context_instance=context
                                       )
     else:
@@ -134,30 +135,14 @@ def user_page(request, username):
 
     user = request.user
     userprofile = UserProfile.objects.get(user=request.user)
-
-
-    print "========= USERPROFILE =========="
-    print userprofile.subscriptions.all()
     groups = Group.objects.filter(admins=user)
         
     if groups:
-        print "Group(s) with children awaiting approval:"
         for group in groups:
-            print "inactive child: ",
-            print group.inactive_child.all()
             if group.inactive_child.all():
-                print "WITH INACTIVE CHILD"
                 need_approval = True
-                pass
             else:
-                print "WTHOUT"
-                print group.name,
-        print ""
-    else:
-        print "No groups found"
-
-    print "List of groups: ",
-    print groups
+                pass 
 
     return render_to_response('user/base_user.html',
                               {'user': user, 
@@ -192,6 +177,8 @@ def complete_profile(request):
 def admin_approve(request):
     context=RequestContext(request)
 
+    need_approval = False
+
     user = request.user
     groups = Group.objects.filter(admins=user)
 
@@ -212,6 +199,14 @@ def admin_approve(request):
     ############################
 
 
+    if groups:
+        for group in groups:
+            if group.inactive_child.all():
+                need_approval = True
+            else:
+                pass 
+
+
     if request.method == 'POST':
         data = request.POST
 
@@ -220,7 +215,7 @@ def admin_approve(request):
 
         user = request.user
         groups = Group.objects.filter(admins=user)
-        
+       
         for group in groups:
             for child in data.getlist(group.name):
                 childgroup = Group.objects.get(name=child)
@@ -231,12 +226,9 @@ def admin_approve(request):
                 childgroup.save()
                 print "SAVED"
                 
-                        
-
-        print ">>>>>>>>>>"
-
     return render_to_response('user/base_approve.html',
                               { 'groups': groups, 
+                                'need_approval': need_approval,
                                 },
                               context_instance=context
                               )
