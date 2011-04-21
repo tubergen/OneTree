@@ -145,12 +145,12 @@ def user_page(request, username):
         for group in groups:
             print "inactive child: ",
             print group.inactive_child.all()
-            if group.inactive_child:
+            if group.inactive_child.all():
                 print "WITH INACTIVE CHILD"
+                need_approval = True
                 pass
             else:
                 print "WTHOUT"
-                need_approval = True
                 print group.name,
         print ""
     else:
