@@ -61,7 +61,9 @@ error, which can be rendered. Returns None otherwise.
 def handle_submit(group, request):
     errormsg = None
     if request.method == 'POST':
-        if 'post_content' in request.POST and request.POST['post_content']:
+        if not verify_admin(request, group):
+            errormsg = "Get outta here, you liar!"
+        elif 'post_content' in request.POST and request.POST['post_content']:
 
             # later insert logic to distinguish events vs announcement
             if 'eventclick' in request.POST and request.POST['eventclick']:
@@ -202,12 +204,10 @@ def group_page(request, group_url):
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
 
-    submit_off = True
     is_admin = False
 
-    if verify_admin:
+    if verify_admin(request, group):
         is_admin = True
-        submit_off = False
 
     #is_member = request.user.get_profile.memberships.exists()
     ''' call is_member_of, which i forgot how to do '''
@@ -215,7 +215,6 @@ def group_page(request, group_url):
     return render_to_response('group/base_group.html',
                               {'posts': posts,
                                'is_admin': is_admin,
-                               'submit_off': submit_off,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,

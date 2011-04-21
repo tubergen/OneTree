@@ -16,8 +16,7 @@ id "wall-content".
     <h2 id="subtitle">wall posts</h2>
   {% endblock %}
 
-    {# Ming says: hope you can change this submit_off boolean to admin only w/o breaking newsfeed #}
-    {% if not submit_off %}
+    {% if is_admin %}
        {% include "includes/wall/wall_submit.html" %}
     {% endif %}
 
