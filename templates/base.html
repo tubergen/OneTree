@@ -30,7 +30,7 @@
                             <li><a href="/login/?next={{ request.path }}">Login</a></li>
                         {% endif %}
                             <li>
-                                <form action='/search/' method='GET'>{% csrf_token %}
+                                <form action='/search/' method='GET'>
                                     <input name="query" class="search-bar" type="text"value="search groups" style="color: gray;" onfocus="this.value=''; this.style.color='black'; this.onfocus=null;"></input>
                                 </form>
                             </li>

@@ -1,8 +1,8 @@
 body {
     /* background-color: #FFE073;    light orange 
     background-image: url(/static/images/bgflowers.jpg); */
-    background-image: url(/static/images/tree.jpg);
-    background-color: #FFFFFF;/*#D1D1D1;*/
+    background-image: url(/static/images/tree.gif);
+    background-color: #358196;/*#D1D1D1;*/
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-position: left bottom; 
@@ -101,6 +101,10 @@ hr {
     overflow: hidden;
 }
 
+#top-content {
+    min-height: 155px; /* this is to match the height of the calendar which I currently set to 150px... sorry if there's a cleaner way to do that */
+}
+
 #subtitle, #title, #group-title {
     font-family: Verdana, Arial, sans-serif;
     padding: 0;
@@ -118,10 +122,10 @@ hr {
     position: absolute;
     top: 50%;
     left: 95%;
-    margin-left: -100px;
-    margin-top: -50px;
-    width: 100px;
-    height: 100px;
+    margin-left: -150px;
+    margin-top: -75px;
+    width: 150px;
+    height: 150px;
     border: 1px solid;
     float: right;
 }
@@ -213,5 +217,5 @@ hr {
 a {
   /*  color: #e14adf; /* pink 
     color: #3F3F3F; /* grey */
-  color: green;
+  color: blue;
 }
