@@ -10,6 +10,7 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 from OneTree.apps.common.notification import MembershipReq
+from OneTree.apps.common.models import *
 
 # ===============================
 # USER PROFILE
@@ -56,10 +57,8 @@ class UserProfile(models.Model):
                                                            group=group,
                                                            pending=True)
             if pending_mem_req:
-                print pending_mem_req
                 return True
             else:
-                print 'none'
                 return False
         except Group.DoesNotExist:
             return False
@@ -133,8 +132,6 @@ class UserProfile(models.Model):
     '''
     def change_vote(self, post_id, post_type, vote_type):
         err_loc = ' See change_vote in the UserProfile model.'
-
-        print post_type
 
         # get the vote, being careful to make sure the [PostType]Vote object exists
         if post_type == PostType.EVENT:

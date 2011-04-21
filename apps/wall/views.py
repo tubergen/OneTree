@@ -74,7 +74,7 @@ def update_vote(request):
                     vt = VoteType.UP
                 else:
                     vt = VoteType.DOWN
-                    
+
                 (up_change, down_change) = profile.change_vote(post_id, post_type, vt)
 
                 if up_change == None and down_change == None:

@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from OneTree.apps.common.notification import *
+from operator import attrgetter
 
 from itertools import chain
 
@@ -59,6 +60,10 @@ def notification_page(request):
         pending_notifs = chain(pending_notifs, group.notification_set.filter(pending=True))
         old_notifs = chain(old_notifs, group.notification_set.filter(pending=False))
 
+    pending_notifs = sorted(pending_notifs, key=attrgetter('date'), reverse=True)
+    old_notifs = sorted(old_notifs, key=attrgetter('date'), reverse=True)    
+
     return render_to_response('notifications/base_notif.html',
-                             {'pending_notifs': pending_notifs, 'old_notifs': old_notifs,},
+                             {'pending_notifs': pending_notifs,
+                              'old_notifs': old_notifs,},
                              RequestContext(request));    

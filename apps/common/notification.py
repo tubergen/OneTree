@@ -12,11 +12,17 @@ class Notification(InheritanceCastModel):
     # receiver can be blank if we send notification to a group instead
     receiver = models.ForeignKey(auth.models.User, null=True, blank=True,
                                  related_name="recv_notifications")
-    # here we will send notifcation to all admins of group
+    # here we will send notifcation to all admins of group; this should probably
+    # be called "receiving group" or something
     group = models.ForeignKey('Group', null=True, blank=True)
-    sender = models.ForeignKey(auth.models.User, related_name="sent_notifications")
+    
+    sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
+                               null=True, blank=True)
     pending = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)    
+
+    class Meta:
+        ordering = ['-date']
 
     '''
     These handle_yes/no methods are just debug functions that subclasses
@@ -41,15 +47,30 @@ class Notification(InheritanceCastModel):
             sender = ''
             
         return sender + ' request to ' + recv
-    
+
+class Confirmation(Notification):
+    text = models.CharField(max_length=50)
+
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('pending').default = False
+        super(Confirmation, self).__init__(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.text
+        
 class MembershipReq(Notification):
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = True
         super(MembershipReq, self).__init__(*args, **kwargs)
+
+    def send_confirmed(self):
+        confirm_text = 'You have been confirmed as a member of ' + self.group.name
+        confirm = Confirmation(receiver=self.sender, text=confirm_text)
+        confirm.save()
         
     def handle_yes(self):
         self.sender.get_profile().memberships.add(self.group)
-        # send the sender a "you were accepted" notification
+        self.send_confirmed()
         self.pending = False
         self.save()
 
