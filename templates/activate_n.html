@@ -1,17 +1,15 @@
 {% extends "base.html" %}
 
-{% block content %}
 
-{% if account %}
+{% block top_content %}
+    <h1 id="title">Welcome!</h1>
+{% endblock %}
 
-<p>"Account successfully activated"</p>
-
-<p><a href="{% url auth_login %}">"Log in"</a></p>
-
-{% else %}
-
-<p>Account activation failed. Bad activation key.</p>
-
-{% endif %}
-
+{% block main_content %}
+    {% if account %}
+        <p>Welcome to OneTree! Your account has been successfully activated! To get started, why don't you visit some the groups on the homepage, or search for something you're interested in?</p>
+        <p><a href="{% url auth_login %}">"Log in"</a></p>
+    {% else %}
+        <p class="error-message">Account activation failed. Bad activation key.</p>
+    {% endif %}
 {% endblock %}
