@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/stylesheets/search.css" type="text/css" media="screen" /> 
+{% endblock %}
+
 {% block top_content %}
-<span id="subtitle">search results</span>
+<h1 id="title">search results</h1>
 {% endblock %}
 
 {% block main_content %}
-<div id="search_form">
+<div id="search-form">
    <form action='./' method='GET'>{% csrf_token %}
        {% include "includes/forms/forms.html" %}
         <p><input type="submit" value="Search!"/></p>
