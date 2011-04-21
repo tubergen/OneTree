@@ -6,24 +6,28 @@
 {% endblock %}
 
 {% block top_content %}
-<h1 id="title">search results</h1>
+    <h1 id="title">search groups</h1>
 {% endblock %}
 
 {% block main_content %}
-<div id="search-form">
-   <form action='./' method='GET'>{% csrf_token %}
-       {% include "includes/forms/forms.html" %}
-        <p><input type="submit" value="Search!"/></p>
-    </form>
-</div>
-<div id="results">
-{% if results %}
-  <h2>Search results:</h2>
-  <ol id="results-list">
-    {% for hit in results %}
-        <li><a href="/group/{{ hit.instance.url }}">{{ hit.instance }}</a> ({{ hit.percent }}% match)</li>
-    {% endfor %}
-  </ol>
-{% endif %}
-</div>
+    <div class="main-container">
+        <div id="search-form">
+            <form action='./' method='GET'>{% csrf_token %}
+                {% include "includes/forms/forms.html" %}
+                <p><input type="submit" value="Search!"/></p>
+            </form>
+        </div>
+        <div id="results">
+            {% if results %}
+                <h2>Search results:</h2>
+                <ol id="results-list">
+                    {% for hit in results %}
+                        <li><a href="/group/{{ hit.instance.url }}">{{ hit.instance }}</a> ({{ hit.percent }}% match)</li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <p>nothing :( but don't give up! try another query!</p>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

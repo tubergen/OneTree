@@ -12,21 +12,30 @@
 {% block main_content %}
     <div class="main-container container-left">
         <div class="container-top-bar"><strong>Welcome to OneTree!</strong> The new way to organize communities.</div>
-        <p>This is a captivating explanation of the website, filled with diagrams, excitement, laughs, and tears.</p>
-        <p>By this point, you have a thorough understanding of our website!</p>
-        <p>What are you waiting for? Go explore the site, or go <a href="/user-signup/">make an account!</a></p>
+        <h3>What is this place?</h3>
+        <div class="explanation">OneTree is a brand new site that helps you explore your community.</div>
+        <h3>How does it work?</h3>
+        <div class="explanation-image"><img src="/static/images/explanation.gif" width="280px" height="300px" /></div>
+        <div class="explanation">It works something like the picture above, I guess.</div>
+        <h3>What next?</h3>
+        <div class="explanation">Explore the site, or go <a href="/user-signup/">make an account!</a> And please don't hesitate to <a href="">send us feedback</a> (link coming soon =P) -- we're working hard to improve this site!</div>
     </div>
 
     <div class="main-container container-right-container">
         <div class="main-container container-right-containee">
-            <div class="container-top-bar">Login or register!</div>
-            <form action="/login/" method="POST">{% csrf_token %}
-                {% include 'includes/authentication/login.html' %}
-            </form>
-            <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></p>
+            <div class="container-top-bar"><strong>{% if user.is_authenticated %}Welcome, {{ user.username }}!{% else %}Login or register!{% endif %}</strong></div>
+            {% if user.is_authenticated %}
+                <p>Check out your <a href="/newsfeed/">newsfeed</a>! There must be some exciting new updates... (don't hold that against us)
+                <p>We need to think of what should go in here for users who are logged in.</p>
+            {% else %}
+                <form action="/login/" method="POST">{% csrf_token %}
+                    {% include 'includes/authentication/login.html' %}
+                </form>
+                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></p>
+            {% endif %}
         </div>
         <div class="main-container container-right-containee">
-            <div class="container-top-bar">Or check out some current group!</div>
+            <div class="container-top-bar"><strong>Or check out some current groups!</strong></div>
             <p>(This is currently a list of all top-level groups. When we're ending development, replace it with some active groups)</p>
             {% if toplevelgroups %}
                 <p>All top-level groups currently registered at OneTree:</p>
