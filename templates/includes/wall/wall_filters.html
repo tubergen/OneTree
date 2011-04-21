@@ -65,7 +65,7 @@ snippet so that you make sure to match the argument passed to apply_filter
 with the filter string that's in our Django code.
 {% endcomment %}
 
-<div class="filter-buttons-div">
+<div class="container-top-bar">
 {% for filter_id, filter_descrip in filter_list.items %}
   <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
 {% endfor %}

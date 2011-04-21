@@ -1,0 +1,19 @@
+.main-container {
+    width: 48%;
+    margin: .5em;
+}
+
+.container-left {
+    float: left;
+}
+
+.container-right-container {
+    float: right;
+    border: 0;
+}
+
+.container-right-containee {
+    width: 99%;
+    margin: 0;
+    margin-bottom: 1em;
+}

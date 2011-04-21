@@ -1,21 +1,43 @@
 {% extends "base.html" %}
 
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/stylesheets/homepage.css" type="text/css" media="screen" />
+{% endblock %}
+
 {% block top_content %}
     <h1 id="title">OneTree</h1>
 {% endblock %}
 
 {% block main_content %}
-<div class="main-container">
-  <strong>Welcome to OneTree! The new way to organize communities.</strong>
-    {% if toplevelgroups %}
-    <p>Here are all the top level groups currently registered at OneTree:</p>
-        <ul class="group-list">
-            {% for group in toplevelgroups %}
-            <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Sorry, there are no groups yet. Why don't you go ahead and make one?</p>
-    {% endif %}
-</div>
+    <div class="main-container container-left">
+        <div class="container-top-bar"><strong>Welcome to OneTree!</strong> The new way to organize communities.</div>
+        <p>This is a captivating explanation of the website, filled with diagrams, excitement, laughs, and tears.</p>
+        <p>By this point, you have a thorough understanding of our website!</p>
+        <p>What are you waiting for? Go explore the site, or go <a href="/user-signup/">make an account!</a></p>
+    </div>
+
+    <div class="main-container container-right-container">
+        <div class="main-container container-right-containee">
+            <div class="container-top-bar">Login or register!</div>
+            <form action="/login/" method="POST">{% csrf_token %}
+                {% include 'includes/authentication/login.html' %}
+            </form>
+            <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></p>
+        </div>
+        <div class="main-container container-right-containee">
+            <div class="container-top-bar">Or check out some current group!</div>
+            <p>(This is currently a list of all top-level groups. When we're ending development, replace it with some active groups)</p>
+            {% if toplevelgroups %}
+                <p>All top-level groups currently registered at OneTree:</p>
+                <ul class="group-list">
+                    {% for group in toplevelgroups %}
+                        <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Sorry, there are no groups yet. Why don't you go ahead and make one?</p>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
