@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 
 from OneTree.apps.common.models import *
-from OneTree.apps.common.notifications import *
+from OneTree.apps.common.notification import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
 from OneTree.apps.group.helpers import *
@@ -44,7 +44,8 @@ def req_membership(request):
             group = Group.objects.get(id=group_id)
             pending_mem_req = MembershipReq.objects.filter(sender=request.user,
                                                            group=group,
-                                                           new=True)
+                                                           pending=True)
+            # do not send duplicate membership requests
             if not pending_mem_req:
                 mem_req = MembershipReq(sender=request.user, group=group)
                 mem_req.save()
@@ -209,8 +210,7 @@ def group_page(request, group_url):
     if verify_admin(request, group):
         is_admin = True
 
-    #is_member = request.user.get_profile.memberships.exists()
-    ''' call is_member_of, which i forgot how to do '''
+    membership_status = request.user.get_profile().get_membership_status(group)
   
     return render_to_response('group/base_group.html',
                               {'posts': posts,
@@ -219,6 +219,7 @@ def group_page(request, group_url):
                               'group': group,
                               'children': children,
                               'user_is_subscribed': user_is_subscribed,
+                              'membership_status': membership_status,
                               'subscribe_view_url':'/_apps/group/views-change_subscribe/',
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',

@@ -15,18 +15,19 @@ class Notification(InheritanceCastModel):
     # here we will send notifcation to all admins of group
     group = models.ForeignKey('Group', null=True, blank=True)
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications")
-    new = models.BooleanField(default=True)
+    pending = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now=True)    
 
     '''
     These handle_yes/no methods are just debug functions that subclasses
     should override.
     '''
     def handle_yes(self):
-        self.new = False
+        self.pending = False
         self.save()
 
     def handle_no(self):
-        self.new = False
+        self.pending = False
         self.save()
     
     def __unicode__(self):
@@ -42,14 +43,18 @@ class Notification(InheritanceCastModel):
         return sender + ' request to ' + recv
     
 class MembershipReq(Notification):
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('pending').default = True
+        super(MembershipReq, self).__init__(*args, **kwargs)
+        
     def handle_yes(self):
         self.sender.get_profile().memberships.add(self.group)
         # send the sender a "you were accepted" notification
-        self.new = False
+        self.pending = False
         self.save()
 
     def handle_no(self):
-        self.new = False
+        self.pending = False
         self.save()
 
     # we need to make sure users don't put javascript in the url, because

@@ -25,19 +25,18 @@
 
 </script>
 
-{% for new_notif in new_notifs %}
+{% for pending_notif in pending_notifs %}
   <div class="notif-box">
-    bob
-    <div class="notif-text">{{new_notif.cast}}</div>
-    <button type="button" class="notif-yes" id="notif-yes-{{new_notif.id}}"
-	    onClick="submit_yes({{new_notif.id}})">Approve</button>
-    <button type="button" class="notif-no" id="notif-no-{{new_notif.id}}" 
-	    onClick="submit_no({{new_notif.id}})">Deny</button>
+    <div class="notif-text">{{pending_notif.date}}: {{pending_notif.cast}}</div>
+    <button type="button" class="notif-yes" id="notif-yes-{{pending_notif.id}}"
+	    onClick="submit_yes({{pending_notif.id}})">Approve</button>
+    <button type="button" class="notif-no" id="notif-no-{{pending_notif.id}}" 
+	    onClick="submit_no({{pending_notif.id}})">Deny</button>
   </div>
 {% endfor %}
 
 {% for old_notif in old_notifs %}
-    bill{{old_notif.cast}}<br/>
+    {{old_notif.date}}: {{old_notif.cast}}<br/>
 {% endfor %}
 
 {% endblock %}

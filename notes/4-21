@@ -1,0 +1,6 @@
+a manager for notifications might be useful for things like
+
+pending_mem_req = MembershipReq.objects.filter(sender=request.user,
+		group = group, pending=True)
+
+^in common/user.py this query is needlessly inefficent i htink

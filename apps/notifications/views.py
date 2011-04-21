@@ -34,8 +34,8 @@ def answer_notif(request):
 @login_required
 def notification_page(request):
     
-    new_notifs = request.user.recv_notifications.filter(receiver=request.user, new=True )
-    old_notifs = request.user.recv_notifications.filter(receiver=request.user, new=False )
+    pending_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=True )
+    old_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=False )
 
     ''' begin random debug code '''
     '''
@@ -51,14 +51,14 @@ def notification_page(request):
     #a = Notification(sender=request.user, receiver=request.user)
     #a.save()
 
-    #b = MembershipReq(sender=request.user, group=Group.objects.get(id=1))
+    #b = MembershipReq(sender=request.user, group=Group.objects.get(id=2))
     #b.save()
     ''' end random debug code '''
 
     for group in request.user.admin_groups.all():
-        new_notifs = chain(new_notifs, group.notification_set.filter(new=True))
-        old_notifs = chain(old_notifs, group.notification_set.filter(new=False))
+        pending_notifs = chain(pending_notifs, group.notification_set.filter(pending=True))
+        old_notifs = chain(old_notifs, group.notification_set.filter(pending=False))
 
     return render_to_response('notifications/base_notif.html',
-                             {'new_notifs': new_notifs, 'old_notifs': old_notifs,},
+                             {'pending_notifs': pending_notifs, 'old_notifs': old_notifs,},
                              RequestContext(request));    

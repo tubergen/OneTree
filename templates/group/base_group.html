@@ -1,15 +1,19 @@
 {% extends "base_page_with_wall.html" %}
 
+{% comment %}
+Code here is kind of sloppy now where I've hard-coded messages in 
+html plain text, and text is repeated in javascript code.
+{% endcomment %}
+
 {% block left_content %}
 
 <script type="text/javascript" charset="utf-8">
 
   function req_membership()
   {
-     alert('here');
      var data = {"group_id":'{{group.id}}'};
      $.post("/_apps/group/views-req_membership/", data, function(data) {
-       alert("Membership request sent!");
+       $('#mem_status').html('Membership Pending...');
      });
   }
 
@@ -18,12 +22,16 @@
     {% if user.is_authenticated %}
         <button type="button" id="subscribe-button">Subscribed</button>
 	<div id="mem_status">
-	    {% if is_member %}
-	    Member
+	    {% ifequal membership_status "member" %}
+	       You're a Member
 	    {% else %}
-              <button type="button" id="membership-button"
-	        onClick="req_membership()">Request Membership</button>
-            {% endif %}
+   	       {% ifequal membership_status "pending" %}
+                  Membership Pending...
+	       {% else %}
+                  <button type="button" id="membership-button"
+	             onClick="req_membership()">Request Membership</button>
+               {% endifequal %}
+            {% endifequal %}
 	</div>
     {% endif %}
     <div id="group-name-nav">
@@ -77,17 +85,20 @@
         {% if user_is_subscribed %}
             user_is_subscribed = true;
             $('#subscribe-button').css('background-color', 'green')
+            $('#subscribe-button').css('color', 'white')
         {% else %} 
             user_is_subscribed = false;
-            $('#subscribe-button').css('background-color', 'red')
+            $('#subscribe-button').css('background-color', '')
         {% endif %}
 
         $('#subscribe-button').click(function(event) {
             if (user_is_subscribed) {
-                next_background = 'red'
+                next_background = ''
+                next_text = 'black'
             }
             else {
                 next_background = 'green'
+                next_text = 'white'
             }
             send_subscribe_change()
         });
@@ -102,6 +113,7 @@
         $.post(url, data, function() {
 
             $('#subscribe-button').css('background-color', next_background)
+            $('#subscribe-button').css('color', next_text)
             user_is_subscribed = !user_is_subscribed;
         });
     }

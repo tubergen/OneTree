@@ -10,6 +10,8 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 from OneTree.apps.common.user import UserProfile
+from OneTree.apps.common.notification import *
+
 '''
 I temporarily allowed some of the following fields to be blank. We should
 go back through and figure out which ones we actually want to be blank.

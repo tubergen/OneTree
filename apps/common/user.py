@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
+from OneTree.apps.common.notification import MembershipReq
 
 # ===============================
 # USER PROFILE
@@ -41,10 +42,39 @@ class UserProfile(models.Model):
 
     ''' Returns true if user is a member of group; false otherwise '''
     def is_member_of(self, group):
-        ''' i literally couldn't remember how to do this '''
-        #return self.memberships.get(group=group)
-        pass
+        try:
+            self.memberships.get(id=group.id)
+            return True
+        except Group.DoesNotExist:
+            return False
 
+    def has_pending_membership(self, group):
+        try:
+            # there may be a more efficient query here using the related
+            # set to map user -> membershipreq
+            pending_mem_req = MembershipReq.objects.filter(sender=self.user,
+                                                           group=group,
+                                                           pending=True)
+            if pending_mem_req:
+                print pending_mem_req
+                return True
+            else:
+                print 'none'
+                return False
+        except Group.DoesNotExist:
+            return False
+
+    '''
+    Returns "member" if user is a member of group, returns "pending" if the
+    user has a pending request for group, and returns None otherwise.
+    '''
+    def get_membership_status(self, group):
+        if self.is_member_of(group):
+            return "member"
+        elif self.has_pending_membership(group):
+            return "pending"
+        else:
+            return False
     '''
     Changes the subscription status of this profile's user for the
     specified group. If the user is already subscribed, he is
