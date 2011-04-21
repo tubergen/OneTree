@@ -109,6 +109,11 @@
 
 </script>
 
-    <h1 id="group-title">{{ group.name }}</h1>
-    <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+    <h1 id="group-title">{{ group.name }}</h1><br>
+    <a href="/group/{{ group.name }}/info">Info</a>
+    {% if groupinfo.data %}
+    <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
+      {% else %}
+    <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).      
+	{% endif %}
 {% endblock %}

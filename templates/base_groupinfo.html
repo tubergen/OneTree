@@ -1,12 +1,37 @@
 {% extends "base.html" %}
 
+<script type="text/javascript" charset="utf">
+
+function toggle_edit_info()
+{
+   $('#data_field').show();
+   $('#data_field').focus();
+} 
+
+$(document).ready(function() {
+  $('#data_field').hide();
+});
+</script>
+
 {% block top_content %}
 <span id="title"><h1>{{ groupinfo.group }}</h1></span>
+{% if errormsg %}
+   {{ errormsg }}<br>
+{% endif %}
 {% endblock %}
 
 {% block main_content %}
 <p>
 <strong>Info: </strong>{{ groupinfo.data }}<br>
+<a href="#" onclick="toggle_edit_info()">Edit</a>
+ <div id="data_field"> 
+  <form name="edit_info" action="" method="post">{% csrf_token %}
+    <div id="edit_field">
+      <textarea name="data_content" cols=50 rows=4></textarea>
+      <input type="submit" name="data_submit" value="Submit" />
+    </div>
+  </form>
+ </div>
 </p>
 <br>
 <br>

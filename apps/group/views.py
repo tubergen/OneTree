@@ -182,6 +182,13 @@ def group_page(request, group_url):
         if errormsg:
             print errormsg
 
+    # get groupinfo associated with this group
+    groupinfo = GroupInfo.objects.filter(group=group)
+    if not groupinfo:
+        groupinfo = GroupInfo(group=group, data='')
+    else:
+        groupinfo = groupinfo[0]
+
     # get user's subscription status to this group
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
     #    since all logged in users should have a profile
@@ -218,6 +225,7 @@ def group_page(request, group_url):
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,
+                               'groupinfo' : groupinfo,
                               'user_is_subscribed': user_is_subscribed,
                               'subscribe_view_url':'/_apps/group/views-change_subscribe/',
                               'filter_list': wall_filter_list,
@@ -330,6 +338,7 @@ def groupinfo_page(request, groupname):
     errormsg = None
     context = RequestContext(request)
 
+    
     #print groupname
     this_group = Group.objects.get(name=groupname)
     #print this_group
@@ -345,8 +354,24 @@ def groupinfo_page(request, groupname):
     else:
         groupinfo = groupinfo[0]
 
-    #print groupinfo
+    # handle editable info submit
+    if 'data_submit' in request.POST:
+        errormsg = handle_data(groupinfo, request)
+
     return render_to_response('base_groupinfo.html',
                               {'errormsg': errormsg,
                                'groupinfo': groupinfo},
                               context_instance=context)
+
+def handle_data(groupinfo, request):
+    errormsg = None
+    group = groupinfo.group
+    if request.method == 'POST':
+        if not verify_admin(request, group):
+            errormsg = "You are not an admin!"
+        else:
+            new_data = request.POST['data_content']
+            groupinfo.data = new_data
+            groupinfo.save()
+
+    return errormsg
