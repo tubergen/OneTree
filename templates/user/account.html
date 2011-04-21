@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block top_content %}
+    <span id="title"><h1>Account Management</h1></span>
+{% endblock %}
+
+{% block main_content %}
+<p>Welcome to the account management page for {{ request.user }}!</p>
+
+<a href="fill-details">Complete my profile</a></br>
+<a href="changepwd">Change my password</a>
+
+
+<p></p>
+{% endblock %}
