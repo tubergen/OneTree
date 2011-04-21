@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<script type="text/javascript" charset="utf-8">
+
+  // answer should be a plain text string: 'yes' or 'no'
+  function submit(notif_id, answer)
+  {
+     var data = {"notif_id":notif_id, "answer":answer};
+     $.post("/_apps/notifications/views-answer_notif/", data, function(data) {
+       $('#notif-yes-' + notif_id).hide();
+       $('#notif-no-' + notif_id).hide();
+     });
+  }
+
+  function submit_yes(notif_id)
+  {
+    submit(notif_id, 'yes');
+  }
+  function submit_no(notif_id)
+  {
+    submit(notif_id, 'no');
+  }
+
+</script>
+
+{% for new_notif in new_notifs %}
+  <div class="notif-box">
+    bob
+    <div class="notif-text">{{new_notif.cast}}</div>
+    <button type="button" class="notif-yes" id="notif-yes-{{new_notif.id}}"
+	    onClick="submit_yes({{new_notif.id}})">Approve</button>
+    <button type="button" class="notif-no" id="notif-no-{{new_notif.id}}" 
+	    onClick="submit_no({{new_notif.id}})">Deny</button>
+  </div>
+{% endfor %}
+
+{% for old_notif in old_notifs %}
+    bill{{old_notif.cast}}<br/>
+{% endfor %}
+
+{% endblock %}
