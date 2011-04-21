@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+
 
 import datetime
 
@@ -55,12 +55,14 @@ def register(request):
             password = form.cleaned_data["password1"]
 
             new_user = RegistrationProfile.objects.create_inactive_user(username, email, password)
-            
+
+            """
             user = authenticate(username=username, password=password)
             if user is None:
                 print "Sorry"
             else:
                 login(request, user)
+            """
 
             return render_to_response("registration_success.html",
                                       { 'username': username,
@@ -156,7 +158,7 @@ def user_page(request, username):
 def user_account(request, username):
     context=RequestContext(request)
 
-    return render_to_response('account.html',
+    return render_to_response('user/account.html',
                               { 'user': request.user },
                               context_instance=context
                               )
@@ -165,7 +167,19 @@ def user_account(request, username):
 def complete_profile(request):
     context=RequestContext(request)
 
-    return render_to_response('complete_profile.html',
+
+    userprofile = UserProfile.objects.get(user=request.user)    
+    print "USER >>>>>>>>>>"
+    
+
+
+    print "USER PROFILE >>>>>>>>>"
+    print userprofile.user.first_name
+
+
+    
+
+    return render_to_response('user/complete_profile.html',
                               {
 
                               },

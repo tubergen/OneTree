@@ -9,9 +9,15 @@ from django.contrib.auth import authenticate
 # lands in trunk, this will no longer be necessary.
 attrs_dict = {'class': 'required'}
 
+
+
+
 class ActivationForm(forms.Form):
-    username = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
-                                label="Your Email")
+    username = forms.RegexField(regex=r'^\w+$', max_length=30,
+                                widget=forms.TextInput(attrs=attrs_dict),
+                                label="Username",
+                                error_messages={'invalid': "This value must contain only letters, numbers and underscores."})   
+
     password = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
                                label="Password")
 
