@@ -1,13 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_sidebar.html" %}
 
 {% block top_content %}
 <span id="title"><h1>{{ user.username }}</h1></span>
-{% endblock %}
-
-
-{% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
 {% endblock %}
 
 {% block left_content %}
