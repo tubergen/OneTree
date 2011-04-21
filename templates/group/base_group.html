@@ -7,18 +7,6 @@
 
 {% block left_content %}
 
-    <script type="text/javascript" charset="utf-8">
-
-    function req_membership()
-    {
-        var data = {"group_id":'{{group.id}}'};
-        $.post("/_apps/group/views-req_membership/", data, function(data) {
-            $('#mem_status').html('Membership Pending...');
-        });
-    }
-
-</script>
-
 <div id="group-name-nav">
     {% if group.parent %}
         <h3 class="parent-word">parent</h3>
@@ -100,6 +88,14 @@
             $('#subscribe-button').css('background-color', next_background)
             $('#subscribe-button').css('color', next_text)
             user_is_subscribed = !user_is_subscribed;
+        });
+    }
+
+    function req_membership()
+    {
+        var data = {"group_id":'{{group.id}}'};
+        $.post("/_apps/group/views-req_membership/", data, function(data) {
+            $('#mem_status').html('Membership Pending...');
         });
     }
     {% endif %}
