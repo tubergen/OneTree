@@ -14,280 +14,286 @@
     {% block calendar %}
         {# put a calendar here #}
         <div id="top-calendar">
-		
-		{# This section: simple CSS for the Calendar. #}
-		{# cWDay = CSS for weekdays, cWEnd = CSS for weekend, #}
-		{# cPrev = CSS for dates before the current month, #}
-		{# cPost = CSS for dates after current month.#}
-		
-		<style type="text/css">
-		<!--
-		span.label {color:black;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: bold 13px Arial}
-		span.cWDay {cursor:hand;color:black;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 13px Arial}
-		span.cWEnd {cursor:hand;color:red;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 13px Arial}
-		span.cPrev {cursor:hand;color:#b0b0b0;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 12px Arial}
-		span.cPost {cursor:hand;color:#b0b0b0;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 12px Arial}
-		-->
-		</style>
-		
-		
-		{# Beginning of Javascript #}
-		
-		<script type="text/javascript" charset="utf-8">
-		
-		/* 	-----------------------------------------------------------------------
-			CALENDAR!!!
-			-----------------------------------------------------------------------
-			Reference: http://javascript.internet.com (for base model) */
-			
-		/* 	maxDays takes month & year as parameters, calculates number of 
-			days in the month. */
-		function maxDays(mm, yyyy) {
-			
-			var mDay;
-			if((mm == 3) || (mm == 5) || (mm == 8) || (mm == 10)){
-				mDay = 30;
-			}
-			else{
-				mDay = 31;
-				if(mm == 1){
-					if (yyyy/4 - parseInt(yyyy/4) != 0){
-						mDay = 28;
-					}
-					else{
-						mDay = 29;
-					}
-				}
-			}
-			return mDay;
-		}
-		
-		/* 	handleClick is actually the EVENT HANDLER for when a date is clicked on.
-			One of the things it does is change the bg, but more importantly 
-			also handles what happens when an event is clicked. Currently displays
-			an alert with the selected date. */
-		function handleClick(id) {
-		
-			document.getElementById(id).style.border= "2px solid black";
-		//	document.getElementById(id).style.backgroundColor = "#C2DFFF";
-		
-			for (ii=0;ii<=41;ii++){
-				if ("sp"+ii != id) {
-					document.getElementById("sp"+ii).style.border = "0px #FFFFFF";
-		//			document.getElementById("sp"+ii).style.backgroundColor = "#FFFFFF";
-				}
-			}
-			
-			// current month ID.  Note, January = '0', December = '11'.
-			var currM = parseInt(document.calForm.selMonth.value);
-			// current year.
-			var currY = parseInt(document.calForm.selYear.value);
-			
-			// handling corner cases for dates not in current month.
-			if (document.getElementById(id).className == "cPrev") {
-				if (currM == 0) {
-					currY = currY - 1;
-					currM = 11;  // this magic number implies that Jan wraps to Dec
-				}
-				else {
-					currM = currM - 1;
-				}
-			}
-			if (document.getElementById(id).className == "cPost") {
-				if (currM == 11) {
-					currY = currY + 1;
-					currM = 0;  // this magic number implies that Dec wraps to Jan
-				}
-				else {
-					currM = currM + 1;
-				}
-			}
-		
-			// array of months, for simplicity
-			var arrM = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
-			// current date (number)
-			var currD = document.getElementById(id).innerHTML;
-			
-			// *** THE ALERT THAT DISPLAYS THE CURRENT DATE UPON CLICK
-			alert('Filter information for month: '+arrM[currM]+' '+currD+', '+currY);
-			
-		}
-		
-		/* writes the actual calendar */
-		function writeCalendar() {
-			var now = new Date;
-			var dd = now.getDate();
-			var mm = now.getMonth();
-			var dow = now.getDay();
-			var yyyy = now.getFullYear();
-			var arrM = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
-			var arrY = new Array();
-			for (ii=0;ii<=4;ii++){
-				arrY[ii] = yyyy - 2 + ii;
-			}
-			var arrD = new Array("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
-		
-		//  Following vars may be of future use.
-		
-		//	var highlight_start = '<TD WIDTH="30"><TABLE CELLSPACING=0 BORDER=1 BGCOLOR=DEDEFF BORDERCOLOR=CCCCCC><TR><TD WIDTH=20><B><CENTER>';
-		//	var highlight_end   = '</CENTER></TD></TR></TABLE></B>';	
-			
-			// the actual HTML text that will be written to document.
-			var text = "";
-			text = "<form name=calForm>";
-			
-			// selecting month drop down menu
-			text += "<table ALIGN='CENTER' BORDER=1 CELLSPACING=0 CELLPADDING=0 BORDERCOLOR=BBBBBB>";
-			text += "<tr><td>";
-			text += "<table WIDTH=100%><tr>";
-			text += "<td align=left>";
-			text += "<select name=selMonth onChange='changeCal()'>";
-			for (ii=0;ii<=11;ii++){
-				if (ii==mm){
-					text += "<option value= " + ii + " Selected>" + arrM[ii] + "</option>";
-				}
-				else{
-					text += "<option value= " + ii + ">" + arrM[ii] + "</option>";
-				}
-			}
-			text += "</select>";
-			text += "</td>";
-			
-			// selecting year drop down menu
-			text += "<td align=right>";
-			text += "<select name=selYear onChange='changeCal()'>";
-			for (ii=0;ii<=4;ii++){
-				if (ii==2){
-					text += "<option value= " + arrY[ii] + " Selected>" + arrY[ii] + "</option>";
-				}
-				else{
-					text += "<option value= " + arrY[ii] + ">" + arrY[ii] + "</option>";
-				}
-			}
-			text += "</select>";
-			text += "</td>";
-			text += "</tr></table>";
-			text += "</td></tr>";
-			text += "<tr><td>";
-			text += "<table BORDER=0 CELLSPACING=0 CELLPADDING=3>";
-			text += "<tr>";
-			
-			// setting the weekday labels
-			for (ii=0;ii<=6;ii++){
-				text += "<td align=center width=25><span class=label>" + arrD[ii] + "</span></td>";
-			}
-			text += "</tr>";
-			aa = 0;
-			
-			// setting the dates themselves
-			for (kk=0;kk<=5;kk++){
-				text += "<tr>";
-				for (ii=0;ii<=6;ii++){
-					text += "<td align=center><span id=sp" + aa;
-					// note "1" is being written because it will be overwritten later by innerHTML.
-					text += " onClick='handleClick(this.id)'>1</span></td>";
-					aa += 1;
-				}
-				text += "</tr>";
-			}
-			
-			text += "</table></td></tr></table></form>";
-			
-			document.write(text);
-			changeCal();
-		}
-		
-		/* changeCal is used when the MONTH or the YEAR is changed on the FORM. */
-		function changeCal(){
-			var now = new Date;
-			var dd = now.getDate();
-			var mm = now.getMonth();
-			var dow = now.getDay();
-			var yyyy = now.getFullYear();
-			var currM = parseInt(document.calForm.selMonth.value);
-			var prevM;
-				if (currM!=0){
-					prevM = currM - 1;
-				}
-				else{
-					prevM = 11;
-				}
-			var currY = parseInt(document.calForm.selYear.value);
-			var mmyyyy = new Date();
-			mmyyyy.setFullYear(currY);
-			mmyyyy.setMonth(currM);
-			mmyyyy.setDate(1);
-			var day1 = mmyyyy.getDay();
-				if (day1 == 0){
-					day1 = 7;
-				}
-			var arrN = new Array(41);
-			var aa;
-			
-			for (ii=0;ii<day1;ii++){
-				arrN[ii] = maxDays((prevM),currY) - day1 + ii + 1;
-			}
-			aa = 1
-			for (ii=day1;ii<=day1+maxDays(currM,currY)-1;ii++){
-				arrN[ii] = aa;
-				aa += 1;
-			}
-			aa = 1;
-			for (ii=day1+maxDays(currM,currY);ii<=41;ii++){
-				arrN[ii] = aa;
-				aa += 1;
-			}
-			
-			// wipes out all background colors when month/year is changed.
-			for (ii=0;ii<=41;ii++){
-				document.getElementById("sp"+ii).style.border = "0px #FFFFFF";
-				document.getElementById("sp"+ii).style.backgroundColor = "#FFFFFF"
-			}
-				
-			// changes and creates new dates according to proper month & year.
-			var dCount = 0
-			for (ii=0;ii<=41;ii++){
-				if ((ii<7)&&(arrN[ii]>20)) {
-					document.getElementById("sp"+ii).innerHTML = arrN[ii];
-					document.getElementById("sp"+ii).className = "cPrev";
-				}
-				else if ((ii>27)&&(arrN[ii]<20)) {
-					document.getElementById("sp"+ii).innerHTML = arrN[ii];
-					document.getElementById("sp"+ii).className = "cPost";
-				}
-				else{
-					document.getElementById("sp"+ii).innerHTML = arrN[ii];
-					if ((dCount==0)||(dCount==6)){
-						document.getElementById("sp"+ii).className = "cWEnd";
-					}
-					else{
-						document.getElementById("sp"+ii).className = "cWDay";
-					}
-					// highlights current date if exists within selected month & year.
-					if ((arrN[ii]==dd)&&(mm==currM)&&(yyyy==currY)){
-						document.getElementById("sp"+ii).style.backgroundColor="#90EE90";
-					}
-				}
-				dCount += 1;
-				if (dCount>6){
-					dCount=0;
-				}
-			}
-		}
-		
-		/* 	-----------------------------------------------------------------------
-			End of Calendar
-			-----------------------------------------------------------------------
-		*/
-		
-		// Writing the actual calendar
-		writeCalendar();
-		
-		</script>
+           
+           {# This section: simple CSS for the Calendar. #}
+           {# cWDay = CSS for weekdays, cWEnd = CSS for weekend, #}
+           {# cPrev = CSS for dates before the current month, #}
+           {# cPost = CSS for dates after current month.#}
+           
+           <style type="text/css">
+           <!--
+           span.label {color:black;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: bold 13px Arial}
+           span.cWDay {cursor:hand;color:black;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 13px Arial}
+           span.cWEnd {cursor:hand;color:red;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 13px Arial}
+           span.cPrev {cursor:hand;color:#b0b0b0;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 12px Arial}
+           span.cPost {cursor:hand;color:#b0b0b0;width:30;height:16;text-align:center;margin-top:0;background:#ffF;font: 12px Arial}
+           -->
+           </style>
+           
+           
+           {# Beginning of Javascript #}
+           
+           <script type="text/javascript" charset="utf-8">
+           
+           /* 	-----------------------------------------------------------------------
+              CALENDAR!!!
+              -----------------------------------------------------------------------
+              Reference: http://javascript.internet.com (for base model) */
+              
+           /*    maxDays takes month & year as parameters, calculates number of 
+                 days in the month. */
+           function maxDays(mm, yyyy) {
+              
+           	var mDay;
+           	if((mm == 3) || (mm == 5) || (mm == 8) || (mm == 10)){
+                      mDay = 30;
+           	}
+           	else{
+                      mDay = 31;
+                      if(mm == 1){
+                      	if (yyyy/4 - parseInt(yyyy/4) != 0){
+                                 mDay = 28;
+                      	}
+                      	else{
+                                 mDay = 29;
+                      	}
+                      }
+           	}
+           	return mDay;
+           }
 
-		{# END OF JAVASCRIPT #}
-		
-		{% comment %} <span style="position: absolute; top: 50%; margin-top: -.5em; left: 50%; margin-left: -1.9em;">calendar</span> {% endcomment %}</div>
+           /* Filters the wall */
+           function filterWall(month, day, year)
+           {
+              $('#sp' + day).style.backgroundColor="green";
+              // *** THE ALERT THAT DISPLAYS THE CURRENT DATE UPON CLICK
+              alert('Filter information for month: '+month+' '+day+', '+year);
+           }
+           
+           /* 	handleClick is actually the EVENT HANDLER for when a date is clicked on.
+           	One of the things it does is change the bg, but more importantly 
+           	also handles what happens when an event is clicked. Currently displays
+           	an alert with the selected date. */
+           function handleClick(id) {
+           
+           	document.getElementById(id).style.border= "2px solid black";
+           //	document.getElementById(id).style.backgroundColor = "#C2DFFF";
+           
+           	for (ii=0;ii<=41;ii++){
+                      if ("sp"+ii != id) {
+                      	document.getElementById("sp"+ii).style.border = "0px #FFFFFF";
+           //           	document.getElementById("sp"+ii).style.backgroundColor = "#FFFFFF";
+                      }
+           	}
+           	
+           	// current month ID.  Note, January = '0', December = '11'.
+           	var currM = parseInt(document.calForm.selMonth.value);
+           	// current year.
+           	var currY = parseInt(document.calForm.selYear.value);
+           	
+           	// handling corner cases for dates not in current month.
+           	if (document.getElementById(id).className == "cPrev") {
+                      if (currM == 0) {
+                      	currY = currY - 1;
+                      	currM = 11;  // this magic number implies that Jan wraps to Dec
+                      }
+                      else {
+                      	currM = currM - 1;
+                      }
+           	}
+           	if (document.getElementById(id).className == "cPost") {
+                      if (currM == 11) {
+                      	currY = currY + 1;
+                      	currM = 0;  // this magic number implies that Dec wraps to Jan
+                      }
+                      else {
+                      	currM = currM + 1;
+                      }
+           	}
+           
+           	// array of months, for simplicity
+           	var arrM = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+           	// current date (number)
+           	var currD = document.getElementById(id).innerHTML;
+           	
+	        filterWall(arrM[currM], currD, currY);
+           }
+           
+           /* writes the actual calendar */
+           function writeCalendar() {
+           	var now = new Date;
+           	var dd = now.getDate();
+           	var mm = now.getMonth();
+           	var dow = now.getDay();
+           	var yyyy = now.getFullYear();
+           	var arrM = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+           	var arrY = new Array();
+           	for (ii=0;ii<=4;ii++){
+                      arrY[ii] = yyyy - 2 + ii;
+           	}
+           	var arrD = new Array("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
+           
+           //  Following vars may be of future use.
+           
+           //	var highlight_start = '<TD WIDTH="30"><TABLE CELLSPACING=0 BORDER=1 BGCOLOR=DEDEFF BORDERCOLOR=CCCCCC><TR><TD WIDTH=20><B><CENTER>';
+           //	var highlight_end   = '</CENTER></TD></TR></TABLE></B>';	
+           	
+           	// the actual HTML text that will be written to document.
+           	var text = "";
+           	text = "<form name=calForm>";
+           	
+           	// selecting month drop down menu
+           	text += "<table ALIGN='CENTER' BORDER=1 CELLSPACING=0 CELLPADDING=0 BORDERCOLOR=BBBBBB>";
+           	text += "<tr><td>";
+           	text += "<table WIDTH=100%><tr>";
+           	text += "<td align=left>";
+           	text += "<select name=selMonth onChange='changeCal()'>";
+           	for (ii=0;ii<=11;ii++){
+                      if (ii==mm){
+                      	text += "<option value= " + ii + " Selected>" + arrM[ii] + "</option>";
+                      }
+                      else{
+                      	text += "<option value= " + ii + ">" + arrM[ii] + "</option>";
+                      }
+           	}
+           	text += "</select>";
+           	text += "</td>";
+           	
+           	// selecting year drop down menu
+           	text += "<td align=right>";
+           	text += "<select name=selYear onChange='changeCal()'>";
+           	for (ii=0;ii<=4;ii++){
+                      if (ii==2){
+                      	text += "<option value= " + arrY[ii] + " Selected>" + arrY[ii] + "</option>";
+                      }
+                      else{
+                      	text += "<option value= " + arrY[ii] + ">" + arrY[ii] + "</option>";
+                      }
+           	}
+           	text += "</select>";
+           	text += "</td>";
+           	text += "</tr></table>";
+           	text += "</td></tr>";
+           	text += "<tr><td>";
+           	text += "<table BORDER=0 CELLSPACING=0 CELLPADDING=3>";
+           	text += "<tr>";
+           	
+           	// setting the weekday labels
+           	for (ii=0;ii<=6;ii++){
+                      text += "<td align=center width=25><span class=label>" + arrD[ii] + "</span></td>";
+           	}
+           	text += "</tr>";
+           	aa = 0;
+           	
+           	// setting the dates themselves
+           	for (kk=0;kk<=5;kk++){
+                      text += "<tr>";
+                      for (ii=0;ii<=6;ii++){
+                      	text += "<td align=center><span id=sp" + aa;
+                      	// note "1" is being written because it will be overwritten later by innerHTML.
+                      	text += " onClick='handleClick(this.id)'>1</span></td>";
+                      	aa += 1;
+                      }
+                      text += "</tr>";
+           	}
+           	
+           	text += "</table></td></tr></table></form>";
+           	
+           	document.write(text);
+           	changeCal();
+           }
+           
+           /* changeCal is used when the MONTH or the YEAR is changed on the FORM. */
+           function changeCal(){
+           	var now = new Date;
+           	var dd = now.getDate();
+           	var mm = now.getMonth();
+           	var dow = now.getDay();
+           	var yyyy = now.getFullYear();
+           	var currM = parseInt(document.calForm.selMonth.value);
+           	var prevM;
+                      if (currM!=0){
+                      	prevM = currM - 1;
+                      }
+                      else{
+                      	prevM = 11;
+                      }
+           	var currY = parseInt(document.calForm.selYear.value);
+           	var mmyyyy = new Date();
+           	mmyyyy.setFullYear(currY);
+           	mmyyyy.setMonth(currM);
+           	mmyyyy.setDate(1);
+           	var day1 = mmyyyy.getDay();
+                      if (day1 == 0){
+                      	day1 = 7;
+                      }
+           	var arrN = new Array(41);
+           	var aa;
+           	
+           	for (ii=0;ii<day1;ii++){
+                      arrN[ii] = maxDays((prevM),currY) - day1 + ii + 1;
+           	}
+           	aa = 1
+           	for (ii=day1;ii<=day1+maxDays(currM,currY)-1;ii++){
+                      arrN[ii] = aa;
+                      aa += 1;
+           	}
+           	aa = 1;
+           	for (ii=day1+maxDays(currM,currY);ii<=41;ii++){
+                      arrN[ii] = aa;
+                      aa += 1;
+           	}
+           	
+           	// wipes out all background colors when month/year is changed.
+           	for (ii=0;ii<=41;ii++){
+                      document.getElementById("sp"+ii).style.border = "0px #FFFFFF";
+                      document.getElementById("sp"+ii).style.backgroundColor = "#FFFFFF"
+           	}
+                      
+           	// changes and creates new dates according to proper month & year.
+           	var dCount = 0
+           	for (ii=0;ii<=41;ii++){
+                      if ((ii<7)&&(arrN[ii]>20)) {
+                      	document.getElementById("sp"+ii).innerHTML = arrN[ii];
+                      	document.getElementById("sp"+ii).className = "cPrev";
+                      }
+                      else if ((ii>27)&&(arrN[ii]<20)) {
+                      	document.getElementById("sp"+ii).innerHTML = arrN[ii];
+                      	document.getElementById("sp"+ii).className = "cPost";
+                      }
+                      else{
+                      	document.getElementById("sp"+ii).innerHTML = arrN[ii];
+                      	if ((dCount==0)||(dCount==6)){
+                                 document.getElementById("sp"+ii).className = "cWEnd";
+                      	}
+                      	else{
+                                 document.getElementById("sp"+ii).className = "cWDay";
+                      	}
+                      	// highlights current date if exists within selected month & year.
+                      	if ((arrN[ii]==dd)&&(mm==currM)&&(yyyy==currY)){
+                                 document.getElementById("sp"+ii).style.backgroundColor="#90EE90";
+                      	}
+                      }
+                      dCount += 1;
+                      if (dCount>6){
+                      	dCount=0;
+                      }
+           	}
+           }
+           
+           /* 	-----------------------------------------------------------------------
+           	End of Calendar
+           	-----------------------------------------------------------------------
+           */
+           
+           // Writing the actual calendar
+           writeCalendar();
+           
+           </script>
+
+           {# END OF JAVASCRIPT #}
+           
+           {% comment %} <span style="position: absolute; top: 50%; margin-top: -.5em; left: 50%; margin-left: -1.9em;">calendar</span> {% endcomment %}</div>
     {% endblock %}
 {% endblock %}
 

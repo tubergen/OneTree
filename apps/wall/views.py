@@ -99,7 +99,7 @@ def filter_wall(request):
         if group_id:
             group = Group.objects.get(id=group_id)
             filters = Filter();
-            filters.parse_request(group, request);
+            filters.parse_request(request);
             filtered_posts = filters.get_posts(group);
             return render_to_response('includes/wall/wall_content.html',
                                       {'posts': filtered_posts,
