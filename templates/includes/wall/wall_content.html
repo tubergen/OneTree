@@ -169,7 +169,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
         <div class="post-text">{{ post.text }}</div>
         <div class="post-reply-button">{% if user.is_authenticated %}
-                <a onclick="toggle_reply_box('post_id_{{ post.id }}', this);">Comment!</a>
+            <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this);">Comment!</a>
                 {% else %}
                 <a href="/login/?next={{ request.path }}">Login to comment!</a>
                 {% endif %}</div>
@@ -178,7 +178,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     {# CHANGE THIS JORGE. CHANGE IT!!!! #}
         {% if user.is_authenticated %}
         {# now allow for posting of comment #}
-        <form name="post_{{ post.id }}" id="post_id_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
+        <form name="post_{{ post.id }}" id="{{ post.post_type }}_id_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}"></input>
             <input type="hidden" name="post_id" value="{{ post.id }}"></input>
             <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
@@ -190,7 +190,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
     {% if post.comment_set.all %}
     <div class="comments-all-div">
-        {% for comment in post.comment_set.all %}
+        {% for comment in post.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
             <span class="comment-author"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             <span class="comment-content">{{ comment.text }}</span>
@@ -211,7 +211,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <textarea id="comment_text_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
-        {% for comment_child in comment.comment_set.all %}
+        {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
                 <span class="comment-author"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
                 <span class="comment-content">{{ comment_child.text }}</span>

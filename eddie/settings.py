@@ -1,22 +1,22 @@
-# Django settings for onetree project.
+# Django settings for eddie project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('brian', 'brian.tubergen@gmail.com'),
     # ('Your Name', 'your_email@domain.com'),
 )
 
+MANAGERS = ADMINS
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql', 
-        'NAME': 'django_database',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'onetree2.princeton.edu',
-        #'HOST': '',
-        'PORT': '',      
+        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -45,12 +45,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = 'static/'
+MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -58,7 +58,7 @@ MEDIA_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ')uzx#5dgobmznw!&m&%kr1j&lur#*0=^f5vlm$#kgl7s^4pmm8'
+SECRET_KEY = '-#7j=n5upvrx(f(uqd^7@3bmj-79epjkk*a$t@$b+*#wghpvi3'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -71,32 +71,20 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'OneTree.urls'
+ROOT_URLCONF = 'eddie.urls'
 
-import os.path # add this to try to use Dondero's general path thing
+import os.path # add this to try to use Dondero's general path thing   
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    
+
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/')
-
-    # grr... this is going to cause problems. maybe we should figure out
-    # how to use Dondero's thing to make this portable.
-    
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-     "django.contrib.auth.context_processors.auth",
-     'django.core.context_processors.request',
-    
-# the internet said to include the following to get csrf working, but it
-# gave me an error
-#     "django.contrib.auth.context_processors.csrf", 
 )
 
 INSTALLED_APPS = (
@@ -105,38 +93,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'OneTree.apps.wall',
-    'OneTree.apps.common',
-    'OneTree.apps.newsfeed',
-    'OneTree.apps.notifications',
-     #'haystack',
-    'djapian',
+    'eddie.upload',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'OneTree.apps.user',
 )
-
-ACCOUNT_ACTIVATION_DAYS = 2
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'cos.333.2011@gmail.com'
-EMAIL_HOST_PASSWORD = 'cos3332011'
-EMAIL_USE_TLS = True
-
-# necessary for the UserProfile model to work 
-AUTH_PROFILE_MODULE = 'common.UserProfile'
-
-# default login / logout urls
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/newsfeed/'
-LOGOUT_URL = '/logout/'
-
-# necessary for haystack to work
-#HAYSTACK_SITECONF = 'OneTree.search_sites'
-#HAYSTACK_SEARCH_ENGINE = 'whoosh'
-#HAYSTACK_WHOOSH_PATH = '/home/jlugo/mysite_index'
-
-# stuff for djapian
-DJAPIAN_DATABASE_PATH = './djapian_spaces/'
