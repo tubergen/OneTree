@@ -1,37 +1,26 @@
-{% block head %}
-    {{ block.super }}
-  <link rel="stylesheet" href="/static/timeframe/example/stylesheets/timeframe.css" type="text/css" media="screen" title="timeframe" charset="utf-8"/> 
-  <!--[if lt IE 8]>
-    <style type="text/css" media="screen">
-      div.timeframe_calendar li a, div.timeframe_calendar table {
-        display: inline;
-      }
-    </style>
-  <![endif]--> 
-  <!--[if lt IE 7]>
-    <link rel="stylesheet" href="/static/timeframe/example/stylesheets/ie6.css" type="text/css" media="screen" title="ie6" charset="utf-8"/>
-  <![endif]--> 
 
-  <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"></script> 
-  <script type="text/javascript" charset="utf-8" src="/static/timeframe/timeframe.js"></script>
+<head> 
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"> 
+<title>jQuery Datepicker</title> 
 
-{% comment %}
-{% endcomment %}
-{% endblock %}
+  <link rel="stylesheet" href="/static/datepicker/jquery.datepick.css" type="text/css" charset="utf-8"/> 
 
-    <div id="top-calendar"> 
-      <div id="calendars"></div> 
-      <input type="text" name="start_date" value="" id="start_date"/> 
-      <input type="hidden" name="end_date" value="" id="end_date"/> 
-    </div> 
+<script type="text/javascript" charset="utf-8" src="/static/datepicker/jquery.datepick.min.js"></script>
 
+<script type="text/javascript"> 
+$(function() {
+   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filterDate});
+});
+ 
+function filterDate(dates) {
+   alert(dates[0]);
+   alert(dates[1]);
+}
+</script> 
+</head> 
 
-  <script type="text/javascript" charset="utf-8"> 
-      new Timeframe('calendars', {
-        months: 1,
-        startField: 'start_date',
-        endField: 'end_date',
-        resetButton: 'start_date', /* has no effect */
-        });
-  </script> 
-
+<body> 
+   <div id="top-calendar"> 
+      <div id="inlineDatepicker"></div> 
+   </div>
+</body> 
