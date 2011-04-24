@@ -67,6 +67,8 @@ with the filter string that's in our Django code.
 
 <div class="container-top-bar">
 {% for filter_id, filter_descrip in filter_list.items %}
-  <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
+  {% if filter_descrip %}
+     <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
+  {% endif %}
 {% endfor %}
 </div>

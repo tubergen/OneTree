@@ -98,9 +98,11 @@ def filter_wall(request):
         group_id = request.GET.get("group_id")
         if group_id:
             group = Group.objects.get(id=group_id)
+            start_date = request.GET.get("start_date") # defaults to None
+            end_date = request.GET.get("end_date")  # defaults to None
             filters = Filter();
             filters.parse_request(request);
-            filtered_posts = filters.get_posts(group);
+            filtered_posts = filters.get_posts(group, start_date, end_date);
             return render_to_response('includes/wall/wall_content.html',
                                       {'posts': filtered_posts,
                                        'group': group,},

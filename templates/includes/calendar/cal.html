@@ -8,19 +8,50 @@
 <script type="text/javascript" charset="utf-8" src="/static/datepicker/jquery.datepick.min.js"></script>
 
 <script type="text/javascript"> 
+
 $(function() {
-   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filterDate});
+   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filter_date});
 });
  
-function filterDate(dates) {
-   alert(dates[0]);
-   alert(dates[1]);
+function format_date(date) {
+   m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
+   d = date.getDate();
+   y = date.getFullYear();
+
+   if (m < 10)
+      m = '0' + m;
+   if (d < 10)
+      d = '0' + d;
+
+   return y + '-' + m + '-' + d;
 }
+
+function filter_date(dates) {
+
+   filters["start_date"] = format_date(dates[0]);
+   filters["end_date"] = format_date(dates[1]);
+
+   apply_filter('this_date_only');
+
+   alert(filters["start_date"]);
+}
+
+function reset_datepicker() {
+   $('#inlineDatepicker').datepick('destroy');
+   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filter_date});
+   delete filters["start_date"];
+   delete filters["end_date"];
+   remove_filter('this_date_only');
+}
+
+
 </script> 
 </head> 
 
 <body> 
    <div id="top-calendar"> 
       <div id="inlineDatepicker"></div> 
+      <a class="cal-reset" href="JavaScript:reset_datepicker()">reset</a>
    </div>
+   
 </body> 

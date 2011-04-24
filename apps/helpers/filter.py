@@ -4,19 +4,22 @@ from itertools import chain
 from operator import attrgetter
 import Queue
 
-filter_ids = ['this_group_only', 'events_only', 'anns_only'];
-filter_descrips = ["{{group}}'s posts", 'events', 'announcements']
+filter_ids = ['this_group_only', 'events_only', 'anns_only', 'this_date_only'];
+filter_descrips = ["{{group}}'s posts", 'events', 'announcements', None]
 
 class Filter:
     @staticmethod
     def get_wall_filter_list(group_name):
         updated_filter_descrips = filter_descrips
         updated_filter_descrips[0] = updated_filter_descrips[0].replace("{{group}}", group_name)
+        print filter_ids
+        print updated_filter_descrips
         return dict(zip(filter_ids, updated_filter_descrips));
 
     @staticmethod
     def get_newsfeed_filter_list():
-        return dict(zip(filter_ids[1:3], filter_descrips[1:3]));
+        return dict(zip(filter_ids[1:len(filter_ids)],
+                        filter_descrips[1:len(filter_descrips)]));
 
     def __init__(self):
         self.filters = {}
@@ -26,7 +29,6 @@ class Filter:
 
     ''' Parses the request, setting the filters to True as specified. '''
     def parse_request(self, request):
-        print 'hi'
         for filter_id in filter_ids:
             if request.GET.get(filter_id):
                 self.filters[filter_id] = True
@@ -68,21 +70,28 @@ class Filter:
         return posts
 
     '''
-    Returns a list of events that occur on the date specified.
+    Applies date and "post_type" (ie: announcement and event)
+    only fileters. Returns a list of posts.
     '''
-    def this_date_only(self, date):
-       pass 
-
+    def apply_post_filters(self, anns, events, start_date, end_date):
+       date_only = self.filters.get('this_date_only')
+       if date_only and start_date:
+           # handle events only, since only events have dates
+           print start_date
+           posts = events.filter(date__range=[start_date, end_date])
+       else:
+           posts = self.post_type_only(anns, events)
+       return posts;
     '''
     Get posts that meet the criteria specified by this filter
     If anybody knows how to write better filter logic, do it
     '''
-    def get_posts(self, group):
+    def get_posts(self, group, start_date=None, end_date=None):
 
         # note that this filters only try to apply these filters
         # they have no effect if the filters are not set
-        anns, events = self.this_group_only(group)        
-        posts = self.post_type_only(anns, events)
+        anns, events = self.this_group_only(group)
+        posts = self.apply_post_filters(anns, events, start_date, end_date)
         
         # is this inefficient? in future, get/chain ~20 posts instead of all
         try:
