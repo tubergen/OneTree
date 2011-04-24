@@ -5,15 +5,18 @@ from operator import attrgetter
 import Queue
 
 filter_ids = ['this_group_only', 'events_only', 'anns_only', 'this_date_only'];
-filter_descrips = ["{{group}}'s posts", 'events', 'announcements', None]
+filter_descrips = ["'s posts", 'events', 'announcements', None]
 
 class Filter:
     @staticmethod
     def get_wall_filter_list(group_name):
-        updated_filter_descrips = filter_descrips
-        updated_filter_descrips[0] = updated_filter_descrips[0].replace("{{group}}", group_name)
-        print filter_ids
-        print updated_filter_descrips
+        updated_filter_descrips = []
+        for descrip in filter_descrips:
+            updated_filter_descrips.append(descrip)
+
+        # [0] is where "'s posts" is
+        updated_filter_descrips[0] = group_name + filter_descrips[0]
+
         return dict(zip(filter_ids, updated_filter_descrips));
 
     @staticmethod
