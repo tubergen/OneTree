@@ -76,8 +76,12 @@ class Filter:
     def apply_post_filters(self, anns, events, start_date, end_date):
        date_only = self.filters.get('this_date_only')
        if date_only and start_date:
-           # handle events only, since only events have dates
-           posts = events.filter(event_date__range=[start_date, end_date])
+           # handle events only, since only events have dates, but run
+           # posts through filter in case anns only is also on
+           self.add('events_only', True)
+           posts = self.post_type_only(anns, events)
+           if posts:
+               posts = posts.filter(event_date__range=[start_date, end_date])
        else:
            posts = self.post_type_only(anns, events)
        return posts;

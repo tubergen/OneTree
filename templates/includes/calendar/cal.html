@@ -28,7 +28,7 @@ function format_date(date) {
 
 function filter_date(dates) {
 
-   // end of interval isn't inclusive in this setup
+   // end of interval isn't inclusive in django code, so need to do this
    var dates1 = new Date(dates[1].getTime());
    dates1.setDate(dates1.getDate() + 1);
 
