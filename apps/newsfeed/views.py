@@ -14,7 +14,7 @@ def filter_newsfeed(request):
     if request.is_ajax():
         user = request.user;
         if user:
-            filters = Filter();
+            filters = Filter()
             filters.parse_request(request)
             filtered_posts = filters.get_news(user)
             return render_to_response('includes/wall/wall_content.html',

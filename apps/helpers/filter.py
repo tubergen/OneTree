@@ -26,6 +26,7 @@ class Filter:
 
     ''' Parses the request, setting the filters to True as specified. '''
     def parse_request(self, request):
+        print 'hi'
         for filter_id in filter_ids:
             if request.GET.get(filter_id):
                 self.filters[filter_id] = True
