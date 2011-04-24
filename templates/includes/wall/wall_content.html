@@ -190,7 +190,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
     {% if post.comment_set.all %}
     <div class="comments-all-div">
-        {% for comment in post.comment_set.all %}
+        {% for comment in post.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
             <span class="comment-author"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             <span class="comment-content">{{ comment.text }}</span>
@@ -211,7 +211,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <textarea id="comment_text_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
-        {% for comment_child in comment.comment_set.all %}
+        {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
                 <span class="comment-author"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
                 <span class="comment-content">{{ comment_child.text }}</span>
