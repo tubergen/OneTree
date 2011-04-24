@@ -9,8 +9,8 @@ from django.db.models.signals import post_save
 from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
-from OneTree.apps.common.user import UserProfile
 from OneTree.apps.common.notification import *
+# more imports at bottom
 
 '''
 I temporarily allowed some of the following fields to be blank. We should
@@ -165,12 +165,9 @@ class GroupInfo(models.Model):
     group = models.ForeignKey('Group')
     data = models.TextField()
     # pass
-
-
-
-
-
-
-
+    
 class UserInfo(models.Model):
     pass
+
+# this has dependencies on models in here, so it needs to be at bottomx
+from OneTree.apps.common.user import UserProfile

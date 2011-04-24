@@ -72,9 +72,6 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-
-
-
 # Create your models here.
 class GroupForm(ModelForm):
 #    def is_valid(self):

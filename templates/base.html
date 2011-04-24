@@ -21,8 +21,9 @@
                 <div id="header_nav">
                     <ul>
                         {% if user.is_authenticated %}
-                            <li><a href="/newsfeed/">News</a></li>
                             <li><a href="/profile/">{{ user.username }}</a></li>
+                            <li><a href="/notifications/">Notifications</a></li>
+                            <li><a href="/newsfeed/">News</a></li>
                             <li><a href="/group-signup/">Group Signup</a></li>
                             <li><a href="/logout/">Logout</a></li>
                         {% else %}
