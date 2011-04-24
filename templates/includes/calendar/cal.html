@@ -28,8 +28,12 @@ function format_date(date) {
 
 function filter_date(dates) {
 
+   // end of interval isn't inclusive in this setup
+   var dates1 = new Date(dates[1].getTime());
+   dates1.setDate(dates1.getDate() + 1);
+
    filters["start_date"] = format_date(dates[0]);
-   filters["end_date"] = format_date(dates[1]);
+   filters["end_date"] = format_date(dates1);
 
    apply_filter('this_date_only');
 

@@ -77,8 +77,7 @@ class Filter:
        date_only = self.filters.get('this_date_only')
        if date_only and start_date:
            # handle events only, since only events have dates
-           print start_date
-           posts = events.filter(date__range=[start_date, end_date])
+           posts = events.filter(event_date__range=[start_date, end_date])
        else:
            posts = self.post_type_only(anns, events)
        return posts;
