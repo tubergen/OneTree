@@ -51,6 +51,30 @@ def post_comment(request):
 
     return HttpResponseRedirect(redirect)
 
+''' Who exactly can delete comments anyway? '''
+removed_msg = 'This comment was removed by a page administrator.'
+def delete_comment(request):
+    err_loc = ' See delete_comment in the group_page views.py.'
+    if request.method == 'POST':
+        try:
+            comment_id = int(request.POST.get('comment_id'))
+            group_id = int(request.POST.get('group_id'))
+        except:
+            print 'Comment or group id not valid integer.' + err_loc
+            return HttpResponse(status=400)
+        if group_id and comment_id:
+            try:
+                comment = Comment.objects.get(id=comment_id)
+                group = Group.objects.get(id=group_id)
+            
+                if request.user in group.admins.all():
+                     comment.text = removed_msg;
+                     comment.save();
+                return HttpResponse(removed_msg)
+            except ObjectDoesNotExist:
+                print 'Non-existent group or comment.' + err_loc
+    return HttpResponse(status=400)
+
 def group(request):
     pass
 

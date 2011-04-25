@@ -27,7 +27,7 @@ def filter_newsfeed(request):
     return HttpResponse(status=400)
 
 '''
-Looks at request. If request specifies a post should be deleted / remmoved, then
+Looks at request. If request specifies a post should be deleted / removed, then
 it's deleted if the requester is the administrator of the author group; if not,
 then the post is simply removed from the group's page. 
 
@@ -93,6 +93,7 @@ def newsfeed(request):
                               {'posts': posts,
                               'errormsg': errormsg,
                               'submit_off': True,
+                              'is_newsfeed': True,
                               'voted_post_set': voted_post_set,
                               'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',

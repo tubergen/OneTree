@@ -217,6 +217,11 @@
     width: 5%;
 }
 
+.comment-delete {
+    clear: both;
+    float: right;
+}
+
 .delete-button {
     font-family: Monospace;
     font-size: small;

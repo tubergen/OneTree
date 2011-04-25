@@ -100,11 +100,8 @@ would hide a bigger issue: that posts which are deleted on the creater's wall
 are not completely deleted from the database.
 '''
 def delete_post(request):
-    print 'in delete_post'
-
     err_loc = ' See delete_post in the group_page views.py.'
     if request.method == 'POST':
-        # Get parameters
         try:
             group_id = int(request.POST.get('group_id'))
             post_id = int(request.POST.get('post_id'))
@@ -113,9 +110,7 @@ def delete_post(request):
             print 'Wall post delete POST data were not valid integers.' + err_loc
             return HttpResponse(status=400)
             
-
         if group_id and post_id and post_type:
-            group_id = int(group_id)
             group = Group.objects.get(id=group_id)
 
             try: 
@@ -142,7 +137,6 @@ def delete_post(request):
                 print 'Error: Tried to delete non-existent object.' + err_loc
                 
     return HttpResponse(status=400)
-
 
 def verify_admin(request, group):
     groupadmins = group.admins.all()

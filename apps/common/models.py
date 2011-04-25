@@ -114,7 +114,18 @@ class Comment(Post):
     level = models.IntegerField()
 
     post_type = PostType.COMMENT
+    # we may change post text if it's inappropriate, but comment_text saves
+    # the text the user entered
+    comment_text = models.TextField(default=None)
 
+    # i hope this works ...
+    def __init__(self, *args, **kwargs):
+        super(Comment, self).__init__(*args, **kwargs)
+        #self._meta.get_field('comment_text').default = self.text
+        if self.comment_text == None:
+            self.comment_text = self.text
+            self.save()
+        
 class Flag(models.Model):
     name = models.CharField(max_length=30)
     
