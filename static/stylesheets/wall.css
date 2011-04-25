@@ -343,3 +343,9 @@
     color: #FF0000;
     text-align: center;
 }
+
+.button-subscribed {
+    color: white;
+    background-color: green;
+}
+

@@ -22,13 +22,17 @@ literals in a text.en file
 
 @login_required
 def change_subscribe(request):
-    if request.is_ajax() and request.method == 'POST':
+    if request.method == 'POST':
         profile = request.user.get_profile();
         group_id = request.POST.get("group_id")
         if group_id and profile:
             profile.change_subscribe(group_id)
-            return HttpResponse()
-
+            if request.is_ajax():
+                return HttpResponse()
+            else:
+                group = Group.objects.get(id=group_id);
+                return HttpResponseRedirect('/group/' +  group.url);
+            
     return HttpResponse(status=400)
 
 @login_required
