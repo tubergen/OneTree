@@ -38,10 +38,11 @@ def change_subscribe(request):
 @login_required
 def req_membership(request):
     err_loc = ' Error at req_membership in group/views.py.'
-    if request.is_ajax() and request.method == 'POST':
+    if request.method == 'POST':
+        print request.POST.get('group_id')
         try:
             group_id = int(request.POST.get('group_id'))
-        except ValueError:
+        except TypeError:
             print 'group_id not int.' + err_loc
             return HttpResponse(status=400)
         if group_id:
@@ -55,7 +56,10 @@ def req_membership(request):
                 mem_req.save()
             else:
                 print 'Already a pending membership request.'
-            return HttpResponse()
+            if request.is_ajax():
+                return HttpResponse()
+            else:
+                return HttpResponseRedirect('/group/' +  group.url);
     return HttpResponse(status=400)        
         
 '''
@@ -229,6 +233,7 @@ def group_page(request, group_url):
                               'user_is_subscribed': user_is_subscribed,
                               'membership_status': membership_status,
                               'subscribe_view_url':'/_apps/group/views-change_subscribe/',
+                              'membership_view_url':'/_apps/group/views-req_membership/',
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
                               'delete_post_view_url': '/_apps/group/views-delete_post/',
