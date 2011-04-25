@@ -13,6 +13,11 @@
     cursor: default;
 }
 
+.cal-reset {
+    font-size: 8pt;
+    float: right;
+}
+
 #top-content {
     min-height: 210px; /* this is to match the height of the calendar which I currently set to 150px... sorry if there's a cleaner way to do that */
 }
