@@ -49,7 +49,7 @@ class Notification(InheritanceCastModel):
         return sender + ' request to ' + recv
 
 class Confirmation(Notification):
-    text = models.CharField(max_length=200)
+    text = models.CharField(max_length=300)
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = False
