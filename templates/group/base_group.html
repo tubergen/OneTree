@@ -61,7 +61,7 @@
            user_is_subscribed = false;
         {% endif %}
 
-        // override default post behavior
+        // override default POST behavior
         $('#subscribe-button').click(function(event) {
             if (user_is_subscribed) {
                 next_text = 'subscribe';
@@ -75,7 +75,7 @@
             return false;
         });
 
-        // override default post behavior
+        // override default POST behavior
         $('#membership-button').click(req_membership);
         
     });
