@@ -14,9 +14,11 @@ def filter_newsfeed(request):
     if request.is_ajax():
         user = request.user;
         if user:
+            start_date = request.GET.get("start_date") # defaults to None
+            end_date = request.GET.get("end_date")  # defaults to None
             filters = Filter()
             filters.parse_request(request)
-            filtered_posts = filters.get_news(user)
+            filtered_posts = filters.get_news(user, start_date, end_date);
             return render_to_response('includes/wall/wall_content.html',
                                      {'posts': filtered_posts,},
                                      context_instance=RequestContext(request))
