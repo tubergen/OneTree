@@ -10,106 +10,104 @@
 
 <script type="text/javascript"> 
 
-$(function() {
-   create_picker();
-}); 
+   $(function() {
+      create_picker();
+   }); 
 
-var cal_click_count = 0;
+   var cal_click_count = 0;
 
-function showHover(date, selectable) { 
+   function showHover(date, selectable) { 
 
-   if (cal_click_count == 0)
-      $('.datepick-status').html('Range Start: ' + format_amer_date(date));
-   else if (cal_click_count == 1)
-      $('.datepick-status').html('Range End: ' + format_amer_date(date));
-   else {}
+      if (cal_click_count == 0)
+         $('.datepick-status').html('Range Start: ' + format_amer_date(date));
+      else if (cal_click_count == 1)
+         $('.datepick-status').html('Range End: ' + format_amer_date(date));
+      else {}
 
-}
-
-
-function create_picker() {
-   $('#inlineDatepicker').datepick({rangeSelect: true, 
-                                    onSelect: filter_date,
-                                    showOtherMonths: true,
-                                    selectOtherMonths: true,
-                                    fixedWeeks: true,
-
-                                    onShow: $.datepick.hoverCallback(showHover)
-                                    });
-}
-
-var date0_str;
-var date1_str;
-var range_selected = false;
-
-function filter_date(dates) {
-
-   date0_str = format_amer_date(dates[0]);
-   date1_str = format_amer_date(dates[1]);
-
-   cal_click_count++;
-
-   if (cal_click_count == 2)
-   {
-      range_selected = true;
-      cal_click_count = 0;
    }
 
-   // end of interval isn't inclusive in django code, so need to do this
-   var dates1 = new Date(dates[1].getTime());
-   dates1.setDate(dates1.getDate() + 1);
+   function create_picker() {
+      $('#inlineDatepicker').datepick({rangeSelect: true, 
+                                       onSelect: filter_date,
+                                       showOtherMonths: true,
+                                       selectOtherMonths: true,
+                                       fixedWeeks: true,
+                                       onShow: $.datepick.hoverCallback(showHover)
+                                       });
+   }   
 
-   filters["start_date"] = format_date(dates[0]);
-   filters["end_date"] = format_date(dates1);
+   var date0_str;
+   var date1_str;
+   var range_selected = false;
 
-   apply_filter('this_date_only');
+   function filter_date(dates) {
 
-}
+      date0_str = format_amer_date(dates[0]);
+      date1_str = format_amer_date(dates[1]);
 
-function reset_datepicker() {
-   $('#inlineDatepicker').datepick('destroy');
-   create_picker();
-   delete filters["start_date"];
-   delete filters["end_date"];
-   remove_filter('this_date_only');
-   cal_click_count = 0;
-   range_selected = false;
-}
+      cal_click_count++;
 
-function format_amer_date(date) {
-   m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
-   d = date.getDate();
-   y = date.getFullYear().toString().slice(2);
+      if (cal_click_count == 2)
+      {
+         range_selected = true;
+         cal_click_count = 0;
+      }
 
-   if (m < 10)
-      m = '0' + m;
-   if (d < 10)
-      d = '0' + d;
+      // end of interval isn't inclusive in django code, so need to do this
+      var dates1 = new Date(dates[1].getTime());
+      dates1.setDate(dates1.getDate() + 1);
 
-   return m + '/' + d + '/' + y;
-}
+      filters["start_date"] = format_date(dates[0]);
+      filters["end_date"] = format_date(dates1);
 
-function format_date(date) {
-   m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
-   d = date.getDate();
-   y = date.getFullYear();
+      apply_filter('this_date_only');
 
-   if (m < 10)
-      m = '0' + m;
-   if (d < 10)
-      d = '0' + d;
+   }
 
-   return y + '-' + m + '-' + d;
-}
+   function reset_datepicker() {
+      $('#inlineDatepicker').datepick('destroy');
+      create_picker();
+      delete filters["start_date"];
+      delete filters["end_date"];
+      remove_filter('this_date_only');
+      cal_click_count = 0;
+      range_selected = false;
+   }
 
-$(document).ready(function() {
-   $('#inlineDatepicker').hover(function() {}, function() { 
-      if (range_selected)
-         $('.datepick-status').html(date0_str + ' - ' + date1_str);
-      else
-         $('.datepick-status').html('Select a date range');
+   function format_amer_date(date) {
+      m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
+      d = date.getDate();
+      y = date.getFullYear().toString().slice(2);
+
+      if (m < 10)
+         m = '0' + m;
+      if (d < 10)
+         d = '0' + d;
+
+      return m + '/' + d + '/' + y;
+   }
+
+   function format_date(date) {
+      m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
+      d = date.getDate();
+      y = date.getFullYear();
+
+      if (m < 10)
+         m = '0' + m;
+      if (d < 10)
+         d = '0' + d;
+
+      return y + '-' + m + '-' + d;
+   }
+
+   $(document).ready(function() {
+      $('#inlineDatepicker').hover(function() {}, function() { 
+         if (range_selected)
+            $('.datepick-status').html(date0_str + ' - ' + date1_str);
+         else
+            $('.datepick-status').html('Select a date range');
+      });
    });
-});
 </script> 
 </head> 
 
