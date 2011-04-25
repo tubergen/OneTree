@@ -1,19 +1,32 @@
 {% extends "base.html" %}
 
-<script type="text/javascript" charset="utf">
+{% block top_content %}
 
-function toggle_edit_info()
-{
-   $('#data_field').show();
-   $('#data_field').focus();
-} 
+<script type="text/javascript" charset="utf-8">  
 
-$(document).ready(function() {
-  $('#data_field').hide();
-});
+  function toggle_edit_info()
+  {
+     if ($('#eventclick').is(':checked'))
+     {
+        $('#data_field').show();
+     }
+     else {
+
+        $('#data_field').hide();
+     }
+
+//      $('#data_field').focus();
+  } 
+
+  $(document).ready(function() {
+     $('#data_field').hide();
+  }); 
+
 </script>
 
-{% block top_content %}
+
+
+
 <span id="title"><h1>{{ groupinfo.group }}</h1></span>
 {% if errormsg %}
    {{ errormsg }}<br>
@@ -21,19 +34,40 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block main_content %}
+
+<CENTER><div id="profile_img">
+
+{% if groupinfo.group.img %}
+<img src="/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}" alt="profile pic"/>
+{% else %}
+<p>(No Profile Photo)</p>
+{% endif %}
+
+</div>
+
+<div id="upload">
+  <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+  </form>
+</div>
+
 <p>
 <strong>Info: </strong>{{ groupinfo.data }}<br>
-<a href="#" onclick="toggle_edit_info()">Edit</a>
+<input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()">Edit<br>
+
+{#<a href="" onclick="toggle_edit_info()">Edit</a>#}
  <div id="data_field"> 
   <form name="edit_info" action="" method="post">{% csrf_token %}
-    <div id="edit_field">
-      <textarea name="data_content" cols=50 rows=4></textarea>
-      <input type="submit" name="data_submit" value="Submit" />
-    </div>
+    {#<div id="edit_field">#}
+      <textarea name="data_content" cols=50 rows=4>{{ groupinfo.data }}</textarea>
+      <br><input type="submit" name="data_submit" value="Submit" />
+    {#</div>#}
   </form>
  </div>
 </p>
 <br>
 <br>
-Back to <a href="/group/{{ groupinfo.group }}">{{ groupinfo.group }}</a>
+</CENTER>
+Back to <a href="/group/{{ groupinfo.group.url }}">{{ groupinfo.group }}</a>
 {% endblock %}

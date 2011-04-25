@@ -15,8 +15,8 @@ from django.views.generic.simple import direct_to_template
 import djapian
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 # get djapian indexing
 djapian.load_indexes()
@@ -29,14 +29,14 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Administration
-    (r'^admin/', include(admin.site.urls)),
+#    (r'^admin/', include(admin.site.urls)),
 
     # Group 
     #(r'^group/$', group_page),
     (r'^group/(\w+)/$', group_page),
     (r'^group/(\w+)/info/$', groupinfo_page),
     (r'^group/(\w+)/(.*)/$', event_page),
-    (r'^group-signup/$', create_group),
+    (r'^group-signup/$', create_group), 
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
     (r'^_apps/wall/views-delete_comment/$', delete_comment),                  

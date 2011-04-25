@@ -175,6 +175,8 @@ class Tag(models.Model):
 class GroupInfo(models.Model):
     group = models.ForeignKey('Group')
     data = models.TextField()
+    # blurb = models.CharField()
+    
     # pass
     
 class UserInfo(models.Model):

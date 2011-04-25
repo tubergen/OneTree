@@ -11,9 +11,12 @@ from OneTree.apps.helpers.enums import PostType
 from OneTree.apps.group.helpers import *
 from OneTree.apps.common.group import Group, GroupForm
 
+from django import forms
+
 from django.contrib.auth.decorators import login_required
 import datetime
 import string
+import os
 
 '''
 Note: In common or something, we should keep all of these string
@@ -330,16 +333,69 @@ def create_group(request):
     return render_to_response('base_groupsignup.html', {'form': form,}, RequestContext(request))
 
 
+# TESTING---------------
+
+class UploadFileForm(forms.Form):
+    file  = forms.ImageField()
+
+def ensure_dir(f):
+    d = os.path.dirname(f)
+    if not os.path.exists(d):
+        os.makedirs(d)
+            
+def handle_uploaded_file(f, group):
+    ensure_dir('static/uploaded_files/'+group+'/profile/')
+    destination = open('static/uploaded_files/'+group+'/profile/' + f.name, 'wb+')
+#    filename = f.path
+#    image = Image.open(filename)
+#    (width, height) = image.size
+#    (width, height) = scale_dimensions(width, height, longest_side=240)
+
+#    f2 = image.resize((width, height))
+    
+    for chunk in f.chunks():
+        destination.write(chunk)
+    # TEST PROFILE IMG
+    this_group = Group.objects.get(url=group)
+    this_group.img = f.name
+    this_group.save()
+    print this_group.img
+    # END TEST
+    destination.close()
+
+def upload_file(request, group):
+    if request.method == 'POST' and request.FILES:
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'], group)
+            return form
+            #return HttpResponseRedirect('/group/' + group + '/info/')
+        else:
+            print 'invalid'
+    else:
+        print 'this else is being called'
+        form = UploadFileForm()
+
+    return form
+
+
+#    return render_to_response('base_groupinfo.html', {'form': form},
+#                              context_instance=RequestContext(request))
+
+#----------------------------------------------------
+
+
+
 # groupinfo page
 def groupinfo_page(request, groupname):
     errormsg = None
     context = RequestContext(request)
 
     
-    #print groupname
     this_group = Group.objects.get(name=groupname)
-    #print this_group
     groupinfo = GroupInfo.objects.filter(group=this_group)
+
+    form = upload_file(request, this_group.url)
 
     # this shouldn't happen
     if not groupinfo:
@@ -357,7 +413,8 @@ def groupinfo_page(request, groupname):
 
     return render_to_response('base_groupinfo.html',
                               {'errormsg': errormsg,
-                               'groupinfo': groupinfo},
+                               'groupinfo': groupinfo,
+                               'form': form},
                               context_instance=context)
 
 def handle_data(groupinfo, request):
