@@ -54,27 +54,30 @@
 
     {% if user.is_authenticated %}
     $(document).ready(function() {
-
         {% if user_is_subscribed %}
-        user_is_subscribed = true;
-        $('#subscribe-button').css('background-color', 'green')
-        $('#subscribe-button').css('color', 'white')
+           user_is_subscribed = true;
+           $('#subscribe-button').addClass('button-subscribed');
         {% else %} 
-        user_is_subscribed = false;
-        $('#subscribe-button').css('background-color', '')
+           user_is_subscribed = false;
         {% endif %}
 
+        // override default POST behavior
         $('#subscribe-button').click(function(event) {
             if (user_is_subscribed) {
-                next_background = ''
-                next_text = 'black'
+                next_text = 'subscribe';
+                next_class = 'button-unsubscribed';
             }
             else {
-                next_background = 'green'
-                next_text = 'white'
+                next_text = 'subscribed';
+                next_class = 'button-subscribed';
             }
-            send_subscribe_change()
+            send_subscribe_change();
+            return false;
         });
+
+        // override default POST behavior
+        $('#membership-button').click(req_membership);
+        
     });
 
     function send_subscribe_change()
@@ -84,9 +87,9 @@
         data["group_id"] = {{ group.id }};
 
         $.post(url, data, function() {
-
-            $('#subscribe-button').css('background-color', next_background)
-            $('#subscribe-button').css('color', next_text)
+            $('#subscribe-button').attr('value', next_text);
+            $('#subscribe-button').removeClass('button-subscribed');
+            $('#subscribe-button').addClass(next_class);
             user_is_subscribed = !user_is_subscribed;
         });
     }
@@ -94,9 +97,10 @@
     function req_membership()
     {
         var data = {"group_id":'{{group.id}}'};
-        $.post("/_apps/group/views-req_membership/", data, function(data) {
+        $.post("{{membership_view_url}}", data, function(data) { 
             $('#mem_status').html('Membership Pending...');
         });
+        return false;
     }
     {% endif %}
 
@@ -113,16 +117,24 @@
 
 <ul class="group-interaction-buttons">
     {% if user.is_authenticated %}
-        <li><button type="button" id="subscribe-button">subscribe</button></li>
+        <li><form method="post" action="{{ subscribe_view_url }}">{% csrf_token %}
+                <input type="hidden" name="group_id" value="{{group.id}}">
+            {% if user_is_subscribed %}
+                <input type="submit" class="button-subscribed" id="subscribe-button" value="subscribed">
+            {% else %}
+                <input type="submit" class="button-unsubscribed" id="subscribe-button" value="subscribe">                                {% endif %}
+        </form></li>
         <div id="mem_status">
             {% ifequal membership_status "member" %}
-                <li>you're a member</li>
+                <li>You're a member.</li>
             {% else %}
                 {% ifequal membership_status "pending" %}
-                    <li>membership pending</li>
+                    <li>Membership Pending...</li>
                 {% else %}
-                    <li><button type="button" id="membership-button"
-                                onClick="req_membership()">request membership</button></li>
+                    <li><form method="post" action="{{ membership_view_url }}">{% csrf_token %}
+                            <input type="hidden" name="group_id" value="{{group.id}}">
+                            <input type="submit" id="membership-button" value="Request Membership">
+                    </form></li>
                 {% endifequal %}
             {% endifequal %}
         </div>

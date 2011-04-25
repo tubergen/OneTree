@@ -103,6 +103,9 @@
          else
             $('.datepick-status').html('Select a date range');
       });
+      // populate these here so they don't appear for people without javascript
+      $('.datepick-status').html('Select a date range');
+      $('.cal-reset').html('reset');
    });
 </script> 
 
@@ -110,8 +113,8 @@
    <div id="top-calendar"> 
       <div id="inlineDatepicker"></div> 
       <div>
-         <span class="datepick-status">Select a date range</span>
-         <a class="cal-reset" href="JavaScript:reset_datepicker()">reset</a>
+         <span class="datepick-status"></span>
+         <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
       </div>
    </div>
 </body> 
