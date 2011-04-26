@@ -30,7 +30,7 @@
 .parent-none {
 }
 
-#group-name-nav {
+#sidebar {
     margin-bottom: 1em;
 }
 
@@ -42,33 +42,6 @@
 /*    float: left;
     display: inline; 
     list-style: none;*/
-}
-
-.parent-word, .child-word {
-    margin: 1em 0 0 0;
-    padding: 0;
-}
-
-.child-list, .parent-list {
-    margin: 0;
-    margin-left: 2em;
-    padding: 0;
-    border-left: 1px #888888 dotted;
-}
-
-.child-list li, .parent-list li {
-    list-style: none;
-}
-
-.child-list-border {
-    width: 6px;
-    height: .7em;
-    border-bottom: 1px #888888 dotted;
-    float: left;
-}
-
-.child-name {
-    margin-left: .3em;
 }
 
 .filter-button {

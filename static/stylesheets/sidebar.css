@@ -16,3 +16,36 @@
     position: relative;
     overflow: hidden;
 }
+
+.parent-word, .child-word {
+    margin: 1em 0 0 0;
+    padding: 0;
+}
+
+.child-list, .parent-list, .group-list {
+    margin: 0;
+    margin-left: 1em;
+    padding: 0;
+    border-left: 1px #888888 dotted;
+}
+
+.group-list-name {
+    font-size: 1.5em;
+    color: green;
+}
+
+.child-list li, .parent-list li, .group-list li {
+    list-style: none;
+    line-height: 1.5em;
+}
+
+.child-list-border {
+    width: 6px;
+    height: .74em;
+    border-bottom: 1px #888888 dotted;
+    float: left;
+}
+
+.child-name {
+    margin-left: .3em;
+}
