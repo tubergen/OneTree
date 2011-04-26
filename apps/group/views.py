@@ -217,6 +217,7 @@ def group_page(request, group_url, partial_form = None):
         siblings = group.parent.child_set.all().exclude(name=group.name)
 
     posts = Filter().get_posts(group) # runs posts through an empty filter
+    wall_subtitle = ""
     if not posts:
         wall_subtitle = "Sorry, there are no announcements or events here yet."
     wall_filter_list = Filter.get_wall_filter_list(group.name);
