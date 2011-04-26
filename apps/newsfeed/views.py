@@ -86,6 +86,7 @@ def newsfeed(request):
 
     voted_post_set = request.user.get_profile().get_voted_posts();
 
+    # called children so that we can use the group page's sidebar
     children = request.user.get_profile().subscriptions.all();
 
     # for debugging

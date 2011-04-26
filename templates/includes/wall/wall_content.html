@@ -152,7 +152,11 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 <div class="post-box" id="post-box-{{post.id}}">
     <div class="post-content">
       {% if is_admin or is_newsfeed %}
-        <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
+         <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
+      {% else %}
+         {% ifequal post.author request.user %}
+            <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
+         {% endifequal %}
       {% endif %}
         <div class="post-votes">
             <ul>
