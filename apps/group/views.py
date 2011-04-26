@@ -59,6 +59,7 @@ Looks at the wall post that was potentially submitted and, if any data was
 submitted, adds that data to the database. Returns an errorMsg if there was a
 error, which can be rendered. Returns None otherwise.
 '''
+@login_required
 def handle_submit(group, request):
     errormsg = None
     if request.method == 'POST':
@@ -165,7 +166,7 @@ def verify_group(group):
 #######################################
 # GROUP PAGE
 #######################################
-def group_page(request, group_url):
+def group_page(request, group_url, partial_form = None):
     errormsg = None
     context = RequestContext(request)
 
