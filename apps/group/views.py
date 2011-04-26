@@ -211,7 +211,14 @@ def group_page(request, group_url, partial_form = None):
         voted_post_set = None
 
     children = group.child_set.all()
+
+    siblings = []
+    if group.parent:
+        siblings = group.parent.child_set.all().exclude(name=group.name)
+
     posts = Filter().get_posts(group) # runs posts through an empty filter
+    if not posts:
+        wall_subtitle = "Sorry, there are no announcements or events here yet."
     wall_filter_list = Filter.get_wall_filter_list(group.name);
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
 
@@ -225,11 +232,13 @@ def group_page(request, group_url, partial_form = None):
         membership_status = request.user.get_profile().get_membership_status(group)
   
     return render_to_response('group/base_group.html',
-                              {'posts': posts,
-                               'is_admin': is_admin,
+                              {'is_group_page': True,
+                              'posts': posts,
+                              'is_admin': is_admin,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,
+                              'siblings': siblings,
                                'groupinfo' : groupinfo,
                               'user_is_subscribed': user_is_subscribed,
                               'membership_status': membership_status,
@@ -238,7 +247,8 @@ def group_page(request, group_url, partial_form = None):
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
                               'delete_post_view_url': '/_apps/group/views-delete_post/',
-                               'voted_post_set': voted_post_set,},
+                              'voted_post_set': voted_post_set,
+                              'wall_subtitle': wall_subtitle,},
                               context_instance=RequestContext(request))
 
 def event_page(request, groupname, title):

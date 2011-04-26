@@ -80,7 +80,7 @@ def newsfeed(request):
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
     if not posts:
-        errormsg = "No news. Join some more communities !"
+        wall_subtitle = "No news. Join some more communities !"
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
@@ -94,7 +94,7 @@ def newsfeed(request):
 
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
-                              'errormsg': errormsg,
+                              'wall_subtitle': wall_subtitle,
                               'children': children,
                               'submit_off': True,
                               'is_newsfeed': True,
