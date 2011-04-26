@@ -68,7 +68,7 @@ submitted, adds that data to the database. Returns an errorMsg if there was a
 error, which can be rendered. Returns None otherwise.
 '''
 @login_required
-def handle_submit(group, request):
+def handle_submit(request, group):
     errormsg = None
     if request.method == 'POST':
         if not verify_admin(request, group):
@@ -182,7 +182,7 @@ def group_page(request, group_url, partial_form = None):
 
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
-        errormsg = handle_submit(group, request)
+        errormsg = handle_submit(request, group)
         if errormsg:
             print errormsg
 
