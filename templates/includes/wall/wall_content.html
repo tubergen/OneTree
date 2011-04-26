@@ -153,10 +153,6 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     <div class="post-content">
       {% if is_admin or is_newsfeed %}
          <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
-      {% else %}
-         {% ifequal post.author request.user %}
-            <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
-         {% endifequal %}
       {% endif %}
         <div class="post-votes">
             <ul>
@@ -214,6 +210,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
 	    {% if is_admin %}
                <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment.id}})"></button>
+            {% else %}
+               {% ifequal comment.author request.user %}
+                  <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment_child.id}})"></button>
+               {% endifequal %}
             {% endif %}
             <div class="comment-reply-button">
                 {% if user.is_authenticated %}
@@ -239,6 +239,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <span class="comment-content" id="comment-content-{{comment_child.id}}">{{ comment_child.text }}</span>
 	    {% if is_admin %}
                <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment_child.id}})"></button>
+            {% else %}
+               {% ifequal comment_child.author request.user %}
+                  <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment_child.id}})"></button>
+               {% endifequal %}
             {% endif %}
             </div>
         {% endfor %}
