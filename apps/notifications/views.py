@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from OneTree.apps.common.notification import *
@@ -11,7 +11,7 @@ from itertools import chain
 @login_required
 def answer_notif(request):
     err_loc = ' Error at submit_yes in notifications/views.py.'
-    if request.is_ajax() and request.method == 'POST':
+    if request.method == 'POST':
         try:
             notif_id = int(request.POST.get('notif_id'))
         except ValueError:
@@ -24,12 +24,16 @@ def answer_notif(request):
             if notif:
                 if answer == 'yes':
                     notif.cast().handle_yes()
-                    return HttpResponse()
                 elif answer == 'no':
                     notif.cast().handle_no()
-                    return HttpResponse()                
                 else:
                     print 'Answer not yes or no.' + err_loc
+                    return HttpResponse(status=400)
+                
+                if request.is_ajax():
+                    return HttpResponse()                
+                else:
+                    return HttpResponseRedirect('/notifications/');
     return HttpResponse(status=400)
 
 @login_required
@@ -65,5 +69,6 @@ def notification_page(request):
 
     return render_to_response('notifications/base_notif.html',
                              {'pending_notifs': pending_notifs,
-                              'old_notifs': old_notifs,},
+                              'old_notifs': old_notifs,
+                              'notif_view_url': '/_apps/notifications/views-answer_notif/',},
                              RequestContext(request));    

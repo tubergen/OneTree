@@ -1,61 +1,120 @@
 
-<head> 
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8"> 
-<title>jQuery Datepicker</title> 
+<link rel="stylesheet" href="/static/datepicker/jquery.datepick.css" type="text/css" charset="utf-8"/> 
 
-  <link rel="stylesheet" href="/static/datepicker/jquery.datepick.css" type="text/css" charset="utf-8"/> 
-
-<script type="text/javascript" charset="utf-8" src="/static/datepicker/jquery.datepick.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/datepicker/jquery.datepick.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/datepicker/jquery.datepick.ext.js"></script>
 
 <script type="text/javascript"> 
 
-$(function() {
-   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filter_date});
-});
- 
-function format_date(date) {
-   m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
-   d = date.getDate();
-   y = date.getFullYear();
+   $(function() {
+      create_picker();
+   }); 
 
-   if (m < 10)
-      m = '0' + m;
-   if (d < 10)
-      d = '0' + d;
+   var cal_click_count = 0;
 
-   return y + '-' + m + '-' + d;
-}
+   function showHover(date, selectable) { 
 
-function filter_date(dates) {
+      if (cal_click_count == 0)
+         $('.datepick-status').html('Range Start: ' + format_amer_date(date));
+      else if (cal_click_count == 1)
+         $('.datepick-status').html('Range End: ' + format_amer_date(date));
+      else {}
 
-   // end of interval isn't inclusive in django code, so need to do this
-   var dates1 = new Date(dates[1].getTime());
-   dates1.setDate(dates1.getDate() + 1);
+   }
 
-   filters["start_date"] = format_date(dates[0]);
-   filters["end_date"] = format_date(dates1);
+   function create_picker() {
+      $('#inlineDatepicker').datepick({rangeSelect: true, 
+                                       onSelect: filter_date,
+                                       showOtherMonths: true,
+                                       selectOtherMonths: true,
+                                       fixedWeeks: true,
+                                       onShow: $.datepick.hoverCallback(showHover)
+                                       });
+   }   
 
-   apply_filter('this_date_only');
+   var date0_str;
+   var date1_str;
+   var range_selected = false;
 
-   alert(filters["start_date"]);
-}
+   function filter_date(dates) {
 
-function reset_datepicker() {
-   $('#inlineDatepicker').datepick('destroy');
-   $('#inlineDatepicker').datepick({rangeSelect: true, onSelect: filter_date});
-   delete filters["start_date"];
-   delete filters["end_date"];
-   remove_filter('this_date_only');
-}
+      date0_str = format_amer_date(dates[0]);
+      date1_str = format_amer_date(dates[1]);
 
+      cal_click_count++;
 
+      if (cal_click_count == 2)
+      {
+         range_selected = true;
+         cal_click_count = 0;
+      }
+
+      // end of interval isn't inclusive in django code, so need to do this
+      var dates1 = new Date(dates[1].getTime());
+      dates1.setDate(dates1.getDate() + 1);
+
+      filters["start_date"] = format_date(dates[0]);
+      filters["end_date"] = format_date(dates1);
+
+      apply_filter('this_date_only');
+
+   }
+
+   function reset_datepicker() {
+      $('#inlineDatepicker').datepick('destroy');
+      create_picker();
+      delete filters["start_date"];
+      delete filters["end_date"];
+      remove_filter('this_date_only');
+      cal_click_count = 0;
+      range_selected = false;
+   }
+
+   function format_amer_date(date) {
+      m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
+      d = date.getDate();
+      y = date.getFullYear().toString().slice(2);
+
+      if (m < 10)
+         m = '0' + m;
+      if (d < 10)
+         d = '0' + d;
+
+      return m + '/' + d + '/' + y;
+   }
+
+   function format_date(date) {
+      m = date.getMonth() + 1; /* + 1 because jan = 0, dec = 11 */
+      d = date.getDate();
+      y = date.getFullYear();
+
+      if (m < 10)
+         m = '0' + m;
+      if (d < 10)
+         d = '0' + d;
+
+      return y + '-' + m + '-' + d;
+   }
+
+   $(document).ready(function() {
+      $('#inlineDatepicker').hover(function() {}, function() { 
+         if (range_selected)
+            $('.datepick-status').html(date0_str + ' - ' + date1_str);
+         else
+            $('.datepick-status').html('Select a date range');
+      });
+      // populate these here so they don't appear for people without javascript
+      $('.datepick-status').html('Select a date range');
+      $('.cal-reset').html('reset');
+   });
 </script> 
-</head> 
 
 <body> 
    <div id="top-calendar"> 
       <div id="inlineDatepicker"></div> 
-      <a class="cal-reset" href="JavaScript:reset_datepicker()">reset</a>
+      <div>
+         <span class="datepick-status"></span>
+         <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
+      </div>
    </div>
-   
 </body> 

@@ -8,7 +8,7 @@
   function submit(notif_id, answer)
   {
      var data = {"notif_id":notif_id, "answer":answer};
-     $.post("/_apps/notifications/views-answer_notif/", data, function(data) {
+     $.post("{{notif_view_url}}", data, function(data) {
        $('#notif-yes-' + notif_id).hide();
        $('#notif-no-' + notif_id).hide();
      });
@@ -17,22 +17,33 @@
   function submit_yes(notif_id)
   {
     submit(notif_id, 'yes');
+    return false;
   }
   function submit_no(notif_id)
   {
     submit(notif_id, 'no');
+    return false;
   }
-
 </script>
 
 {% for pending_notif in pending_notifs %}
   <div class="notif-box">
     <div class="notif-text">{{pending_notif.date}}: {{pending_notif.cast}}</div>
-    <button type="button" class="notif-yes" id="notif-yes-{{pending_notif.id}}"
-	    onClick="submit_yes({{pending_notif.id}})">Approve</button>
-    <button type="button" class="notif-no" id="notif-no-{{pending_notif.id}}" 
-	    onClick="submit_no({{pending_notif.id}})">Deny</button>
+    <form method="post" action="{{ notif_view_url }}">{% csrf_token %}
+        <input type="hidden" name="notif_id" value="{{pending_notif.id}}">
+        <button type="submit" class="notif-yes" id="notif-yes-{{pending_notif.id}}"
+	    name="answer" value="yes">Approve</button>
+        <button type="submit" class="notif-no" id="notif-no-{{pending_notif.id}}" 
+	    name="answer" value="no">Deny</button>
+    </form>
   </div>
+
+  <script type="text/javascript" charset="utf-8">
+     /* Overwrite the default POST behavior. Is this code incomprehensible to you all?
+        <3 conciseness, but it might be hard to understand if you're unused to jquery. */
+     $('#notif-yes-{{pending_notif.id}}').click(function() { submit_yes({{pending_notif.id}}); return false; });
+     $('#notif-no-{{pending_notif.id}}').click(function() { submit_no({{pending_notif.id}}); return false; });
+  </script>
 {% endfor %}
 
 {% for old_notif in old_notifs %}

@@ -49,22 +49,27 @@ class Notification(InheritanceCastModel):
         return sender + ' request to ' + recv
 
 class Confirmation(Notification):
-    text = models.CharField(max_length=50)
+    text = models.CharField(max_length=300)
 
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = False
         super(Confirmation, self).__init__(*args, **kwargs)
 
     def __unicode__(self):
-        return self.text
+        return mark_safe(self.text)
         
 class MembershipReq(Notification):
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = True
         super(MembershipReq, self).__init__(*args, **kwargs)
 
+    def get_group_link(self):
+        url = self.group.full_url
+        group_with_url = '<a href="' + url + '">' + self.group.name + '</a>'
+        return group_with_url
+
     def send_confirmed(self):
-        confirm_text = 'You have been confirmed as a member of ' + self.group.name
+        confirm_text = 'You have been confirmed as a member of ' + self.get_group_link()
         confirm = Confirmation(receiver=self.sender, text=confirm_text)
         confirm.save()
         
@@ -85,9 +90,6 @@ class MembershipReq(Notification):
             sender = self.sender.username
         except AttributeError:
             sender = ''        
-
-        url = self.group.full_url
-        group_with_url = '<a href="' + url + '">' + self.group.name + '</a>'
-        req_text = sender + ' has requested to be a member of ' + group_with_url
+        req_text = sender + ' has requested to be a member of ' + self.get_group_link()
         return mark_safe(req_text)
     

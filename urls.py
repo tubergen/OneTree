@@ -39,12 +39,12 @@ urlpatterns = patterns('',
     (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
+    (r'^_apps/wall/views-delete_comment/$', delete_comment),                  
     (r'^_apps/group/views-change_subscribe/$', change_subscribe),
-    (r'^_apps/group/views-req_membership/$', req_membership),                       
+    (r'^_apps/group/views-req_membership/$', req_membership),                  
     (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
     (r'^_apps/group/views-delete_post/$', delete_post),  
-
     # User
     (r'^secret-signup/$', create_user),
     (r'^user-signup/$', register),
@@ -76,6 +76,7 @@ urlpatterns = patterns('',
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name="activator"),
     (r'^accounts/', include('OneTree.registration.backends.default.urls')),
     (r'^post/comment/$', post_comment),
+                      
 )
 
 # on our own computers, serve static files properly

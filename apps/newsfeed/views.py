@@ -14,9 +14,11 @@ def filter_newsfeed(request):
     if request.is_ajax():
         user = request.user;
         if user:
+            start_date = request.GET.get("start_date") # defaults to None
+            end_date = request.GET.get("end_date")  # defaults to None
             filters = Filter()
             filters.parse_request(request)
-            filtered_posts = filters.get_news(user)
+            filtered_posts = filters.get_news(user, start_date, end_date);
             return render_to_response('includes/wall/wall_content.html',
                                      {'posts': filtered_posts,},
                                      context_instance=RequestContext(request))
@@ -25,7 +27,7 @@ def filter_newsfeed(request):
     return HttpResponse(status=400)
 
 '''
-Looks at request. If request specifies a post should be deleted / remmoved, then
+Looks at request. If request specifies a post should be deleted / removed, then
 it's deleted if the requester is the administrator of the author group; if not,
 then the post is simply removed from the group's page. 
 
@@ -84,13 +86,17 @@ def newsfeed(request):
 
     voted_post_set = request.user.get_profile().get_voted_posts();
 
+    children = request.user.get_profile().subscriptions.all();
+
     # for debugging
     print request.user
 
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errormsg,
+                              'children': children,
                               'submit_off': True,
+                              'is_newsfeed': True,
                               'voted_post_set': voted_post_set,
                               'filter_list': newsfeed_filter_list,
                               'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',

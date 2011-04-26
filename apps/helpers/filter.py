@@ -115,7 +115,7 @@ class Filter:
     Returns a list of top posts from user's subscriptions, which is a
     list of groups. User must exist and have a profile.
     '''
-    def get_news(self, user, posts_to_get=10):
+    def get_news(self, user, start_date=None, end_date=None, posts_to_get=10):
         try:
             profile = user.get_profile()
             subscriptions = profile.subscriptions
@@ -129,7 +129,7 @@ class Filter:
         # pq is sorted by score from lowest to highest
         pq = Queue.PriorityQueue(posts_to_get)
         for group in subscriptions.all():
-            posts = self.get_posts(group)            
+            posts = self.get_posts(group, start_date, end_date)            
             if posts == None:
                 continue
             for post in posts:

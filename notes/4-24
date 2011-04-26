@@ -1,0 +1,5 @@
+jorge: 
+
+        div.timeframe_calendar tbody td.beyond_selected {
+          background-color: #888; /* originally 999 */
+        }
