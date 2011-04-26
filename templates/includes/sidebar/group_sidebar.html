@@ -37,7 +37,11 @@
             {% endfor %}
         </ul>
     {% else %}
-        <h3 class="child-none">no children</h3>
+        {% if is_newsfeed %}
+            <h3 class="child-word">No Subscriptions</h3>
+	{% else %}
+            <h3 class="child-none">no children</h3>
+        {% endif %}
     {% endif %}
     {% endcomment %}
 
