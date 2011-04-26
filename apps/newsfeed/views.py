@@ -86,12 +86,15 @@ def newsfeed(request):
 
     voted_post_set = request.user.get_profile().get_voted_posts();
 
+    children = request.user.get_profile().subscriptions.all();
+
     # for debugging
     print request.user
 
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
                               'errormsg': errormsg,
+                              'children': children,
                               'submit_off': True,
                               'is_newsfeed': True,
                               'voted_post_set': voted_post_set,
