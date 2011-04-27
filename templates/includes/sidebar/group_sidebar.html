@@ -2,7 +2,8 @@
 
     {# image -- for now only put image on group page #}
     {% if is_group_page %}
-    <img src="/static/images/tree.gif" width="180px" height="180px" />
+        
+    <img src="{% if groupinfo.group.img %}/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" />
     {% endif %}
 
     {% comment %}
