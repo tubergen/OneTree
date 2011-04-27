@@ -7,6 +7,8 @@ I just wanted to see if I could do Ajax. We can move this stuff out of here late
 Brian: I moved your code elsewhere so I can use inheritance to put it in the head.
 {% endcomment %}
 
+{% load set_var %}
+
 <script type="text/javascript" charset="utf-8">
 
     // unbinds click() on the button specified by function params
@@ -131,7 +133,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 <script type="text/javascript" charset="utf-8">
 // this code is for posting of comments
 
-// don't hide comments
+// don't hide reply field for comments
     function toggle_reply_box(id, reference) {
         if (!reference.is_shown) {
             $('#'+id).show();
@@ -139,6 +141,20 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         } else {
             $('#'+id).hide();
             reference.is_shown = false;
+        }
+    }
+
+// don't hide extra comments
+    function toggle_extra_comments(class_val, reference, id) {
+        if (!reference.is_shown) {
+            $('.'+class_val).show();
+            reference.is_shown = true;
+            reference.old_html = document.getElementById(id).innerHTML;
+            document.getElementById(id).innerHTML= 'hide extra comments';
+        } else {
+            $('.'+class_val).hide();
+            reference.is_shown = false;
+            document.getElementById(id).innerHTML= reference.old_html;
         }
     }
 
@@ -206,8 +222,11 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
     {% if post.comment_set.all %}
     <div class="comments-all-div">
+        {% set comment_count = 0 %}
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
-        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
+        {% set comment_count += 1 %}
+        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
+            {% set comment_count += 1 %}
             {% if not comment.removed %}
                <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             {% endif %}
@@ -240,7 +259,8 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <input type="submit" value="Post!"></input>
         </form>
         {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
-        <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
+        {% set comment_count += 1 %}
+        <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.parentloop.counter }}{% endif %}">
             {% if not comment_child.removed %}
                 <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
             {% endif %}
@@ -257,7 +277,14 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             </div>
         {% endfor %}
         {% if not forloop.last %}
+            {% if comment_count <= 5 %}
             <hr />
+            {% endif %}
+        {% endif %}
+        {% if forloop.last %}
+            {% if comment_count > 5 %}
+            <div><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}');">see more comments</a></div>
+            {% endif %}
         {% endif %}
         {% endfor %}
     </div>

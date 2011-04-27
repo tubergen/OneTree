@@ -272,6 +272,11 @@
     cursor: pointer;
 }
 
+.load-more-comments {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .comment, .comment-post, .comment-login {
     border-top: 0px solid;
     margin: .5em;
@@ -285,7 +290,7 @@
 
 /* javascript hides these until "see more" is clicked */
 .comment-too-many {
-
+    display: none;
 }
 
 .comment-post textarea {
