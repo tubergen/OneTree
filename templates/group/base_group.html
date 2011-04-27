@@ -6,45 +6,7 @@
 {% endcomment %}
 
 {% block left_content %}
-
-<div id="group-name-nav">
-    {% if group.parent %}
-        <h3 class="parent-word">parent</h3>
-        <ul class="parent-list">
-            <li>
-                <span class="child-list-border"></span>&nbsp;<a class="parent-name" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
-            </li>
-        </ul>
-    {% else %}
-        <h3 class="parent-none">no parent</h3>
-    {% endif %}
-    {% if children %}
-        {% ifequal children|length 1 %} 
-            <h3 class="child-word">child</h3>
-        {% else %}
-            <h3 class="child-word">children</h3>
-        {% endifequal %}
-        <ul class="child-list">
-            {% for child in children %}
-                <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <h3 class="child-none">no children</h3>
-    {% endif %}
-
-    {% comment %}
-        <div class="grouptags">
-            {% if group.tags.all %}
-                <strong>Tags: </strong>
-                {% for tag in group.tags.all %}
-                    {{ tag.tag }} 
-                {% endfor %}
-            {% endif %}
-        </div>
-    {% endcomment %}
-
-</div>
+    {% include "includes/sidebar/group_sidebar.html" %}
 {% endblock %}
 
 

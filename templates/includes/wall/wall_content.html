@@ -120,6 +120,8 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         $.post("/_apps/wall/views-delete_comment/", data, function(data) {
             // returned data is the 'post was removed' message
             $('#comment-content-' + comment_id).html(data); 
+            $('#comment-author-' + comment_id).remove();
+            $('#delete-button-' + comment_id).remove();
         });
     }
 
@@ -152,7 +154,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 <div class="post-box" id="post-box-{{post.id}}">
     <div class="post-content">
       {% if is_admin or is_newsfeed %}
-        <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
+         <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
       {% endif %}
         <div class="post-votes">
             <ul>
@@ -206,10 +208,18 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     <div class="comments-all-div">
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
-            <span class="comment-author"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
+            {% if not comment.removed %}
+               <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
+            {% endif %}
             <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
-	    {% if is_admin %}
-               <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment.id}})"></button>
+            {% if not comment.removed %}
+    	       {% if is_admin %}
+                  <button type="button" class="comment-delete delete-button" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment.id}})"></button>
+               {% else %}
+                  {% ifequal comment.author request.user %}
+                     <button type="button" class="comment-delete delete-button" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment_child.id}})"></button>
+                  {% endifequal %}
+               {% endif %}
             {% endif %}
             <div class="comment-reply-button">
                 {% if user.is_authenticated %}
@@ -231,10 +241,18 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         </form>
         {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
         <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
-                <span class="comment-author"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
+            {% if not comment_child.removed %}
+                <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
+            {% endif %}
                 <span class="comment-content" id="comment-content-{{comment_child.id}}">{{ comment_child.text }}</span>
-	    {% if is_admin %}
-               <button type="button" class="comment-delete delete-button" onClick="delete_comment({{comment_child.id}})"></button>
+            {% if not comment_child.removed %}
+   	       {% if is_admin %}
+                  <button type="button" class="comment-delete delete-button" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})"></button>
+               {% else %}
+                  {% ifequal comment_child.author request.user %}
+                     <button type="button" class="comment-delete delete-button" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})"></button>
+                  {% endifequal %}
+               {% endif %}
             {% endif %}
             </div>
         {% endfor %}

@@ -52,7 +52,8 @@ def post_comment(request):
     return HttpResponseRedirect(redirect)
 
 ''' Who exactly can delete comments anyway? '''
-removed_msg = 'This comment was removed by a page administrator.'
+removed_by_admin = 'This comment was removed by a page administrator.'
+removed_by_user = 'This comment was removed by its author.'
 def delete_comment(request):
     err_loc = ' See delete_comment in the group_page views.py.'
     if request.method == 'POST':
@@ -68,8 +69,17 @@ def delete_comment(request):
                 group = Group.objects.get(id=group_id)
             
                 if request.user in group.admins.all():
-                     comment.text = removed_msg;
-                     comment.save();
+                    comment.text = removed_by_admin;
+                    removed_msg = removed_by_admin;
+                elif request.user == comment.author:
+                    comment.text = removed_by_user;
+                    removed_msg = removed_by_user;
+                else:
+                    print 'User not allowed to remove comment.' + err_loc
+                    return HttpResponse(status=400)
+                comment.removed = True
+                print comment.removed
+                comment.save();
                 return HttpResponse(removed_msg)
             except ObjectDoesNotExist:
                 print 'Non-existent group or comment.' + err_loc

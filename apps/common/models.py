@@ -112,7 +112,7 @@ class Comment(Post):
     # all
     
     level = models.IntegerField()
-
+    removed = models.BooleanField(default=False)
     post_type = PostType.COMMENT
     # we may change post text if it's inappropriate, but comment_text saves
     # the text the user entered

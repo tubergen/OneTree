@@ -80,18 +80,22 @@ def newsfeed(request):
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
     if not posts:
-        errormsg = "No news. Join some more communities !"
+        wall_subtitle = "No news. Join some more communities !"
     
     newsfeed_filter_list = Filter.get_newsfeed_filter_list();
 
     voted_post_set = request.user.get_profile().get_voted_posts();
+
+    # called children so that we can use the group page's sidebar
+    children = request.user.get_profile().subscriptions.all();
 
     # for debugging
     print request.user
 
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
-                              'errormsg': errormsg,
+                              'wall_subtitle': wall_subtitle,
+                              'children': children,
                               'submit_off': True,
                               'is_newsfeed': True,
                               'voted_post_set': voted_post_set,

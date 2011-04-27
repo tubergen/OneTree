@@ -1,0 +1,76 @@
+<div id="sidebar">
+
+    {# image -- for now only put image on group page #}
+    {% if is_group_page %}
+    <img src="" width="200px" height="200px" />
+    {% endif %}
+
+    {% comment %}
+    {# list parent #}
+    {% if group.parent %}
+        <h3 class="parent-word">parent</h3>
+        <ul class="parent-list">
+            <li>
+                <span class="child-list-border"></span>&nbsp;<a class="parent-name" href="/group/{{ group.parent.url }}">{{ group.parent }}</a>
+            </li>
+        </ul>
+    {% else %}
+        {% if group%}
+            <h3 class="parent-none">no parent</h3>
+        {% endif %}
+    {% endif %}
+
+    {# list children #}
+    {% if children %}
+        {% if is_newsfeed %}
+                <h3 class="child-word">Subscriptions</h3>
+        {% else %}
+            {% ifequal children|length 1 %} 
+                <h3 class="child-word">child</h3>
+            {% else %}
+                <h3 class="child-word">children</h3>
+            {% endifequal %}
+        {% endif %}
+        <ul class="child-list">
+            {% for child in children %}
+                <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if is_newsfeed %}
+            <h3 class="child-word">No Subscriptions</h3>
+	{% else %}
+            <h3 class="child-none">no children</h3>
+        {% endif %}
+    {% endif %}
+    {% endcomment %}
+
+    {# testing logic to get parent then GROUPNAME then children and siblings #}
+    <div id="group-navigation-div">
+        <div class="parent-word"><a href="/group/{{ group.parent.url }}">{{ group.parent }}</a></div>
+        <ul class="child-list">
+            <li><span class="child-list-border"></span><a class="child-name group-list-name">{{ group.name }}</a>
+                <ul class="child-list">
+                    {% for child in children %}
+                        <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% for sibling in siblings %}
+                <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ sibling.url }}">{{ sibling.name }}</a></li>
+            {% endfor %}
+    </div>
+
+    {# list tags #}
+    {% comment %}
+        <div class="grouptags">
+            {% if group.tags.all %}
+                <strong>Tags: </strong>
+                {% for tag in group.tags.all %}
+                    {{ tag.tag }} 
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endcomment %}
+
+</div>

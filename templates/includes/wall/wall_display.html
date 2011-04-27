@@ -13,7 +13,7 @@ id "wall-content".
   {% include "includes/wall/wall_filters.html" %}
 
   {% block wall_title %}
-    <h2 id="subtitle">wall posts</h2>
+  <h2 id="subtitle">{{ wall_subtitle }}</h2>
   {% endblock %}
 
     {% if is_admin %}
