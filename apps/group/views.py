@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 import string
 import os
+import Image
 
 '''
 Note: In common or something, we should keep all of these string
@@ -243,7 +244,7 @@ def group_page(request, group_url, partial_form = None):
                               'group': group,
                               'children': children,
                               'siblings': siblings,
-                               'groupinfo' : groupinfo,
+                              'groupinfo': groupinfo,
                               'user_is_subscribed': user_is_subscribed,
                               'membership_status': membership_status,
                               'subscribe_view_url':'/_apps/group/views-change_subscribe/',
@@ -367,7 +368,7 @@ def ensure_dir(f):
 def handle_uploaded_file(f, group):
     ensure_dir('static/uploaded_files/'+group+'/profile/')
     destination = open('static/uploaded_files/'+group+'/profile/' + f.name, 'wb+')
-#    filename = f.path
+#    filename = f.name
 #    image = Image.open(filename)
 #    (width, height) = image.size
 #    (width, height) = scale_dimensions(width, height, longest_side=240)
@@ -380,7 +381,7 @@ def handle_uploaded_file(f, group):
     this_group = Group.objects.get(url=group)
     this_group.img = f.name
     this_group.save()
-    print this_group.img
+    #print this_group.img
     # END TEST
     destination.close()
 
@@ -394,7 +395,7 @@ def upload_file(request, group):
         else:
             print 'invalid'
     else:
-        print 'this else is being called'
+        #print 'this else is being called'
         form = UploadFileForm()
 
     return form
