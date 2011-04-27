@@ -228,7 +228,6 @@ def group_page(request, group_url, partial_form = None):
     #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
 
     is_admin = False
-
     if verify_admin(request, group):
         is_admin = True
     
@@ -240,6 +239,7 @@ def group_page(request, group_url, partial_form = None):
                               {'is_group_page': True,
                               'posts': posts,
                               'is_admin': is_admin,
+                              'is_group_page': True, # for the sidebar hierarchy 
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,
@@ -273,7 +273,7 @@ def event_page(request, groupname, title):
     return render_to_response('base_event.html',
                               {'errormsg': errormsg,
                                'event': this_event},
-                              context_instance=context)
+                              context_instance=RequestContext(request))
 
 
 # REFERENCES:
@@ -435,9 +435,15 @@ def groupinfo_page(request, groupname):
 
     return render_to_response('base_groupinfo.html',
                               {'errormsg': errormsg,
+                               'is_groupinfo_page': True,
                                'groupinfo': groupinfo,
                                'form': form},
                               context_instance=context)
+
+# groupphotos_page
+def groupphotos_page(request, groupname):
+    pass
+
 
 def handle_data(groupinfo, request):
     errormsg = None

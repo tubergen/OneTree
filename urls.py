@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.group.views import group_page, event_page, delete_post, change_subscribe, groupinfo_page
+from OneTree.apps.group.views import group_page, groupinfo_page, groupphotos_page, event_page, delete_post, change_subscribe
 from OneTree.apps.user.views import *
 from OneTree.apps.notifications.views import notification_page, answer_notif
 from OneTree.apps.group.views import create_group, req_membership
@@ -32,11 +32,12 @@ urlpatterns = patterns('',
 #    (r'^admin/', include(admin.site.urls)),
 
     # Group 
-    #(r'^group/$', group_page),
+    url(r'^group/$', group_page, {'group_url': 'princeton'}), # just default there for now
     (r'^group/(\w+)/$', group_page),
     (r'^group/(\w+)/info/$', groupinfo_page),
-    (r'^group/(\w+)/(.*)/$', event_page),
-    (r'^group-signup/$', create_group), 
+    (r'^group/(\w+)/photos/$', groupphotos_page),
+    (r'^group/(\w+)/event/(.*)/$', event_page),
+    (r'^group-signup/$', create_group),
     (r'^_apps/wall/views-update_vote/$', update_vote),
     (r'^_apps/wall/views-filter_wall/$', filter_wall),
     (r'^_apps/wall/views-delete_comment/$', delete_comment),                  
@@ -45,6 +46,7 @@ urlpatterns = patterns('',
     (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
     (r'^_apps/group/views-delete_post/$', delete_post),  
+
     # User
     (r'^secret-signup/$', create_user),
     (r'^user-signup/$', register),
@@ -65,11 +67,11 @@ urlpatterns = patterns('',
     (r'^notifications/$', notification_page),
     (r'^_apps/notifications/views-answer_notif/$', answer_notif),
                        
-    # searching
+    # Searching
     #(r'^search/', include('haystack.urls')),
     url(r'^search/$', search, name='search'),
 
-    # activate/complete must come before activate/activation_key
+    # Activate/complete must come before activate/activation_key
     url(r'^activate/complete/$', 
         direct_to_template, {'template':'registration/activation_complete.html'},
         name="reg_complete"),
