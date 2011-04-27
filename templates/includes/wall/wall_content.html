@@ -145,14 +145,16 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     }
 
 // don't hide extra comments
-    function toggle_extra_comments(class_val, reference, id) {
+    function toggle_extra_comments(class_val, reference, id, hr_class) {
         if (!reference.is_shown) {
             $('.'+class_val).show();
+            $('.'+hr_class).show();
             reference.is_shown = true;
             reference.old_html = document.getElementById(id).innerHTML;
             document.getElementById(id).innerHTML= 'hide extra comments';
         } else {
             $('.'+class_val).hide();
+            $('.'+hr_class).hide();
             reference.is_shown = false;
             document.getElementById(id).innerHTML= reference.old_html;
         }
@@ -225,8 +227,14 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {% set comment_count = 0 %}
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
         {% set comment_count += 1 %}
+        {% if not forloop.first %}
+            {% if comment_count > 5 %}
+            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+            {% else %}
+                <hr />
+            {% endif %}
+        {% endif %}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
-            {% set comment_count += 1 %}
             {% if not comment.removed %}
                <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             {% endif %}
@@ -276,14 +284,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             {% endif %}
             </div>
         {% endfor %}
-        {% if not forloop.last %}
-            {% if comment_count <= 5 %}
-            <hr />
-            {% endif %}
-        {% endif %}
+
         {% if forloop.last %}
             {% if comment_count > 5 %}
-            <div><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}');">see more comments</a></div>
+            <div class="load-more-comments-div"><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}', 'hr-too-many-{{forloop.parentloop.counter}}');">see more comments</a></div>
             {% endif %}
         {% endif %}
         {% endfor %}

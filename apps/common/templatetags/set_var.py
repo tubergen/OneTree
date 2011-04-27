@@ -1,5 +1,9 @@
 '''
 adapted and modified code from: http://www.soyoucode.com/2011/set-variable-django-template
+
+added:
+    * thread-safety
+    * += to modify stateful variables
 '''
 
 from django import template
@@ -18,10 +22,14 @@ class SetVarNode(template.Node):
             value = template.Variable(self.var_value).resolve(context)
         except template.VariableDoesNotExist:
             value = ""
+
         if self.var_action == '+=':
-            context[self.var_name] += value
+            context.render_context[self.var_name] += value
         else:
-            context[self.var_name] = value
+            context.render_context[self.var_name] = value
+
+        context[self.var_name] = context.render_context[self.var_name]
+
         return u""
  
 def set_var(parser, token):

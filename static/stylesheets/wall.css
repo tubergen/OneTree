@@ -272,6 +272,11 @@
     cursor: pointer;
 }
 
+.load-more-comments-div {
+    font-size: 8pt;
+    margin: .1em;
+}
+
 .load-more-comments {
     text-decoration: underline;
     cursor: pointer;
@@ -289,7 +294,7 @@
 }
 
 /* javascript hides these until "see more" is clicked */
-.comment-too-many {
+.comment-too-many, .hr-too-many {
     display: none;
 }
 
