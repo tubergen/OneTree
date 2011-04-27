@@ -47,7 +47,8 @@
                                        selectOtherMonths: true,
                                        fixedWeeks: true,
                                        onShow: $.datepick.hoverCallback(showHover),
-                                       renderer: $.datepick.themeRollerRenderer
+                                       renderer: $.datepick.themeRollerRenderer,
+                                       showTrigger: '#cal_img'
                                        });
    }   
 
@@ -79,6 +80,7 @@
 
    }
 
+   /* currently unused */
    function reset_datepicker() {
       $('#inlineDatepicker').datepick('destroy');
       create_picker();
@@ -131,10 +133,9 @@
 
 <body> 
    <div id="top-calendar"> 
-      <div id="inlineDatepicker"></div> 
-      <div>
-         <span class="datepick-status"></span>
-         <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
+      <div style="visibility:hidden">
+         <img id="cal_img" alt="Popup" src="/static/datepicker/calendar-blue.gif">
       </div>
+      <input type="text" id="inlineDatepicker" size="20" value="Select a date range">
    </div>
 </body> 
