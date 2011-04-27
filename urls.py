@@ -15,8 +15,8 @@ from django.views.generic.simple import direct_to_template
 import djapian
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 # get djapian indexing
 djapian.load_indexes()
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Administration
-    (r'^admin/', include(admin.site.urls)),
+#    (r'^admin/', include(admin.site.urls)),
 
     # Group 
     url(r'^group/$', group_page, {'group_url': 'princeton'}), # just default there for now

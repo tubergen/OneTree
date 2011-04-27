@@ -22,6 +22,9 @@ class Group(models.Model):
                                null=True, verbose_name="parent")
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
+    # profile picture
+    img = models.CharField(max_length=50)
+
     #users = models.ManyToManyField(auth.models.User, through='Membership', 
     #                               blank=True, null=True, related_name='users')
 

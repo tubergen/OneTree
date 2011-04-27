@@ -112,7 +112,7 @@ class Comment(Post):
     # all
     
     level = models.IntegerField()
-
+    removed = models.BooleanField(default=False)
     post_type = PostType.COMMENT
     # we may change post text if it's inappropriate, but comment_text saves
     # the text the user entered
@@ -175,6 +175,9 @@ class Tag(models.Model):
 class GroupInfo(models.Model):
     group = models.ForeignKey('Group')
     data = models.TextField()
+    # blurb should be what data is now
+    # blurb = models.CharField(max_length=50)
+    
     # pass
     
 class UserInfo(models.Model):
