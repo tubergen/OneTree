@@ -79,6 +79,7 @@ def newsfeed(request):
 
     posts = Filter().get_news(request.user) # runs posts through an empty filter
 
+    wall_subtitle = ""
     if not posts:
         wall_subtitle = "No news. Join some more communities !"
     

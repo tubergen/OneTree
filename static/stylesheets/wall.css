@@ -1,14 +1,13 @@
-/*--- make room for the calendar ---*/
+/*----- make room for the calendar ------*/
 
-/* I'm so sorry... I hate floats */
 #top-calendar {
     position: absolute;
     top: 50%;
-    left: 95%;
-    margin-left: -200px;
-    margin-top: -100px;
+    left: 100%;
+    margin-left: -190px;
+    margin-top: -90px;
     width: 150px;
-    height: 200px;
+    height: 190px;
     float: right;
     cursor: default;
 }
@@ -19,10 +18,61 @@
 }
 
 #top-content {
-    min-height: 210px; /* this is to match the height of the calendar which I currently set to 150px... sorry if there's a cleaner way to do that */
+    min-height: 190px; /* this must match the height of the calendar */
 }
 
 /*----------------------------------------*/
+
+/*-------------- tabs --------------------*/
+
+.main-container-navigation-tabs .main-container {
+    clear: both;
+    border-radius: 0 0 10px 10px;
+    -moz-border-radius: 0px 0px 10px 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+}
+
+.top-navigation-tabs ul {
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+
+.top-navigation-tabs li {
+	float: left;
+	border: 1px solid;
+	border-bottom-width: 0;
+	margin: 0 0.5em 0 0;
+}
+
+.top-navigation-tabs a {
+    display: block;
+    text-align: center;
+    font-size: 1.2em;
+	padding: .3em 2em;
+    background: #efefef;
+}
+
+.top-navigation-tabs a:hover {
+    background: #cfcfcf;
+}
+
+.top-navigation-tabs #selected a {
+	position: relative;
+	top: 1px;
+    background: white;
+}
+
+.top-navigation-tabs {
+}
+
+.container-top-bar {
+    background: white;
+    color: black;
+}
+
+/*-----------------------------------------*/
 
 .parent-name, .group-name {
 }
@@ -46,31 +96,19 @@
 
 .filter-button {
     padding: .2em;
-    background: transparent;
-    color: #FFFFFF;
+    background: #eeeeee;
     border: 1px solid #000000;
     border-radius: 6px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
 }
 
-
 .filter-button:hover {
-    background: #000000;
+    background: #cccccc;
 }
 
-.selected {
-    color: #000000;
-    background-color: #FFFFFF;
-}
-
-.selected:hover {
-    color: #000000;
-    background-color: #FFFFFF;
-}
-
-.selected:hover {
-/*    background-color: #D1D1D1; */
+.selected, .selected:hover {
+    background-color: #AAAAAA;
 }
 
 .post-box {

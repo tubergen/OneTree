@@ -170,7 +170,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <span class="post-by-same-group">
             {% endifnotequal %}
             {% if post.event_title %}
-                 <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>: <a class="event-title" href="/group/{{ post.origin_group }}/{{ post.event_url }}/">{{ post.event_title }}</a>
+                 <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>: <a class="event-title" href="/group/{{ post.origin_group }}/event/{{ post.event_url }}/">{{ post.event_title }}</a>
                 {% else %}
                     <a href="/group/{{ post.origin_group.url }}">{{ post.origin_group }}</a>
             {% endif %}
