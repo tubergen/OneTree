@@ -77,6 +77,8 @@ def delete_comment(request):
                 else:
                     print 'User not allowed to remove comment.' + err_loc
                     return HttpResponse(status=400)
+                comment.removed = True
+                print comment.removed
                 comment.save();
                 return HttpResponse(removed_msg)
             except ObjectDoesNotExist:
