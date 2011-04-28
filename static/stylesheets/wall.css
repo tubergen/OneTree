@@ -272,6 +272,7 @@
     cursor: pointer;
 }
 
+<<<<<<< HEAD
 .load-more-comments-div {
     font-size: 8pt;
     margin: .1em;
@@ -282,6 +283,8 @@
     cursor: pointer;
 }
 
+=======
+>>>>>>> parent of 551b349... show more comments works
 .comment, .comment-post, .comment-login {
     border-top: 0px solid;
     margin: .5em;
@@ -294,8 +297,13 @@
 }
 
 /* javascript hides these until "see more" is clicked */
+<<<<<<< HEAD
 .comment-too-many, .hr-too-many {
     display: none;
+=======
+.comment-too-many {
+
+>>>>>>> parent of 551b349... show more comments works
 }
 
 .comment-post textarea {

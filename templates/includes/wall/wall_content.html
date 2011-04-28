@@ -7,8 +7,6 @@ I just wanted to see if I could do Ajax. We can move this stuff out of here late
 Brian: I moved your code elsewhere so I can use inheritance to put it in the head.
 {% endcomment %}
 
-{% load set_var %}
-
 <script type="text/javascript" charset="utf-8">
 
     // unbinds click() on the button specified by function params
@@ -133,7 +131,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 <script type="text/javascript" charset="utf-8">
 // this code is for posting of comments
 
-// don't hide reply field for comments
+// don't hide comments
     function toggle_reply_box(id, reference) {
         if (!reference.is_shown) {
             $('#'+id).show();
@@ -144,6 +142,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         }
     }
 
+<<<<<<< HEAD
 // don't hide extra comments
     function toggle_extra_comments(class_val, reference, id, hr_class) {
         if (!reference.is_shown) {
@@ -181,6 +180,8 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         });
     }          
     */
+=======
+>>>>>>> parent of 551b349... show more comments works
 // make it hidden at first
     $(document).ready(function() { 
       //  $('.comment-post').hide();
@@ -245,8 +246,8 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
     {% if post.comment_set.all %}
     <div class="comments-all-div">
-        {% set comment_count = 0 %}
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
+<<<<<<< HEAD
         {% set comment_count += 1 %}
         {% if not forloop.first %}
             {% if comment_count > 5 %}
@@ -256,6 +257,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             {% endif %}
         {% endif %}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
+=======
+        <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %}">
+>>>>>>> parent of 551b349... show more comments works
             {% if not comment.removed %}
                <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
             {% endif %}
@@ -288,8 +292,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <input type="submit" value="Post!"></input>
         </form>
         {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
-        {% set comment_count += 1 %}
-        <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.parentloop.counter }}{% endif %}">
+        <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %}">
             {% if not comment_child.removed %}
                 <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
             {% endif %}
@@ -305,11 +308,16 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             {% endif %}
             </div>
         {% endfor %}
+<<<<<<< HEAD
 
         {% if forloop.last %}
             {% if comment_count > 5 %}
             <div class="load-more-comments-div"><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}', 'hr-too-many-{{forloop.parentloop.counter}}');">see more comments</a></div>
             {% endif %}
+=======
+        {% if not forloop.last %}
+            <hr />
+>>>>>>> parent of 551b349... show more comments works
         {% endif %}
         {% endfor %}
     </div>

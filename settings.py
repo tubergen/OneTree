@@ -107,7 +107,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'OneTree.apps.wall',
     'OneTree.apps.common',
-    'OneTree.apps.common.templatetags',
     'OneTree.apps.newsfeed',
     'OneTree.apps.notifications',
      #'haystack',
