@@ -131,7 +131,7 @@ AUTH_PROFILE_MODULE = 'common.UserProfile'
 
 # default login / logout urls
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/newsfeed/'
+LOGIN_REDIRECT_URL = '/news/'
 LOGOUT_URL = '/logout/'
 
 # necessary for haystack to work
