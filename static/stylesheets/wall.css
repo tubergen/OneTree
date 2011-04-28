@@ -112,10 +112,10 @@
 }
 
 .filter-button {
-    padding: .2em;
+    padding: .2em .5em;
     color: white;
-    background-color: transparent;
-    margin: .1em .8em;
+    background-color: #5f5f5f;
+    margin: .1em .6em;
     border: 1px solid #000000;
     border-radius: 6px;
     -moz-border-radius: 6px;
@@ -177,12 +177,16 @@
 
 .post-content {
     padding: .32em;
+    margin-bottom: 0;
     background-color: #F5F5F5;
     text-align: left;
     border: 1px solid #000000;
     border-radius: 10px;
+    border-bottom-right-radius: 0;
     -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;;
+    -moz-border-bottom-right-radius: 0;
+    -webkit-border-radius: 10px;
+    -webkit-border-bottom-right-radius: 0;
     overflow: hidden;
 }
 
@@ -270,14 +274,33 @@
     margin: 2px;
 }
 
-.comments-all-div {
+.comments-all-div, .form-div {
     margin-left: 2.5em;
     padding: 0;
-    margin-top: .3em;
+    margin-top: 0;
     border: 1px solid #000000;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px; 
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+    -moz-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px; 
+}
+
+.form-div {
+    border-radius: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-top: 0;
+    border-bottom: 0;
+    padding-left: 1em;
+}
+
+.form-div-no-comments {
+    border: 0 1px 1px 1px solid;
+    border-radius: 0 0 10px 10px;
+    -moz-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;     border: 0;
 }
 
 .comments-all-div hr {
@@ -312,12 +335,15 @@
 .comment, .comment-post, .comment-login {
     border-top: 0px solid;
     margin: .5em;
+    margin-top: 0;
     text-align: left;
     padding: 0;
+    padding-top: .25em;
     overflow: hidden;
 }
 
-.comment-first {
+.comment-post {
+    margin: 0;
 }
 
 /* javascript hides these until "see more" is clicked */
