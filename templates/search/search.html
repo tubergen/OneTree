@@ -22,7 +22,13 @@
                 <h2>Search results:</h2>
                 <ol id="results-list">
                     {% for hit in results %}
-                        <li><a href="/group/{{ hit.instance.url }}">{{ hit.instance }}</a> ({{ hit.percent }}% match)</li>
+                        <li><a href="/group/{{ hit.instance.url }}">{{ hit.instance }}</a> ({{ hit.percent }}% match)
+                            <ul>
+                                <li>
+                                    {{ hit.instance.groupinfo_set.all.data }}
+                                </li>
+                            </ul>
+                        </li>
                     {% endfor %}
                 </ol>
             {% else %}
