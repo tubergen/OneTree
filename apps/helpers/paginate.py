@@ -1,6 +1,5 @@
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
-# not a view -- just a helper function
 def paginate_posts(request, posts):
     paginator = Paginator(posts, 20)
     try: 
@@ -13,4 +12,3 @@ def paginate_posts(request, posts):
         posts_on_page = paginator.page(paginator.num_pages)
 
     return posts_on_page
-
