@@ -24,9 +24,13 @@
 
 .child-list, .parent-list, .group-list {
     margin: 0;
-    margin-left: 1em;
+    margin-left: 1.7em;
     padding: 0;
     border-left: 1px #888888 dotted;
+}
+
+.parent-list {
+    margin-left: .8em;
 }
 
 .group-list-name {
@@ -41,7 +45,7 @@
 
 .child-list-border {
     width: 6px;
-    height: .74em;
+    height: .8em;
     border-bottom: 1px #888888 dotted;
     float: left;
 }
