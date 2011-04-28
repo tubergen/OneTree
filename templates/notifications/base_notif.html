@@ -1,11 +1,25 @@
 {% extends "base.html" %}
 
+{% block top_content %}
+<span id="title"><h1>Notifications</h1></span>
+{% endblock %}
+
+
 {% block head %}
     {{ block.super }}
     <link rel="stylesheet" href="/static/stylesheets/wall.css" type="text/css" media="screen" />
 {% endblock %}
 
+
+
 {% block main_content %}
+
+  {% if need_approval %}
+  <strong>You have children awaiting approval. <a href="/profile/approve/">Let me see the groups</a></strong>
+  {% else %}
+  <p>No group approval needed at this point in time.</p>
+{% endif %}
+
 
 <script type="text/javascript" charset="utf-8">
 

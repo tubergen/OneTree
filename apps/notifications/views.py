@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from OneTree.apps.common.notification import *
 from operator import attrgetter
+from OneTree.apps.common.models import *
 
 from itertools import chain
 
@@ -41,6 +42,25 @@ def answer_notif(request):
 @login_required
 def notification_page(request):
     
+
+### Ming's section #################
+    errormsg = None
+    need_approval = False
+
+    user = request.user
+    userprofile = UserProfile.objects.get(user=request.user)
+    mgroups = Group.objects.filter(admins=user)
+        
+    if mgroups:
+        for mgroup in mgroups:
+            if mgroup.inactive_child.all():
+                need_approval = True
+            else:
+                pass 
+
+##########################
+
+
     pending_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=True )
     old_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=False )
 
@@ -72,5 +92,11 @@ def notification_page(request):
     return render_to_response('notifications/base_notif.html',
                              {'pending_notifs': pending_notifs,
                               'old_notifs': old_notifs,
-                              'notif_view_url': '/_apps/notifications/views-answer_notif/',},
+                              'notif_view_url': '/_apps/notifications/views-answer_notif/',
+                              'user': user, 
+                              'userprofile': userprofile,
+                              'groups': mgroups, 
+                              'need_approval': need_approval,
+                              'active': user.is_active,
+},
                              RequestContext(request));    

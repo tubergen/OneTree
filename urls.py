@@ -8,7 +8,7 @@ from OneTree.apps.newsfeed.views import newsfeed, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
 from OneTree.apps.search.views import search
 from django.conf import settings
-from django.contrib.auth.views import login, logout, password_change, password_change_done
+from django.contrib.auth.views import login, logout, password_change, password_change_done, password_reset
 from django.views.generic.simple import direct_to_template
 
 #import haystack
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Administration
-#    (r'^admin/', include(admin.site.urls)),
+   # (r'^admin/', include(admin.site.urls)),
 
     # Group 
     url(r'^group/$', group_page, {'group_url': 'princeton'}), # just default there for now
@@ -57,8 +57,12 @@ urlpatterns = patterns('',
     (r'^profile/$', user_page, {'username': ''}),
     (r'^profile/account/$', user_account, {'username': ''}),
     (r'^profile/account/fill-details/$', complete_profile, ),
-    url(r'^profile/account/changepwd/$', password_change, {'template_name': 'user/change_password.html', 'post_change_redirect': '' }, name='password_change'),
+    (r'^profile/account/changepwdsuccess/$', password_change_success, ),
+    url(r'^profile/account/changepwd/$', password_change, {'template_name': 'user/change_password.html', 'post_change_redirect': '/profile/account/changepwdsuccess' }, name='password_change'),
     (r'^profile/approve/$', admin_approve),
+    (r'^profile/account/changeemail/$', change_email, ),
+    url(r'^profile/account/forgetpwd/$', password_reset, { }, ), 
+    (r'^profile/account/forgetpwdsent/$', forget_password_email_sent, ),
     (r'^news/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
