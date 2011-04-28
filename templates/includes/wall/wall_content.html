@@ -266,35 +266,58 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {% set comment_count = 0 %}
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
         {% set comment_count += 1 %}
+        {% comment %}
         {% if not forloop.first %}
             {% if comment_count > 5 %}
-            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+                <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
             {% else %}
                 <hr />
             {% endif %}
         {% endif %}
+        {% endcomment %}
+
+        {# a top-level comment #}
         <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
-            {% if not comment.removed %}
-               <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a></span>
-            {% endif %}
-            <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
-            {% if not comment.removed %}
-    	       {% if is_admin %}
-                  <button type="button" class="comment-delete delete-button" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment.id}})"></button>
-               {% else %}
-                  {% ifequal comment.author request.user %}
-                     <button type="button" class="comment-delete delete-button" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment.id}})"></button>
-                  {% endifequal %}
-               {% endif %}
-            {% endif %}
-            <div class="comment-reply-button">
-                {% if user.is_authenticated %}
-                <a onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">Reply!</a>
-                {% else %}
-                {# do nothing... <a href="/login/?next={{ request.path }}">Login to reply!</a> #}
+            <div class="comment-content-div">
+                {% if not comment.removed %}
+                   <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a>:</span>
                 {% endif %}
+                    <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
+            </div>
+            <div class="comment-bottom-bar">
+                <span class="post-date">posted on {{ comment.date }}</span>
+                <ul>
+                    <li>
+                        {% if user.is_authenticated %}
+                            <button type="button" class="comment-reply-button" onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">reply</button>
+                        {% else %}
+                            {# do nothing... <a href="/login/?next={{ request.path }}">Login to reply!</a> #}
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if not comment.removed %}
+                           {% if is_admin %}
+                           <button type="button" class="comment-delete" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment.id}})">delete</button>
+                           {% else %}
+                              {% ifequal comment.author request.user %}
+                                 <button type="button" class="comment-delete" id="delete-button-{{comment.id}}" onClick="delete_comment({{comment.id}})">delete</button>
+                              {% endifequal %}
+                           {% endif %}
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
+        {# end top-level comment #}
+
+        {# hr #}
+        {% if not forloop.last %}
+            {% if comment_count > 5 %}
+                <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+            {% else %}
+                <hr />
+            {% endif %}
+        {% endif %}
 
         {# posting of a reply to a comment #}
         <form name="comment_post_{{ comment.id }}" id="comment_post_id_{{ comment.id }}" class="comment-post comment-level-1" action="/post/comment/" method="post">{% csrf_token %}
@@ -305,24 +328,41 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             <textarea id="comment_text_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
+
+        {# redundant code, sorry... a nested comment #}
         {% for comment_child in comment.comment_set.all reversed %} {# chronological order #}
         {% set comment_count += 1 %}
         <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.parentloop.counter }}{% endif %}">
-            {% if not comment_child.removed %}
-                <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a></span>
-            {% endif %}
+            <div class="comment-content-div">
+                {% if not comment_child.removed %}
+                   <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a>:</span>
+                {% endif %}
                 <span class="comment-content" id="comment-content-{{comment_child.id}}">{{ comment_child.text }}</span>
-            {% if not comment_child.removed %}
-   	       {% if is_admin %}
-                  <button type="button" class="comment-delete delete-button" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})"></button>
-               {% else %}
-                  {% ifequal comment_child.author request.user %}
-                     <button type="button" class="comment-delete delete-button" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})"></button>
-                  {% endifequal %}
-               {% endif %}
-            {% endif %}
             </div>
+            <div class="comment-bottom-bar">
+                <span class="post-date">posted on {{ comment_child.date }}</span>
+                <div class="lonely-delete">
+                    {% if not comment_child.removed %}
+                       {% if is_admin %}
+                       <button type="button" class="comment-delete" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})">delete</button>
+                       {% else %}
+                          {% ifequal comment_child.author request.user %}
+                             <button type="button" class="comment-delete" id="delete-button-{{comment_child.id}}" onClick="delete_comment({{comment_child.id}})">delete</button>
+                          {% endifequal %}
+                       {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# hr #}
+        {% if comment_count > 5 %}
+            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+        {% else %}
+            <hr />
+        {% endif %}
         {% endfor %}
+        {# end nested comment #}
 
         {% if forloop.last %}
             {% if comment_count > 5 %}
@@ -335,16 +375,17 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     {# DO IT #}
 </div>
 {% endfor %}
+
 <div id="page-navigation">
     <ul>
         {% if posts_on_page.has_previous %}
         <li><a href="?page={{ posts_on_page.previous_page_number }}">Previous</a><li>
         {% else %}
-        <li>Previous</li>
+        <li>previous</li>
         {% endif %}
         {% if posts_on_page.has_next %}
         <li><a href="?page={{ posts_on_page.next_page_number }}">Next</a><li>
         {% else %}
-        <li>Next</li>
+        <li>next</li>
         {% endif %}
 </div>
