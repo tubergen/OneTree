@@ -20,7 +20,7 @@ class Notification(InheritanceCastModel):
                                null=True, blank=True)
     pending = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now=True)
-    answer_descrip = models.CharField(max_length=50)
+    answer_descrip = models.CharField(max_length=50, blank=True)
 
     class Meta:
         ordering = ['-date']
