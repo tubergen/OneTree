@@ -4,10 +4,10 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    margin-left: -190px;
-    margin-top: -90px;
+    margin-left: -170px;
+    margin-top: -80px;
     width: 150px;
-    height: 190px;
+    height: 200px;
     float: right;
     cursor: default;
 }
@@ -17,8 +17,13 @@
     float: right;
 }
 
+.datepick-status {
+    font-size: 9pt;
+}
+
 #top-content {
-    min-height: 190px; /* this must match the height of the calendar */
+    min-height: 170px; /* this must match the height of the calendar */
+    overflow: visible;
 }
 
 /*----------------------------------------*/
@@ -31,6 +36,10 @@
     -moz-border-radius: 0px 0px 10px 10px;
     -webkit-border-bottom-right-radius: 10px;
     -webkit-border-bottom-left-radius: 10px;
+}
+
+.main-container-navigation-tabs {
+    background: transparent;
 }
 
 .top-navigation-tabs ul {
