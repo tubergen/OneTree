@@ -419,7 +419,8 @@ def groupinfo_page(request, groupname):
     context = RequestContext(request)
 
     
-    this_group = Group.objects.get(name=groupname)
+    #this_group = Group.objects.get(name=groupname)
+    this_group = Group.objects.get(url=groupname)
     groupinfo = GroupInfo.objects.filter(group=this_group)
 
     form = upload_file(request, this_group.url)
