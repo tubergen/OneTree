@@ -70,7 +70,7 @@
 
 {% for old_notif in old_notifs %}
   <div class="notif-box post-content">
-    <strong>{{old_notif.answer_descrip}}</strong> {{old_notif.date}}: {{old_notif.cast}}
+    <strong>{{old_notif.cast.answer_descrip}}</strong> {{old_notif.date}}: {{old_notif.cast}}
   </div>
 {% endfor %}
 </div>

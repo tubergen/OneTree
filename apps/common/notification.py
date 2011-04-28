@@ -9,12 +9,12 @@ NOTE: Receiver and group should NOT both be set on the same object, but
 one of them SHOULD be set.
 '''
 class Notification(InheritanceCastModel):
-    ''' Afaik receiver and "group" (ie: receiving group) will not be set for
+    ''' Afaik recv_user and recv_group will and should not be set for
     the same notification. '''
     
     # use when you want to send a notification to a user
     # receiver can be blank if we send notification to a group instead
-    receiver = models.ForeignKey(auth.models.User, null=True, blank=True,
+    recv_user = models.ForeignKey(auth.models.User, null=True, blank=True,
                                  related_name="recv_notifications")
 
     # use when you want to send a notification to a group
@@ -23,9 +23,13 @@ class Notification(InheritanceCastModel):
     
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
                                null=True, blank=True)
-    pending = models.BooleanField(default=False)
+
+    # notifications that have been looked at but unanswered
+    pending = models.BooleanField(blank=True)
     date = models.DateTimeField(auto_now=True)
-    answer_descrip = models.CharField(max_length=50, blank=True)
+
+    # true if answer was yes, false if it was no
+    answered_yes = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date']
@@ -44,7 +48,7 @@ class Notification(InheritanceCastModel):
     
     def __unicode__(self):
         try:
-            recv = self.receiver.username
+            recv = self.recv_user.username
         except AttributeError:
             recv = ''
         try:
@@ -53,6 +57,10 @@ class Notification(InheritanceCastModel):
             sender = ''
             
         return sender + ' request to ' + recv
+
+    def _get_answer_descrip(self):
+        return ''
+    answer_descrip = property(_get_answer_descrip)
 
 class Confirmation(Notification):
     text = models.CharField(max_length=300)
@@ -76,21 +84,29 @@ class MembershipReq(Notification):
 
     def send_confirmed(self):
         confirm_text = 'You have been confirmed as a member of ' + self.get_group_link()
-        confirm = Confirmation(receiver=self.sender, text=confirm_text)
+        confirm = Confirmation(recv_user=self.sender, text=confirm_text)
         confirm.save()
         
     def handle_yes(self):
         self.sender.get_profile().memberships.add(self.recv_group)
         self.send_confirmed()
         self.pending = False
-        self.answer_descrip = "Approved"
+        self.answered_yes = True
         self.save()
 
     def handle_no(self):
         self.pending = False
-        self.answer_descrip = "Denied"        
+        self.answered_no = False
         self.save()
 
+    def _get_answer_descrip(self):
+        if not self.pending:
+            if self.answered_yes:
+                return 'Approved'
+            else:
+                return 'Denied'
+    answer_descrip = property(_get_answer_descrip)
+    
     # we need to make sure users don't put javascript in the url, because
     # i'm going to unescape this
     def __unicode__(self):

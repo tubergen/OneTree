@@ -33,7 +33,8 @@ def answer_notif(request):
                 
                 if request.is_ajax():
                     # notif was updated, so need to re-query
-                    notif = Notification.objects.get(id=notif_id)                    
+                    notif = Notification.objects.get(id=notif_id).cast()
+                    print notif.answer_descrip
                     return HttpResponse(notif.answer_descrip)                
                 else:
                     return HttpResponseRedirect('/notifications/');
@@ -61,8 +62,8 @@ def notification_page(request):
 ##########################
 
 
-    pending_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=True )
-    old_notifs = request.user.recv_notifications.filter(receiver=request.user, pending=False )
+    pending_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=True )
+    old_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=False )
 
     ''' begin random debug code '''
     '''
