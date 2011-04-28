@@ -60,26 +60,31 @@ def delete_comment(request):
     if request.method == 'POST':
         try:
             comment_id = int(request.POST.get('comment_id'))
-            group_id = int(request.POST.get('group_id'))
         except:
-            print 'Comment or group id not valid integer.' + err_loc
+            print 'Comment id not valid integer.' + err_loc
             return HttpResponse(status=400)
-        if group_id and comment_id:
+
+        try:
+            group_id = int(request.POST.get('group_id'))
+            group = Group.objects.get(id=group_id)
+        except:
+            group = None
+
+        if comment_id:
             try:
                 comment = Comment.objects.get(id=comment_id)
-                group = Group.objects.get(id=group_id)
             
-                if request.user in group.admins.all():
-                    comment.text = removed_by_admin;
-                    removed_msg = removed_by_admin;
-                elif request.user == comment.author:
+                if request.user == comment.author:
                     comment.text = removed_by_user;
                     removed_msg = removed_by_user;
+                elif group and request.user in group.admins.all():
+                    comment.text = removed_by_admin;
+                    removed_msg = removed_by_admin;
                 else:
                     print 'User not allowed to remove comment.' + err_loc
                     return HttpResponse(status=400)
+                
                 comment.removed = True
-                print comment.removed
                 comment.save();
                 return HttpResponse(removed_msg)
             except ObjectDoesNotExist:
