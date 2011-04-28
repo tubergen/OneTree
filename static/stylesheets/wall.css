@@ -32,10 +32,10 @@
 
 .main-container-navigation-tabs .main-container {
     clear: both;
-    border-radius: 0 0 10px 10px;
-    -moz-border-radius: 0px 0px 10px 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
+    border-radius: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-top-left-radius: 0;
 }
 
 .main-container-navigation-tabs {
@@ -46,6 +46,7 @@
 	list-style: none;
 	padding:0;
 	margin:0;
+    background: black;
 }
 
 .top-navigation-tabs li {
@@ -53,32 +54,39 @@
 	border: 1px solid;
 	border-bottom-width: 0;
 	margin: 0 0.5em 0 0;
+    background: black;
 }
 
 .top-navigation-tabs a {
     display: block;
     text-align: center;
+    color: white;
+    text-decoration: none;
     font-size: 1.2em;
 	padding: .3em 2em;
-    background: #efefef;
+    background: #888888;
 }
 
 .top-navigation-tabs a:hover {
-    background: #cfcfcf;
+    background: #555555;
 }
 
 .top-navigation-tabs #selected a {
 	position: relative;
 	top: 1px;
-    background: white;
+    background-color: #3F3F3F;
 }
 
 .top-navigation-tabs {
 }
 
 .container-top-bar {
-    background: white;
-    color: black;
+    background-color: #3F3F3F;
+    color: white;
+    border-radius: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-top-left-radius: 0;
 }
 
 /*-----------------------------------------*/
@@ -105,7 +113,9 @@
 
 .filter-button {
     padding: .2em;
-    background: #eeeeee;
+    color: white;
+    background-color: transparent;
+    margin: .1em .8em;
     border: 1px solid #000000;
     border-radius: 6px;
     -moz-border-radius: 6px;
@@ -113,11 +123,13 @@
 }
 
 .filter-button:hover {
-    background: #cccccc;
+    background-color: #000000;
+    cursor: pointer;
 }
 
 .selected, .selected:hover {
-    background-color: #AAAAAA;
+    background-color: #ffffff;
+    color: black;
 }
 
 .post-box {
@@ -172,6 +184,10 @@
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;;
     overflow: hidden;
+}
+
+.post-content:hover {
+    background-color: #FAFAFA;
 }
 
 .post-votes {
@@ -267,8 +283,7 @@
 .comments-all-div hr {
     border: 0;
     height: 1px;
-    color: #000000;
-    background-color: #000000;
+    background-color: #cccccc;
     width: 95%;
 }
 
