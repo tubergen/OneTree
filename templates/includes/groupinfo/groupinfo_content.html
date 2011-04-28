@@ -1,0 +1,16 @@
+{% comment %}
+
+Testing Groupinfo_content
+
+{% endcomment %}
+
+{% load set_var %}
+
+{# <CENTER> #}
+<p>
+<strong>About Us: </strong>{{ groupinfo.data }}<br>
+</p>
+<br>
+<br>
+{# </CENTER> #}
+Back to <a href="/group/{{ groupinfo.group.url }}">{{ groupinfo.group }}</a>

@@ -1,0 +1,20 @@
+{% comment %}
+The filters depend on the div containing the wall_content include having
+id "wall-content".
+{% endcomment %}
+
+{% if errormsg %}
+<p class="wall-error-text">  
+    {{ errormsg }}
+</p> 
+{% endif %}
+
+{% if is_admin %}
+<div class="container-top-bar">
+{% include "includes/groupinfo/groupinfo_edit.html" %}
+</div>
+{% endif %}
+
+<div id="wall-content">
+
+{% include "includes/groupinfo/groupinfo_content.html" %}</div>

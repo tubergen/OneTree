@@ -5,14 +5,22 @@ import string
 # code for handling event
 def handle_event(group, request):
     errormsg = None
+    maxlen = 30
     if not request.POST['title'] or not request.POST['where'] or not request.POST['date'] or not request.POST['time']:
         errormsg = 'Please fill out all required fields for an event.'
     
     else:
         title = request.POST['title'].strip()
+        if len(title) > maxlen:
+            errormsg = 'Error: Title length must not exceed '+str(maxlen)+' characters.\n Your title is currently '+str(len(title))+' characters long.'
+            return errormsg
         url = string.join(request.POST['title'].split(), '')
         url = url.strip()
         when = request.POST['date'] + ' '
+        place = request.POST['where'].strip()
+        if len(place) > maxlen:
+            errormsg = 'Error: Location length must not exceed '+str(maxlen)+' characters.\n Your location is currently '+str(len(place))+' characters long.'
+            return errormsg
         flaglist = request.POST['flags'].split(',')
         for x in range(0, len(flaglist)):
             flaglist[x] = flaglist[x].strip()
@@ -50,7 +58,7 @@ def handle_event(group, request):
                           downvotes = 0,
                           origin_group=group,
                           event_title=title,
-                          event_place=request.POST['where'],
+                          event_place=place,
                           event_date=when,
                           event_url=url)
         new_event.save()
