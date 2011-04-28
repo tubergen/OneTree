@@ -33,7 +33,8 @@
                 <form action="/login/" method="POST">{% csrf_token %}
                     {% include 'includes/authentication/login.html' %}
                 </form>
-                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></p>
+                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></br>
+		  <a href="/profile/account/forgetpwd">Forgot password?</a></p>
             {% endif %}
         </div>
         <div class="main-container container-right-containee">

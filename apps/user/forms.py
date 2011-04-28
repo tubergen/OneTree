@@ -60,7 +60,7 @@ class RegistrationForm(forms.Form):
     def clean_email(self):
 	try:
 	    email = User.objects.get(email=self.cleaned_data['email'])
-	except email.DoesNotExist:
+	except:
 	     return self.cleaned_data['email']
 	raise forms.ValidationError("An account with the e-mail address has been registered.")
 
