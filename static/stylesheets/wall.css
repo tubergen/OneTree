@@ -375,3 +375,9 @@
     background-color: green;
 }
 
+#page-navigation ul, #page-navigation li {
+    display: inline;
+    list-style: none;
+    padding: 0;
+    margin: 1em;
+}

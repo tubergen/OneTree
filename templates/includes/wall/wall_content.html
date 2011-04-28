@@ -317,3 +317,16 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     {# DO IT #}
 </div>
 {% endfor %}
+<div id="page-navigation">
+    <ul>
+        {% if posts_on_page.has_previous %}
+        <li><a href="?page={{ posts_on_page.previous_page_number }}">Previous</a><li>
+        {% else %}
+        <li>Previous</li>
+        {% endif %}
+        {% if posts_on_page.has_next %}
+        <li><a href="?page={{ posts_on_page.next_page_number }}">Next</a><li>
+        {% else %}
+        <li>Next</li>
+        {% endif %}
+</div>
