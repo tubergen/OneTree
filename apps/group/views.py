@@ -42,7 +42,6 @@ def change_subscribe(request):
 
 @login_required
 def req_membership(request):
-    err_loc = ' Error at req_membership in group/views.py.'
     if request.method == 'POST':
         print request.POST.get('group_id')
         try:
