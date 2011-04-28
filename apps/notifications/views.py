@@ -31,7 +31,9 @@ def answer_notif(request):
                     return HttpResponse(status=400)
                 
                 if request.is_ajax():
-                    return HttpResponse()                
+                    # notif was updated, so need to re-query
+                    notif = Notification.objects.get(id=notif_id)                    
+                    return HttpResponse(notif.answer_descrip)                
                 else:
                     return HttpResponseRedirect('/notifications/');
     return HttpResponse(status=400)
