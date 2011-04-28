@@ -1,0 +1,64 @@
+<script type="text/javascript" charset="utf-8">  
+
+  function toggle_edit_info()
+  {
+     if ($('#eventclick').is(':checked'))
+     {
+        $('#data_field').show();
+        $('#upload').show();
+     }
+     else {
+
+        $('#data_field').hide();
+        $('#upload').hide();
+
+     }
+
+//      $('#data_field').focus();
+  } 
+
+  $(document).ready(function() {
+     $('#data_field').hide();
+     $('#upload').hide();
+  }); 
+
+</script>
+
+<CENTER>
+
+
+{% comment %}
+<div id="profile_img">
+{% if groupinfo.group.img %}
+<img src="/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}" alt="profile pic"/>
+{% else %}
+<p>(No Profile Photo)</p>
+{% endif %}
+</div>
+{% endcomment %}
+
+
+
+<p>
+<input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()">Edit Information<br>
+
+<div id="upload">
+<h3>Change Group Logo</h3>
+  <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+  </form>
+</div>
+
+{#<a href="" onclick="toggle_edit_info()">Edit</a>#}
+ <div id="data_field"> 
+  <h3>Edit Group Information</h3>
+  <form name="edit_info" action="" method="post">{% csrf_token %}
+    {#<div id="edit_field">#}
+      <textarea name="data_content" cols=50 rows=4>{{ groupinfo.data }}</textarea>
+      <br><input type="submit" name="data_submit" value="Submit" />
+    {#</div>#}
+  </form>
+ </div>
+</p>
+</CENTER>
