@@ -62,7 +62,11 @@ class Filter:
         events_only = self.filters.get('events_only')
         anns_only = self.filters.get('anns_only')
         if events_only and anns_only:
-            posts = None
+            ''' we decided these are no longer "post type only" filters in
+            the literal sense, so I've changed my code here. now the filters
+            mean "show this post type"
+            posts = None '''
+            posts = chain(anns, events)
         elif anns_only:
             posts = anns
         elif events_only:
