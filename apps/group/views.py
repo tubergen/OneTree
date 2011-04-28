@@ -433,7 +433,7 @@ def groupinfo_page(request, groupname):
 
     # this SHOULD happen 
 #    else:
-    groupinfo = groupinfo[0]
+#    groupinfo = groupinfo[0]
 
     # handle editable info submit
     if 'data_submit' in request.POST:
