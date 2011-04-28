@@ -137,8 +137,12 @@ def filter_wall(request):
             filters = Filter();
             filters.parse_request(request);
             filtered_posts = filters.get_posts(group, start_date, end_date);
+
+            posts_on_page = paginate_posts(request, filtered_posts)
+
             return render_to_response('includes/wall/wall_content.html',
-                                      {'posts': filtered_posts,
+                                      {'posts': posts_on_page.object_list,
+                                       'posts_on_page': posts_on_page,
                                        'group': group,},
                                       context_instance=RequestContext(request))
 

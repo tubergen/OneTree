@@ -8,6 +8,7 @@ from OneTree.apps.common.models import *
 from OneTree.apps.common.notification import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
+from OneTree.apps.helpers.paginate import paginate_posts
 from OneTree.apps.group.helpers import *
 from OneTree.apps.common.group import Group, GroupForm
 
@@ -234,10 +235,13 @@ def group_page(request, group_url, partial_form = None):
     membership_status = "notmember"
     if request.user.is_authenticated():
         membership_status = request.user.get_profile().get_membership_status(group)
-  
+
+    posts_on_page = paginate_posts(request, posts)
+
     return render_to_response('group/base_group.html',
                               {'is_group_page': True,
-                              'posts': posts,
+                              'posts': posts_on_page.object_list, # easy template compatibility
+                              'posts_on_page': posts_on_page,
                               'is_admin': is_admin,
                               'is_group_page': True, # for the sidebar hierarchy 
                               'errormsg': errormsg,
@@ -255,6 +259,8 @@ def group_page(request, group_url, partial_form = None):
                               'voted_post_set': voted_post_set,
                               'wall_subtitle': wall_subtitle,},
                               context_instance=RequestContext(request))
+
+
 
 def event_page(request, groupname, title):
     errormsg = None
