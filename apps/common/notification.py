@@ -24,6 +24,9 @@ class Notification(InheritanceCastModel):
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
                                null=True, blank=True)
 
+    # notifications that haven't been looked at yet
+    new = models.BooleanField(default=True)
+    
     # notifications that have been looked at but unanswered
     pending = models.BooleanField(blank=True)
     date = models.DateTimeField(auto_now=True)
@@ -61,6 +64,10 @@ class Notification(InheritanceCastModel):
     def _get_answer_descrip(self):
         return ''
     answer_descrip = property(_get_answer_descrip)
+
+    def not_new(self):
+        self.new = False
+        self.save()
 
 class Confirmation(Notification):
     text = models.CharField(max_length=300)

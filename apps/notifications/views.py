@@ -34,7 +34,6 @@ def answer_notif(request):
                 if request.is_ajax():
                     # notif was updated, so need to re-query
                     notif = Notification.objects.get(id=notif_id).cast()
-                    print notif.answer_descrip
                     return HttpResponse(notif.answer_descrip)                
                 else:
                     return HttpResponseRedirect('/notifications/');
@@ -65,27 +64,17 @@ def notification_page(request):
     pending_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=True )
     old_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=False )
 
-    ''' begin random debug code '''
-    '''
-    print 'new'
-    for c in new_notifs:
-        print c
-
-    print 'old'
-    for d in old_notifs:
-        print d
-    '''
-
-    #a = Notification(sender=request.user, receiver=request.user)
-    #a.save()
-
-    #b = MembershipReq(sender=request.user, group=Group.objects.get(id=2))
-    #b.save()
-    ''' end random debug code '''
-
     for group in request.user.admin_groups.all():
         pending_notifs = chain(pending_notifs, group.notification_set.filter(pending=True))
         old_notifs = chain(old_notifs, group.notification_set.filter(pending=False))
+
+    # necessary, b/c chain seems to be exhausted (empty) after you loop over it once
+    pending_notifs = list(pending_notifs)
+    old_notifs = list(old_notifs)
+
+    # we've seen all of these notifications now, so set them to not new
+    for notif in pending_notifs:
+        notif.not_new()
 
     pending_notifs = sorted(pending_notifs, key=attrgetter('date'), reverse=True)
     old_notifs = sorted(old_notifs, key=attrgetter('date'), reverse=True)    
