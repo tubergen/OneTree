@@ -231,12 +231,19 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             {% if post.flags.all %} <p class="event-flags">{{ post.flags.all|join:", " }}</p>{% endif %}
         {% endif %}
 
-        <div class="post-text">{{ post.text }}</div>
-        <div class="post-reply-button">{% if user.is_authenticated %}
-            <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this);">Comment!</a>
-                {% else %}
-                <a href="/login/?next={{ request.path }}">Login to comment!</a>
-                {% endif %}</div>
+            <div class="post-text">{{ post.text }}</div>
+            <div class="post-bottom-bar">
+                <div class="post-reply-button">
+                    {% if user.is_authenticated %}
+                        <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this);">Comment!</a>
+                    {% else %}
+                        {% if forloop.first %} <a href="/login/?next={{ request.path }}">Login to comment!</a> {% endif %}
+                    {% endif %}
+                </div>
+                <div class="post-date">
+                    posted on {{ post.date }}
+                </div>
+            </div>
     </div>
 
     {# CHANGE THIS JORGE. CHANGE IT!!!! #}
@@ -284,7 +291,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 {% if user.is_authenticated %}
                 <a onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">Reply!</a>
                 {% else %}
-                <a href="/login/?next={{ request.path }}">Login to reply!</a>
+                {# do nothing... <a href="/login/?next={{ request.path }}">Login to reply!</a> #}
                 {% endif %}
             </div>
         </div>
