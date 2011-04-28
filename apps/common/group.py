@@ -18,7 +18,7 @@ group_url = "/group/"
 class Group(models.Model):
 
     name = models.CharField(max_length=30, verbose_name="name", unique=True)
-    parent = models.ForeignKey('Group', related_name="child_set", blank=True,
+    parent = models.ForeignKey('Group', related_name="child_set", blank=False,
                                null=True, verbose_name="parent")
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
@@ -85,6 +85,7 @@ class GroupForm(ModelForm):
 # do we have to do this? it seems like it validates already...
     
     # NEEDS VALIDATION?
+
 
     error_css_class = 'error'
     required_css_class = 'required'

@@ -71,7 +71,7 @@ def register(request):
                 login(request, user)
             """
 
-            return render_to_response("registration_success.html",
+            return render_to_response("user/registration_success.html",
                                       { 'username': username,
                                         'email':email, 'password':password },
                                       context_instance=context
