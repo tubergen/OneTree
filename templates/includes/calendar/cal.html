@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="/static/datepicker/jquery.datepick.css" type="text/css" charset="utf-8"/> 
 
 <link rel="stylesheet" href="/static/datepicker/css/ui.theme.css" type="text/css" charset="utf-8"/>
@@ -36,7 +35,6 @@
                                        fixedWeeks: true,
                                        onShow: $.datepick.hoverCallback(showHover),
                                        renderer: $.datepick.themeRollerRenderer,
-                                       showTrigger: '#cal_img'
                                        });
    }   
 
@@ -119,8 +117,20 @@
    });
 </script> 
 
-{# actual html for calendar #}
+{% comment %}
+{# code for doing a calendar in the filter bar #}
       <div style="display:none">
          <img id="cal_img" alt="Popup" src="/static/datepicker/calendar-blue.gif">
-      </div>
+      </div>      
       <input type="text" id="inlineDatepicker" size="20" value="Select a date range">
+{% endcomment %}
+
+<body> 
+   <div id="top-calendar"> 
+      <div id="inlineDatepicker"></div> 
+      <div>
+         <span class="datepick-status"></span>
+         <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
+      </div>
+   </div>
+</body> 

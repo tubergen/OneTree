@@ -76,8 +76,11 @@ with the filter string that's in our Django code.
      <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
   {% endif %}
 {% endfor %}
+{% comment %}
+{# we decided not to put the calendar as a filter, so remove this #}
      <button class="filter-button" id="filter-by-date" onClick="change_filter_by_date()">By Date Range <img src="/static/datepicker/calendar-blue.gif"></button>
      <button id="filter-by-date-picker">
        {% include "includes/calendar/cal.html" %}
      </button>
+{% endcomment %}
 </div>
