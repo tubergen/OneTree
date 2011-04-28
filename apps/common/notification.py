@@ -19,7 +19,8 @@ class Notification(InheritanceCastModel):
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
                                null=True, blank=True)
     pending = models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now=True)    
+    date = models.DateTimeField(auto_now=True)
+    answer_descrip = models.CharField(max_length=50, blank=True)
 
     class Meta:
         ordering = ['-date']
@@ -77,10 +78,12 @@ class MembershipReq(Notification):
         self.sender.get_profile().memberships.add(self.group)
         self.send_confirmed()
         self.pending = False
+        self.answer_descrip = "Approved"
         self.save()
 
     def handle_no(self):
         self.pending = False
+        self.answer_descrip = "Denied"        
         self.save()
 
     # we need to make sure users don't put javascript in the url, because

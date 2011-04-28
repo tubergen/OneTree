@@ -381,3 +381,10 @@
     padding: 0;
     margin: 1em;
 }
+
+#filter-by-date-picker {
+    display:none; 
+    text-align:center;
+    background-color:#fff; 
+    border:none;
+}
