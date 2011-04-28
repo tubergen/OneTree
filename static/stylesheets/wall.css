@@ -17,6 +17,10 @@
     float: right;
 }
 
+.below-cal-content {
+    width: 175px;
+}
+
 #top-content {
     min-height: 190px; /* this must match the height of the calendar */
 }
