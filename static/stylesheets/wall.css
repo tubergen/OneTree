@@ -146,7 +146,7 @@
 
 .post-group-name {
     font-size: 12pt;
-    padding: .1em;
+    margin-top: .5em;
     font-weight: bold;
 }
 
@@ -443,4 +443,14 @@
     text-align:center;
     background-color:#fff; 
     border:none;
+}
+
+.group-image-div {
+}
+
+.post-left-column {
+    float: left;
+    margin-left: 1em;
+    margin-right: 1.5em;
+    margin-top: .5em;
 }

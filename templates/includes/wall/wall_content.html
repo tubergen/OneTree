@@ -195,6 +195,12 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
       {% if is_admin or is_newsfeed %}
          <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
       {% endif %}
+
+        {# begin left block inside posts #}
+
+        <div class="post-left-column">
+        <div class="group-image-div">    <img src="{% if post.origin_group.img %}/static/uploaded_files/{{ post.origin_group.url }}/profile/{{ post.origin_group.img }}{% else %}/static/images/tree.gif{% endif %}" width="35px" height="35px" /></div>
+
         <div class="post-votes">
             <ul>
                 <li>
@@ -203,6 +209,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
             </ul>
                 <span class="vote-score" id="vote-score-{{post.post_type}}-{{post.id}}">{{ post.score }}</span>
         </div>
+
+        </div>
+        {# end left block inside posts #}
 
         <div class="post-group-name">
             {% ifnotequal post.origin_group group %}
