@@ -119,7 +119,7 @@ class Filter:
     Returns a list of top posts from user's subscriptions, which is a
     list of groups. User must exist and have a profile.
     '''
-    def get_news(self, user, start_date=None, end_date=None, posts_to_get=10):
+    def get_news(self, user, start_date=None, end_date=None):
         try:
             profile = user.get_profile()
             subscriptions = profile.subscriptions
@@ -131,9 +131,10 @@ class Filter:
         
         # add to tuples to pq of the form (score, post)
         # pq is sorted by score from lowest to highest
-        pq = Queue.PriorityQueue(posts_to_get)
+        pq = Queue.PriorityQueue(0)
+        added_to_q = {} # keeps track of posts in pq
         for group in subscriptions.all():
-            posts = self.get_posts(group, start_date, end_date)            
+            posts = self.get_posts(group, start_date, end_date)  
             if posts == None:
                 continue
             for post in posts:
@@ -141,15 +142,20 @@ class Filter:
                 if post.post_type == PostType.EVENT and \
                        removed_events.filter(id=post.id):
                     continue
+                # skip this post if it's been deleted                
                 elif post.post_type == PostType.ANNOUNCEMENT and \
                          removed_anns.filter(id=post.id):
                     continue
+                elif (post, post.post_type) in added_to_q:
+                    continue
                 else:
                     pass
-                
+
                 score = calc_hot_score(post)
+                
                 try: 
                     pq.put_nowait((score, post))
+                    added_to_q[(post, post.post_type)] = True
                 except Queue.Full:
                     (low_score, low_post) = pq.get_nowait()
                     # keep the post with the higher score

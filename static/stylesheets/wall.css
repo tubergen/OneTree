@@ -17,6 +17,10 @@
     float: right;
 }
 
+.below-cal-content {
+    width: 175px;
+}
+
 .datepick-status {
     font-size: 9pt;
 }

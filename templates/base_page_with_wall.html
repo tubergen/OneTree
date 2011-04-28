@@ -18,9 +18,10 @@
             {# username or group name #}
         {% endblock %}
     </div>
-    {% block calendar %}
+
+   {% block calendar %}
         {% include "includes/calendar/cal.html" %}
-    {% endblock %}
+   {% endblock %}
 {% endblock %}
 
 {% block main_content %}
@@ -38,10 +39,17 @@
             {% include "includes/wall/wall_display.html" %}
         </div>
     {% endif %}
+    
+    {% if is_groupinfo_page %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/wall/wall_tabs.html" %}
+   	    <div class="main-container">
+              {% include "includes/groupinfo/groupinfo_display.html" %}
+	    </div>
+        </div>
+    {% endif %}
+    
     {% comment %}
-        {% if is_groupinfo_page %}
-            {% include "includes/groupinfo/groupinfo.html" %}
-        {% endif %}
         {% if is_groupphotos_page %}
             {% include "includes/groupphotos/groupphotos.html" %}
         {% endif %}

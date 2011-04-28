@@ -59,7 +59,7 @@ urlpatterns = patterns('',
     (r'^profile/account/fill-details/$', complete_profile, ),
     url(r'^profile/account/changepwd/$', password_change, {'template_name': 'user/change_password.html', 'post_change_redirect': '' }, name='password_change'),
     (r'^profile/approve/$', admin_approve),
-    (r'^newsfeed/$', newsfeed),
+    (r'^news/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),
 

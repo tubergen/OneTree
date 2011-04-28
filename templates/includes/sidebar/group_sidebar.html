@@ -1,10 +1,10 @@
 <div id="sidebar">
 
     {# image -- for now only put image on group page #}
-    {% if is_group_page %}
+   {# {% if is_group_page %} #}
         
     <img src="{% if groupinfo.group.img %}/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" />
-    {% endif %}
+{#    {% endif %} #}
 
     {% comment %}
     {# list parent #}
@@ -48,7 +48,7 @@
 
     {# hierarchy bar #}
     {# this only displays on group pages where a hierarchy makes sense #}
-    {% if is_group_page %}
+   {# {% if is_group_page %} #}
         <div id="group-navigation-div">
             <div class="parent-word"><a href="/group/{{ group.parent.url }}">{% if group.parent %}{{ group.parent }}{% else %}OneTree{% endif %}</a></div>
             <ul class="parent-list">
@@ -63,7 +63,7 @@
                     <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ sibling.url }}">{{ sibling.name }}</a></li>
                 {% endfor %}
         </div>
-    {% endif %}
+    {# {% endif %} #}
 
     {# list tags #}
     {% comment %}
