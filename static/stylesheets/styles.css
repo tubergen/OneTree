@@ -203,3 +203,16 @@ a {
     color: #3F3F3F; /* grey */
   color: blue;
 }
+
+.notif-box {
+    padding: .4em;
+    margin: 1em;
+}
+
+.notif-text {
+   float: left;
+}
+
+.notif-yes, .notif-no {
+   float: right;
+}
