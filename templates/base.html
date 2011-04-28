@@ -22,13 +22,13 @@
                     <ul>
                         {% if user.is_authenticated %}
                             <li><a href="/profile/">{{ user.username }}</a></li>
-                            <li><a href="/notifications/">Notifications</a></li>
-                            <li><a href="/news/">News</a></li>
-                            <li><a href="/group-signup/">Group Signup</a></li>
-                            <li><a href="/logout/">Logout</a></li>
+                            <li><a href="/notifications/">notifications</a></li>
+                            <li><a href="/news/">news</a></li>
+                            <li><a href="/group-signup/">group signup</a></li>
+                            <li><a href="/logout/">logout</a></li>
                         {% else %}
-                            <li><a href="/user-signup/">Register</a></li>
-                            <li><a href="/login/?next={{ request.path }}">Login</a></li>
+                            <li><a href="/user-signup/">register</a></li>
+                            <li><a href="/login/?next={{ request.path }}">login</a></li>
                         {% endif %}
                             <li>
                                 <form action='/search/' method='GET'>

@@ -179,8 +179,15 @@
 .event-flags {
 }
 
+.post-left-column {
+    float: left;
+    margin-left: 1em;
+    margin-right: 1.5em;
+    margin-top: .5em;
+}
+
 .post-content {
-    padding: .32em;
+    padding: 0;
     margin-bottom: 0;
     background-color: #F5F5F5;
     text-align: left;
@@ -253,6 +260,7 @@
     float: left;
     font-size: small;
     width: 82%;
+    margin-bottom: 1em;
 }
 
 .post-delete {
@@ -262,10 +270,21 @@
     width: 5%;
 }
 
-.comment-delete {
+.post-bottom-bar {
     clear: both;
-    float: right;
+    width: 100%;
+    margin: 0;
+    margin-top: 3em;
+    padding: .18em;
+  /*  background-color: #fbfbfb; */
 }
+
+.post-date {
+    margin-left: 6.44em; 
+    font-size: 8pt;
+    color: #777777;
+}
+
 
 .delete-button {
     font-family: Monospace;
@@ -276,7 +295,7 @@
     height: 15px;
     border: 0;
     padding: 0;
-    margin: 2px;
+    margin: 5px;
 }
 
 .comments-all-div, .form-div {
@@ -313,16 +332,56 @@
     border: 0;
     height: 1px;
     background-color: #cccccc;
-    width: 95%;
+    width: 96%;
 }
 
-.comment-reply-button, .post-reply-button {
-    clear: both;
+.comment-content-div {
+    margin-bottom: .22em;
+}
+
+.comment-delete {
     float: right;
-    margin-left: 3em;
+    background: transparent;
+    border: 0;
+    color: blue;
     font-size: 8pt;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.comment-reply-button, .post-reply-button {
+    float: right;
+    margin-left: 3em;
+    margin-right: .7em;
+    font-size: 8pt;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.lonely-delete {
+    margin-right: 5.61em;
+    float: right;
+}
+
+.comment-reply-button {
+    background: transparent;
+    border: 0;
+    color: blue;
+}
+
+.comment-bottom-bar ul, .comment-bottom-bar li {
+    clear: both;
+    list-style: none;
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+
+.comment-bottom-bar ul {
+}
+
+.comment-bottom-bar span {
+    margin: 0;
 }
 
 .load-more-comments-div {
@@ -337,12 +396,14 @@
 
 .comment, .comment-post, .comment-login {
     border-top: 0px solid;
-    margin: .5em;
     margin-top: 0;
     text-align: left;
-    padding: 0;
-    padding-top: .25em;
+    padding: 0 .4em;
     overflow: hidden;
+}
+
+.comment:hover {
+    background-color: #f5f5f5;
 }
 
 .comment-post {
@@ -369,12 +430,16 @@
     cursor: pointer;
 }
 
+.comment-first {
+    padding-top: .5em;
+}
+
 .comment-login-text {
     font-size: 8pt;
 }
 
 .comment-level-1 {
-    margin-left: 2.5em;
+    padding-left: 2.5em;
 }
 
 .comment-author {
@@ -382,7 +447,6 @@
 }
 
 .comment-author:after {
-    content: ":";
 }
 
 .comment-post {
@@ -448,9 +512,4 @@
 .group-image-div {
 }
 
-.post-left-column {
-    float: left;
-    margin-left: 1em;
-    margin-right: 1.5em;
-    margin-top: .5em;
-}
+
