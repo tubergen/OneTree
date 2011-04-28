@@ -57,6 +57,12 @@ class RegistrationForm(forms.Form):
             return self.cleaned_data['username']
         raise forms.ValidationError("A user with that username already exists.")
 
+    def clean_email(self):
+	try:
+	    email = User.objects.get(email=self.cleaned_data['email'])
+	except email.DoesNotExist:
+	     return self.cleaned_data['email']
+	raise forms.ValidationError("An account with the e-mail address has been registered.")
 
 
     def clean(self):
@@ -82,3 +88,13 @@ class RegistrationFormTermsOfService(RegistrationForm):
                              label=u'I have read and agree to the Terms of Service',
                              error_messages={'required': "You must agree to the terms to register"})
 
+class EmailChangeForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)),
+                             label="New email address")
+    
+    def clean_email(self):
+	try:
+	    email = User.objects.get(email=self.cleaned_data['email'])
+	except:  # email.DoesNotExist
+            return self.cleaned_data['email']
+	raise forms.ValidationError("An account with the e-mail address has been registered.")

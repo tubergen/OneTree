@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 
-from OneTree.apps.user.forms import RegistrationForm, ActivationForm
+from OneTree.apps.user.forms import RegistrationForm, ActivationForm, EmailChangeForm
+
 from OneTree.apps.user.models import RegistrationProfile
 
 from OneTree.apps.common.models import *
@@ -46,7 +47,13 @@ def create_user(request):
 
 def register(request):
     context = RequestContext(request)
-    
+
+    # authenticated user should not be able to register 
+    if request.user.is_authenticated():
+	print "authenticated user"
+
+	return HttpResponseRedirect("/")
+
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -246,3 +253,44 @@ def admin_approve(request):
                                 },
                               context_instance=context
                               )
+
+@login_required
+def change_email(request):
+    context=RequestContext(request)
+
+    u = request.user
+
+    if request.method == 'POST':
+        form = EmailChangeForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            user = User.objects.filter(username=u)
+            print "here:"
+            print user
+            print ">"
+            print user.email
+ 
+    else:
+        form = EmailChangeForm()
+
+    return render_to_response('user/change_email.html',
+                              { 'form': form },
+                              context_instance=context
+                              )
+
+def password_change_success(request):
+    context = RequestContext(request)
+    
+    return render_to_response('user/change_password_success.html',
+                              {},
+                              context_instance = context
+                              )
+    
+def forget_password_email_sent(request):
+    context = RequestContext(request)
+    
+    return render_to_response('user/forget_password_email_sent.html', 
+                              {},
+                              context_instance = context
+                              )
+    
