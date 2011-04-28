@@ -3,6 +3,7 @@
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.enums import PostType, VoteType
 from OneTree.apps.helpers.filter import Filter
+from OneTree.apps.helpers.paginate import paginate_posts
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
