@@ -56,6 +56,11 @@ id "wall-content".
         filter_wall(filter_type);
         $('#' + filter_type).removeClass('selected');
     }
+
+    function change_filter_by_date() {
+        $('#filter-by-date').hide();
+        $('#filter-by-date-picker').show();
+    }
 </script>
 
 {% comment %}
@@ -71,5 +76,8 @@ with the filter string that's in our Django code.
      <button class="filter-button" id={{filter_id}}>{{filter_descrip}}</button>
   {% endif %}
 {% endfor %}
-     {% include "includes/calendar/cal.html" %}
+     <button class="filter-button" id="filter-by-date" onClick="change_filter_by_date()">By Date Range <img src="/static/datepicker/calendar-blue.gif"></button>
+     <button id="filter-by-date-picker">
+       {% include "includes/calendar/cal.html" %}
+     </button>
 </div>

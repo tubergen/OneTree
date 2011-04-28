@@ -5,7 +5,7 @@ from operator import attrgetter
 import Queue
 
 filter_ids = ['this_group_only', 'events_only', 'anns_only', 'this_date_only'];
-filter_descrips = ["'s posts", 'events', 'announcements', None]
+filter_descrips = ["'s posts", 'Events', 'Non-Events', None]
 
 class Filter:
     @staticmethod
