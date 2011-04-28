@@ -14,8 +14,8 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'onetree.princeton.edu',
-        #'HOST': '',
+        #'HOST': 'onetree.princeton.edu',
+        'HOST': '',
         'PORT': '',      
     }
 }

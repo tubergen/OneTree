@@ -54,7 +54,7 @@ class UserProfile(models.Model):
             # there may be a more efficient query here using the related
             # set to map user -> membershipreq
             pending_mem_req = MembershipReq.objects.filter(sender=self.user,
-                                                           group=group,
+                                                           recv_group=group,
                                                            pending=True)
             if pending_mem_req:
                 return True

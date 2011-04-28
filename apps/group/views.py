@@ -53,11 +53,11 @@ def req_membership(request):
         if group_id:
             group = Group.objects.get(id=group_id)
             pending_mem_req = MembershipReq.objects.filter(sender=request.user,
-                                                           group=group,
+                                                           recv_group=group,
                                                            pending=True)
             # do not send duplicate membership requests
             if not pending_mem_req:
-                mem_req = MembershipReq(sender=request.user, group=group)
+                mem_req = MembershipReq(sender=request.user, recv_group=group)
                 mem_req.save()
             else:
                 print 'Already a pending membership request.'

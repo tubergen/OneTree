@@ -9,12 +9,17 @@ NOTE: Receiver and group should NOT both be set on the same object, but
 one of them SHOULD be set.
 '''
 class Notification(InheritanceCastModel):
+    ''' Afaik receiver and "group" (ie: receiving group) will not be set for
+    the same notification. '''
+    
+    # use when you want to send a notification to a user
     # receiver can be blank if we send notification to a group instead
     receiver = models.ForeignKey(auth.models.User, null=True, blank=True,
                                  related_name="recv_notifications")
-    # here we will send notifcation to all admins of group; this should probably
-    # be called "receiving group" or something
-    group = models.ForeignKey('Group', null=True, blank=True)
+
+    # use when you want to send a notification to a group
+    # leave blank if you want to send a notification to a user
+    recv_group = models.ForeignKey('Group', null=True, blank=True)
     
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
                                null=True, blank=True)
@@ -65,9 +70,9 @@ class MembershipReq(Notification):
         super(MembershipReq, self).__init__(*args, **kwargs)
 
     def get_group_link(self):
-        url = self.group.full_url
-        group_with_url = '<a href="' + url + '">' + self.group.name + '</a>'
-        return group_with_url
+        url = self.recv_group.full_url
+        recv_group_with_url = '<a href="' + url + '">' + self.recv_group.name + '</a>'
+        return recv_group_with_url
 
     def send_confirmed(self):
         confirm_text = 'You have been confirmed as a member of ' + self.get_group_link()
@@ -75,7 +80,7 @@ class MembershipReq(Notification):
         confirm.save()
         
     def handle_yes(self):
-        self.sender.get_profile().memberships.add(self.group)
+        self.sender.get_profile().memberships.add(self.recv_group)
         self.send_confirmed()
         self.pending = False
         self.answer_descrip = "Approved"
