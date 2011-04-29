@@ -400,17 +400,20 @@ def handle_uploaded_file(f, group, is_groupphotos_page=False):
     if is_groupphotos_page == False:
         this_group.img = f.name
     else:
-        x = 0
-        while x < len(this_group.photos):
-            if not this_group.photos[x]:
-                this_group.photos[x] = f.name
-                break
-            x = x + 1
-        if x > maxphotoindex: # if no empty slots
+#        x = maxphotoindex
+#        while x > 0:
+
+#            if this_group.getPhoto(x) == "":
+#                this_group.photos[x] = f.name
+#                break
+#            else:
+#                print '%s' %(this_group.getPhoto(x))
+#            x = x + 1
+#        if x > maxphotoindex: # if no empty slots
             # forloop shifting images one slot up
-            for y in range(0, len(this_group.photos)-1):
-                this_group.photos[y] = this_group.photos[y+1]
-            this_group.photos[maxphotoindex] = f.name
+        for y in range(0, len(this_group.photos)-1):
+            this_group.photos[len(this_group.photos)-1-y] = this_group.photos[len(this_group.photos)-2-y]
+        this_group.photos[0] = f.name
         
     this_group.save()
     

@@ -10,7 +10,7 @@ Testing Groupphotos_content
 {% if group.photos %}
    {% for image in group.photos %}
    <div class="photo-container">
-     <img src="/static/uploaded_files/{{ group.url }}/photos/{{ image }}" height="100" width="100" />
+     <img src="/static/uploaded_files/{{ group.url }}/photos/{{ image }}" height="200" width="200" />
    </div>
    {% endfor %}
 {% else %}

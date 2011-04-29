@@ -9,6 +9,8 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from django import forms
 from django.forms.util import ErrorList
+import re
+import string
 
 group_url = "/group/"
 
@@ -27,7 +29,7 @@ class Group(models.Model):
 
 #    photos = []
 #    for x in range(0, 19):
-#        photos[x] = models.CharField(max_length=50, null=True, blank=True)
+#        photos.append(models.CharField(max_length=50, null=True, blank=True))
     photos = [models.CharField(max_length=50, null=True, blank=True)]*20
 
 
@@ -80,6 +82,11 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.name;
+
+    def getPhoto(self, x):
+#        photo = self.photos[x]
+#        return re.sub("\W+", "", photo.lower())
+        return str(self.photos[x])
 
 # Create your models here.
 class GroupForm(ModelForm):
