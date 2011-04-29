@@ -110,7 +110,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     {
         var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
         $.post("{{ delete_post_view_url }}", data, function() {
-            $('#post-box-'+post_id).hide();
+            $('#post-box-'+post_id).slideUp("fast");
         });
     }
 
@@ -136,10 +136,10 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 // don't hide reply field for comments
     function toggle_reply_box(id, reference) {
         if (!reference.is_shown) {
-            $('#'+id).show();
+            $('#'+id).show("fast");
             reference.is_shown = true;
         } else {
-            $('#'+id).hide();
+            $('#'+id).hide("fast");
             reference.is_shown = false;
         }
     }
@@ -147,16 +147,16 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 // don't hide extra comments
     function toggle_extra_comments(class_val, reference, id, hr_class) {
         if (!reference.is_shown) {
-            $('.'+class_val).show();
-            $('.'+hr_class).show();
             reference.is_shown = true;
-            reference.old_html = document.getElementById(id).innerHTML;
-            document.getElementById(id).innerHTML= 'hide extra comments';
+            reference.old_html = $('#'+id).html();
+            $('#'+id).html('hide extra comments');
+            $('.'+class_val).slideDown("fast");
+            $('.'+hr_class).slideDown("fast");
         } else {
-            $('.'+class_val).hide();
-            $('.'+hr_class).hide();
+            $('.'+class_val).slideUp("fast");
+            $('.'+hr_class).slideUp("fast");
             reference.is_shown = false;
-            document.getElementById(id).innerHTML= reference.old_html;
+            $('#'+id).html(reference.old_html) ;
         }
     }
 
@@ -357,7 +357,7 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
 
         {# hr #}
         {% if comment_count > 5 %}
-            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.parentloop.counter}}" />
         {% else %}
             <hr />
         {% endif %}
