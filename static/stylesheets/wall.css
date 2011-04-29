@@ -490,6 +490,11 @@
     text-align: center;
 }
 
+.wall-success-text {
+    color: green;
+    text-align: center;
+}
+
 .button-subscribed {
     color: white;
     background-color: green;

@@ -427,36 +427,53 @@ def groupphotos_page(request, groupname):
 
 def handle_data(groupinfo, group, request):
     errormsg = None
-    this_group = group
+    err_loc = ' Error in handle_data in group/views.py.'
     if request.method == 'POST':
-        if not verify_admin(request, this_group):
+        if not verify_admin(request, group):
             errormsg = "You are not an admin!"
             return errormsg
 
         new_data = request.POST.get('data_content', None)
         if new_data:
             groupinfo.data = new_data
-            groupinfo.group = this_group
-#            groupinfo.save()
+            groupinfo.group = group
 
-        new_admin = request.POST.get('new_admin', None);
+        new_admin = request.POST.get('new_admin', None)
         if new_admin:
-            try:
-                group.admins.get(username=new_admin)
-                errormsg = 'User already an admin.'
-                print errormsg
-                return errormsg
+            try: 
+                user = User.objects.get(username=new_admin)
             except User.DoesNotExist:
-                try: 
-                    profile = UserProfile.objects.get(new_admin);
-                except User.DoesNotExist:
-                    errormsg = 'Invalid username. User profile DNE.'
-                    print errormsg
-                    return errormsg
+                errormsg = 'Invalid username. User does not exist.'
+                return errormsg
 
-                group.admins.add(profile.user)
+            # make sure user is not already admin
+            if not user.get_profile().is_admin_of(group):
+                group.admins.add(user)
+            else:
+                errormsg = 'User already an admin.'
+                return errormsg
 
-        new_super_admin = request.POST.get('new_super_admin', None);
+        num_admins = request.POST.get('num_admins', None)
+        if num_admins:
+            for i in range(0, int(num_admins)):
+                print 'iter'
+                remove_admin = request.POST.get('remove_admin-' + str(i), None)
+                print remove_admin
+                if remove_admin == 'on':
+                    admin_name = request.POST.get('admin-' + str(i), None)
+                    print admin_name
+                    try: 
+                        user = group.admins.get(username=admin_name)
+                    except User.DoesNotExist:
+                        errormsg = 'Specified user is not an admin.'
+                        return errormsg
+                    
+                    group.admins.remove(user)
+
+
+
+        
+        new_super_admin = request.POST.get('new_super_admin', None)
         if new_super_admin:
             pass
 

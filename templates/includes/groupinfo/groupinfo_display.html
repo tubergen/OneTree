@@ -7,6 +7,12 @@ id "wall-content".
 <p class="wall-error-text">  
     {{ errormsg }}
 </p> 
+{% else %}
+  {% if request.POST %}
+    <p class="wall-success-text">
+      Changes saved successfully.
+    </p>
+  {% endif %}
 {% endif %}
 
 {% if is_admin %}
