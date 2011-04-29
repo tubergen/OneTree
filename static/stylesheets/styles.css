@@ -221,20 +221,24 @@ a {
     display: inline;
 }
 .photo-container-all {
-    width: 630px;
+    width: 95%;
     margin: 2em auto;
+    overflow: hidden;
 }
 
 .photo-container {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     padding: 0;
     margin: 10px;
-    line-height: 200px;
+    line-height: 150px;
+    text-align: center;
+    float: left;
 }
 
 .photo-container img {
     vertical-align: middle;
     width: 100%;
+    height: auto;
     max-height: 100%;
 }
