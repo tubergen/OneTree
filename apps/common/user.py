@@ -35,6 +35,46 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return "%s's profile" % self.user
 
+    def has_new_notifs(self):
+        try:
+            # if this returns successfully, there is a new notif
+            self.user.recv_notifications.filter(new=True)[0]
+            return True;
+        except IndexError: # no new notifcations
+            pass
+
+        for group in self.user.admin_groups.all():
+            try:
+                group.notification_set.filter(new=True)[0]
+                return True;
+            except IndexError: 
+                pass
+            
+        return False        
+
+    def get_new_notifs(self):
+        new_notifs = self.user.recv_notifications.filter(new=True)
+
+        for group in self.user.admin_groups.all():
+            new_notifs = chain(new_notifs, group.notification_set.filter(new=True))
+            
+        return list(new_notifs)
+            
+
+    def get_notifs(self):
+        pending_notifs = self.user.recv_notifications.filter(recv_user=self.user, pending=True )
+        old_notifs = self.user.recv_notifications.filter(recv_user=self.user, pending=False )
+
+        for group in self.user.admin_groups.all():
+            pending_notifs = chain(pending_notifs, group.notification_set.filter(pending=True))
+            old_notifs = chain(old_notifs, group.notification_set.filter(pending=False))
+
+        # necessary, b/c chain seems to be exhausted (empty) after you loop over it once
+        pending_notifs = list(pending_notifs)
+        old_notifs = list(old_notifs)
+
+        return (pending_notifs, old_notifs)
+
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             profile, created = UserProfile.objects.get_or_create(user=instance)

@@ -42,7 +42,6 @@ def change_subscribe(request):
 
 @login_required
 def req_membership(request):
-    err_loc = ' Error at req_membership in group/views.py.'
     if request.method == 'POST':
         print request.POST.get('group_id')
         try:
@@ -437,7 +436,7 @@ def groupinfo_page(request, groupname):
 
     # handle editable info submit
     if 'data_submit' in request.POST:
-        errormsg = handle_data(groupinfo, request)
+        errormsg = handle_data(groupinfo, this_group, request)
 
 # ORIGINAL END OF GROUPINFO
 
@@ -568,15 +567,16 @@ def groupphotos_page(request, groupname):
     pass
 
 
-def handle_data(groupinfo, request):
+def handle_data(groupinfo, group, request):
     errormsg = None
-    group = groupinfo.group
+    this_group = group
     if request.method == 'POST':
-        if not verify_admin(request, group):
+        if not verify_admin(request, this_group):
             errormsg = "You are not an admin!"
         else:
             new_data = request.POST['data_content']
             groupinfo.data = new_data
+            groupinfo.group = this_group
             groupinfo.save()
 
     return errormsg

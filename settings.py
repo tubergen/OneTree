@@ -14,8 +14,8 @@ DATABASES = {
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'onetree.princeton.edu',
-        #'HOST': '',
+        #'HOST': 'onetree.princeton.edu',
+        'HOST': '',
         'PORT': '',      
     }
 }
@@ -93,6 +93,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
      "django.contrib.auth.context_processors.auth",
      'django.core.context_processors.request',
+     'OneTree.context_processors.notify.notify_processor',
     
 # the internet said to include the following to get csrf working, but it
 # gave me an error
