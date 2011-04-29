@@ -62,7 +62,7 @@
   </form>
   
 <h3>Add Group Admin</h3>
-  <form class="new-admin-form" action="" method="post">{% csrf_token %}
+  <form action="" method="post">{% csrf_token %}
     <span>Username:</span>
     <input type="text" name="new_admin">
     <input type="submit" name="data_submit" value="Submit" />
@@ -70,17 +70,26 @@
 
 <br/>
 <h3>Remove Group Admin</h3>
-  <form class="new-admin-form" action="" method="post" style="text-align: left">{% csrf_token %}
-    <input type=checkbox style="text-align:left" name="remove_admin">name<br>
-    <input type=checkbox name="remove_admin">loooooonger name<br>
-    <input type=checkbox name="remove_admin">name<br>
+  <p> To remove yourself as admin, see "Transfer Group SuperAdmin."</p>
+  <form action="" method="post" style="text-align: left">{% csrf_token %}
+    {% ifnotequal group.admins.count 1 %} {# if not just SuperAdmin #}
+      <input type="hidden" name="num_admins" value="{{group.admins.count}}">
+      {% for admin in group.admins.all %}
+	{% ifnotequal admin request.user %}
+          <input type="hidden" name="admin-{{forloop.counter0}}" value="{{admin}}">
+          <input type="checkbox" name="remove_admin-{{forloop.counter0}}">{{admin}}<br>
+	{% endifnotequal %}
+      {% endfor %}
     <input type="submit" name="data_submit" value="Submit" />
+    {% else %}
+      <p> No admins to remove.</p>
+    {% endifnotequal %}
   </form>
 
 <br/>
 <h3>Transfer Group SuperAdmin</h3>
   <p> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. You will become a normal group admin.</p>
-  <form class="new-admin-form" action="" method="post">{% csrf_token %}
+  <form action="" method="post">{% csrf_token %}
     <span>Username:</span>
     <input type="text" name="new_admin">
     <input type="submit" name="data_submit" value="Submit" />
