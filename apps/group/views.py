@@ -483,6 +483,10 @@ def handle_data(groupinfo, group, request):
 
         new_admin = request.POST.get('new_admin', None)
         if new_admin:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can add new admins.'
+                return errormsg
+            
             try: 
                 user = User.objects.get(username=new_admin)
             except User.DoesNotExist:
@@ -498,6 +502,10 @@ def handle_data(groupinfo, group, request):
 
         num_admins = request.POST.get('num_admins', None)
         if num_admins:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can remove other admins.'
+                return errormsg
+            
             for i in range(0, int(num_admins)):
                 remove_admin = request.POST.get('remove_admin-' + str(i), None)
                 if remove_admin == 'on':
@@ -512,6 +520,10 @@ def handle_data(groupinfo, group, request):
         
         new_super_admin = request.POST.get('new_super_admin', None)
         if new_super_admin:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can transfer their privileges.'
+                return errormsg
+            
             try: 
                 user = User.objects.get(username=new_admin)
             except User.DoesNotExist:
@@ -520,11 +532,12 @@ def handle_data(groupinfo, group, request):
 
             if not user.get_profile().is_superadmin_of(group):
                 group.superadmins.add(user)
+                if not user.get_profile().is_admin_of(group):
+                    group.admins.add(user)
             else:
                 errormsg = 'User already a superadmin.'
                 return errormsg
 
-            superadmins.remove(request.user)
-
+            group.admins.remove(request.user)            
 
     return errormsg

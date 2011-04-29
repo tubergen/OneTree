@@ -98,7 +98,7 @@ class UserProfile(models.Model):
             return False
 
     ''' Returns true if user is superadmin of group; false otherwise '''
-    def is_admin_of(self, group):
+    def is_superadmin_of(self, group):
         try:
             group.superadmins.get(id=self.user.id)
             return True
