@@ -223,9 +223,10 @@ a {
 .photo-container-all {
     width: 95%;
     margin: 2em auto;
-    overflow: hidden;
+    text-align: center;
 }
 
+/* I hope this works in IE */
 .photo-container {
     width: 150px;
     height: 150px;
@@ -233,7 +234,7 @@ a {
     margin: 10px;
     line-height: 150px;
     text-align: center;
-    float: left;
+    display: inline-block;
 }
 
 /* just in case the classes don't generate */
