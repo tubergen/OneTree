@@ -1,8 +1,11 @@
 {% extends "base_page_with_wall.html" %}
 
-{% block top_title %}
-  <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+{% endblock %}
 
+{% block top_title %}
   {# some kind of information identifying this as your newsfeed here #}
   <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
 
