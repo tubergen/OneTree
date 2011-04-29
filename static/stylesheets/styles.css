@@ -236,9 +236,20 @@ a {
     float: left;
 }
 
+/* just in case the classes don't generate */
 .photo-container img {
+    width: 100%;
+    height: 100%;
+}
+
+.photo-container img.fat-resize {
     vertical-align: middle;
     width: 100%;
     height: auto;
-    max-height: 100%;
+}
+
+.photo-container img.tall-resize {
+    vertical-align: middle;
+    height: 100%;
+    width: auto;
 }
