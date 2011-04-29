@@ -42,7 +42,7 @@ class Group(models.Model):
 
     #members = models.ManyToManyField('User', through='Membership')
     admins = models.ManyToManyField(auth.models.User, related_name='admin_groups')
-
+    superadmins = models.ManyToManyField(auth.models.User, related_name='superadmin_groups')
     #subscribers = models.ManyToManyField('User')
     #email_subscribers = models.ManyToManyField('User')
     
@@ -62,6 +62,10 @@ class Group(models.Model):
         curNode = self
         curNode.admins.add(user)
             
+    def addSuperAdmin(self, user):
+        curNode = self
+        curNode.admins.add(user)
+
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
         curNode = self

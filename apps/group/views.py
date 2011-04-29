@@ -345,6 +345,7 @@ def create_group(request):
             # there is probably a more elegant way to associate admin to a group
             currentgroup = Group.objects.get(name=form.cleaned_data['name'])
             currentgroup.addAdmin(request.user)
+            currentgroup.addSuperAdmin(request.user)
             currentgroup.save()
                                             
             #name = form.cleaned_data['name']
