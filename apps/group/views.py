@@ -191,7 +191,12 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
         groupinfo = GroupInfo(group=group, data='')
     else:
         groupinfo = groupinfo[0]
+
     form = upload_file(request, group.url, is_groupphotos_page)
+    piccount = 0
+    pics = group.pictures.all()
+    for pic in pics:
+        piccount += 1
 
     # handle editable info submit
     if 'data_submit' in request.POST:
@@ -250,6 +255,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'is_group_page': is_group_page,
                               'is_groupinfo_page': is_groupinfo_page,
                                'is_groupphotos_page': is_groupphotos_page,
+                               'piccount': piccount,
                                'form': form,
                               'errormsg': errormsg,
                               'group': group,
@@ -382,8 +388,14 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
     ensure_dir('static/uploaded_files/'+group_url+'/photos/')
     '''
     if is_groupphotos_page==False:
+        ensure_dir('static/uploaded_files/'+group_url+'/profile/')
         destination = open('static/uploaded_files/'+group_url+'/profile/' + f.name, 'wb+')
         ''' jorge add'''
+        for chunk in f.chunks():
+            destination.write(chunk)
+        this_group = Group.objects.get(url=group_url)
+        this_group.img = f.name
+        this_group.save()
         destination.close()
     else:
         ''' destination = open('static/uploaded_files/'+group_url+'/photos/' + f.name, 'wb+')
