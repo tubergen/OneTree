@@ -234,6 +234,7 @@ a {
 /* I hope this works in IE */
 .photo-container {
     width: 150px;
+    height: 150px;
     padding: 0;
     margin: 10px;
     text-align: center;

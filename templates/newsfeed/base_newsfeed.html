@@ -1,25 +1,38 @@
 {% extends "base_page_with_wall.html" %}
 
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/jquery.lightbox-0.5.css" media="screen" />
+{% endblock %}
+
 {% block top_title %}
-  {# some kind of information identifying this as your newsfeed here #}
-  <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
+    {# some kind of information identifying this as your newsfeed here #}
+    <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
+
+    <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
 
     {% if pictures %}
-      {% for picture in pictures %}
-        {% if picture.image %} 
-          <div class="photo-container">
+        {% for picture in pictures %}
+            {% if picture.image %} 
+                <div class="photo-container">
+                    <a class="lightbox-gallery" href="{{ picture.image.url }}">
+                        <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+                        <a href="/group/{{picture.owner.url}}">{{picture.owner}}</a>
+                    </a>
+                </div>
 
-          <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
-          <a href="/group/{{picture.owner.url}}">{{picture.owner}}</a></span>
-
-          </div>
-
-         {% endif %}
-      {% endfor %}
+            {% endif %}
+        {% endfor %}
 
     {% else %}
-      <p>(No Photos)</p>
+        <p>(No Photos)</p>
     {% endif %}
 
-      
+    <script type="text/javascript">
+        $(function() {
+            $('a.lightbox-gallery').lightBox(); // Select all links with lightbox class
+        });
+    </script>
+
+
 {% endblock %}
