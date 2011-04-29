@@ -456,12 +456,9 @@ def handle_data(groupinfo, group, request):
         num_admins = request.POST.get('num_admins', None)
         if num_admins:
             for i in range(0, int(num_admins)):
-                print 'iter'
                 remove_admin = request.POST.get('remove_admin-' + str(i), None)
-                print remove_admin
                 if remove_admin == 'on':
                     admin_name = request.POST.get('admin-' + str(i), None)
-                    print admin_name
                     try: 
                         user = group.admins.get(username=admin_name)
                     except User.DoesNotExist:
@@ -469,9 +466,6 @@ def handle_data(groupinfo, group, request):
                         return errormsg
                     
                     group.admins.remove(user)
-
-
-
         
         new_super_admin = request.POST.get('new_super_admin', None)
         if new_super_admin:
