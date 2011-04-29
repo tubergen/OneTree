@@ -20,6 +20,12 @@ hr {
     border: 1px solid;
 }
 
+a {
+  /*  color: #e14adf; /* pink 
+    color: #3F3F3F; /* grey */
+  color: blue;
+}
+
 #wrap {
     width: 1000px;
     margin: 0 auto 0 auto;
@@ -198,12 +204,6 @@ hr {
     margin: 0;
 }
 
-a {
-  /*  color: #e14adf; /* pink 
-    color: #3F3F3F; /* grey */
-  color: blue;
-}
-
 .notif-box {
     padding: .4em;
     margin: 1em;
@@ -219,4 +219,20 @@ a {
 
 .new-admin-bar ul, .new-admin-bar li {
     display: inline;
+}
+.photo-container-all {
+    width: 630px;
+    margin: 2em auto;
+}
+
+.photo-container {
+    width: 200px;
+    height: 200px;
+    padding: 0;
+    margin: 10px;
+    line-height: 200px;
+}
+
+.photo-container img {
+    vertical-align: middle;
 }

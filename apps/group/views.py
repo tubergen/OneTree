@@ -436,7 +436,7 @@ def groupinfo_page(request, groupname):
 
     # handle editable info submit
     if 'data_submit' in request.POST:
-        errormsg = handle_data(groupinfo, request)
+        errormsg = handle_data(groupinfo, this_group, request)
 
 # ORIGINAL END OF GROUPINFO
 
@@ -567,17 +567,18 @@ def groupphotos_page(request, groupname):
     pass
 
 
-def handle_data(groupinfo, request):
+def handle_data(groupinfo, group, request):
     errormsg = None
-    group = groupinfo.group
+    this_group = group
     if request.method == 'POST':
-        if not verify_admin(request, group):
+        if not verify_admin(request, this_group):
             errormsg = "You are not an admin!"
             return errormsg
 
         new_data = request.POST.get('data_content', None)
         if new_data:
             groupinfo.data = new_data
+            groupinfo.group = this_group
             groupinfo.save()
 
         new_admin = request.POST.get('new_admin', None);
