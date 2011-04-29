@@ -579,7 +579,7 @@ def handle_data(groupinfo, group, request):
         if new_data:
             groupinfo.data = new_data
             groupinfo.group = this_group
-            groupinfo.save()
+#            groupinfo.save()
 
         new_admin = request.POST.get('new_admin', None);
         if new_admin:
