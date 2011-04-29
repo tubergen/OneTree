@@ -583,7 +583,20 @@ def handle_data(groupinfo, group, request):
 
         new_admin = request.POST.get('new_admin', None);
         if new_admin:
-            pass
+            try:
+                group.admins.get(username=new_admin)
+                errormsg = 'User already an admin.'
+                print errormsg
+                return errormsg
+            except User.DoesNotExist:
+                try: 
+                    profile = UserProfile.objects.get(new_admin);
+                except User.DoesNotExist:
+                    errormsg = 'Invalid username. User profile DNE.'
+                    print errormsg
+                    return errormsg
+
+                group.admins.add(profile.user)
 
         new_super_admin = request.POST.get('new_super_admin', None);
         if new_super_admin:
