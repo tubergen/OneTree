@@ -151,6 +151,45 @@ def delete_post(request):
                 
     return HttpResponse(status=400)
 
+def delete_picture(request):
+    err_loc = ' See delete_post in the group_page views.py.'
+    if request.method == 'POST':
+        try:
+            group_id = int(request.POST.get('group_id'))
+            picture_id = int(request.POST.get('picture_id'))
+#            post_type = int(request.POST.get('post_type'))
+        except:
+            print 'Picture delete POST data were not valid integers.' + err_loc
+            return HttpResponse(status=400)
+            
+        if group_id and picture_id:
+            group = Group.objects.get(id=group_id)
+
+            try: 
+#                if post_type == PostType.EVENT:
+#                    manager = group.events
+#                elif post_type == PostType.ANNOUNCEMENT:
+#                    manager = group.announcements                
+#                else:
+#                    print 'Tried to delete non-announcement non-event.' + err_loc
+#                    return HttpResponse(status=400)
+
+                picture = Picture.objects.get(id=picture_id)
+#                if picture.owner.id == group_id:
+                if request.user in group.admins.all():
+                    picture.delete()
+#                    else:
+#                        print "Not allowed to delete post"
+#                else:
+#                    manager.remove(post)
+
+                return HttpResponse()
+            
+            except ObjectDoesNotExist:
+                print 'Error: Tried to delete non-existent object.' + err_loc
+                
+    return HttpResponse(status=400)
+
 def verify_admin(request, group):
     groupadmins = group.admins.all()
 
@@ -192,7 +231,9 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     else:
         groupinfo = groupinfo[0]
 
-    form = upload_file(request, group.url, is_groupphotos_page)
+    #form = upload_file(request, group.url, is_groupphotos_page)
+    (form, errormsg) = upload_file(request, group.url, is_groupphotos_page)
+
     piccount = 0
     pics = group.pictures.all()
     for pic in pics:
@@ -269,6 +310,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
                               'delete_post_view_url': '/_apps/group/views-delete_post/',
+                              'delete_picture_view_url': '/_apps/group/views-delete_picture/',
                               'voted_post_set': voted_post_set,
                               'wall_subtitle': wall_subtitle,},
                               context_instance=RequestContext(request))
@@ -449,23 +491,24 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
     # destination.close()
 
 def upload_file(request, group_url, is_groupphotos_page=False):
+    errormsg = None
     if request.method == 'POST' and request.FILES:
         form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
-            return form
-            #return HttpResponseRedirect('/group/' + group + '/info/')
+        this_group = Group.objects.get(url=group_url)
+        if len(this_group.pictures.all()) > 19 and is_groupphotos_page == True:
+            errormsg = 'You have reached the maximum number of phots. Try deleting one first.'
         else:
-            print 'invalid'
+           # form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
+                return (form, errormsg)
+            else:
+                print 'invalid'
     else:
-        #print 'this else is being called'
         form = UploadFileForm()
 
-    return form
+    return (form, errormsg)
 
-
-#    return render_to_response('base_groupinfo.html', {'form': form},
-#                              context_instance=RequestContext(request))
 
 #----------------------------------------------------
 

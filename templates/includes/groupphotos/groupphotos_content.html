@@ -1,15 +1,40 @@
 <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+<script type="text/javascript">
+    // deletes pic specififed by picture_id
+    function delete_picture(picture_id)
+    {
+        var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
+        $.post("{{ delete_picture_view_url }}", data, function() {
+            $('#picture-'+picture_id).remove();
+        });
+    }
+</script>
+
+
 
 <div class="photo-container-all">
 {% if group.pictures.all %}
    {% for picture in group.pictures.all %}
        {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
-       {% if picture.image %} 
-           <div class="photo-container">
+       {% if picture.image %}           
+           <div id="picture-{{ picture.id }}" class="photo-container">
+
                <a class="lightbox-gallery" href="{{ picture.image.url }}">
                <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
                </a>
-           </div>
+
+               {% if is_admin %}<button type="button" class="post-delete delete-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
+
+
+{% comment %}
+{% if is_admin %}<button type="button" class="post-delete" id="photo-button-{{picture.id}}" onClick="delete_picture({{picture.id}})">delete</button>
+{% endif %}
+{% if is_admin %} <div class="photo-text-container-top"><input type="checkbox" value="{{ picture.image.url }}" /></div> {% endif %}
+{% endcomment %}
+
+
+	   </div>
+
        {% endif %}
    {% endfor %}
 {% else %}
