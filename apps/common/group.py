@@ -23,7 +23,13 @@ class Group(models.Model):
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
     # profile picture
-    img = models.CharField(max_length=50)
+    img = models.CharField(max_length=50, null=True, blank=True)
+
+#    photos = []
+#    for x in range(0, 19):
+#        photos[x] = models.CharField(max_length=50, null=True, blank=True)
+    photos = [models.CharField(max_length=50, null=True, blank=True)]*20
+
 
     #users = models.ManyToManyField(auth.models.User, through='Membership', 
     #                               blank=True, null=True, related_name='users')

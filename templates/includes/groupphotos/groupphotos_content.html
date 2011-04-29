@@ -1,0 +1,28 @@
+{% comment %}
+
+Testing Groupphotos_content
+
+{% endcomment %}
+
+{% load set_var %}
+
+<div class="photo-container-all">
+{% if group.photos %}
+   {% for image in group.photos %}
+   <div class="photo-container">
+     <img src="/static/uploaded_files/{{ group.url }}/photos/{{ image }}" height="100" width="100" />
+   </div>
+   {% endfor %}
+{% else %}
+   (No Photos)
+{% endif %}
+</div>
+
+{% comment %}
+<strong>About Us: </strong>{{ groupinfo.data }}<br>
+<br>
+{% endcomment %}
+
+<br>
+
+{# Back to <a href="/group/{{ groupinfo.group.url }}">{{ groupinfo.group }}</a> #}

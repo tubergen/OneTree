@@ -177,8 +177,20 @@ class GroupInfo(models.Model):
     data = models.TextField()
     # blurb should be what data is now
     # blurb = models.CharField(max_length=50)
+
+###################################
+# PHOTOS                          #
+###################################
+#class PhotoSet(models.Model):
+#    group = models.OneToOneField('Group')
+#    pictures = models.ForeignKey('Picture')
+
+#class Picture(models.Model):
+    #image = models.ImageField(upload_to='uploaded_files/')
+#    image = models.CharField(max_length=50)
+
+
     
-    # pass
     
 class UserInfo(models.Model):
     pass

@@ -49,9 +49,12 @@
         </div>
     {% endif %}
     
-    {% comment %}
-        {% if is_groupphotos_page %}
-            {% include "includes/groupphotos/groupphotos.html" %}
+    {% if is_groupphotos_page %}
+	<div class="main-container-navigation-tabs">
+	  {% include "includes/wall/wall_tabs.html" %}
+	  <div class="main-container">
+            {% include "includes/groupphotos/groupphotos_display.html" %}
+	  </div>
+	</div>
         {% endif %}
-    {% endcomment %}
 {% endblock %}

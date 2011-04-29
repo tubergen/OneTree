@@ -173,7 +173,7 @@ def verify_group(group):
 # GROUP PAGE
 #######################################
 def group_page(request, group_url, partial_form=None, is_group_page=True,
-               is_groupinfo_page=False):
+               is_groupinfo_page=False, is_groupphotos_page=False):
     errormsg = None
     context = RequestContext(request)
 
@@ -191,8 +191,8 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
         groupinfo = GroupInfo(group=group, data='')
     else:
         groupinfo = groupinfo[0]
-    form = upload_file(request, group.url)
-    
+    form = upload_file(request, group.url, is_groupphotos_page)
+
     # handle editable info submit
     if 'data_submit' in request.POST:
         errormsg = handle_data(groupinfo, group, request)
@@ -249,6 +249,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'is_admin': is_admin,
                               'is_group_page': is_group_page,
                               'is_groupinfo_page': is_groupinfo_page,
+                               'is_groupphotos_page': is_groupphotos_page,
                                'form': form,
                               'errormsg': errormsg,
                               'group': group,
@@ -374,9 +375,13 @@ def ensure_dir(f):
     if not os.path.exists(d):
         os.makedirs(d)
             
-def handle_uploaded_file(f, group):
+def handle_uploaded_file(f, group, is_groupphotos_page=False):
     ensure_dir('static/uploaded_files/'+group+'/profile/')
-    destination = open('static/uploaded_files/'+group+'/profile/' + f.name, 'wb+')
+    ensure_dir('static/uploaded_files/'+group+'/photos/')
+    if is_groupphotos_page==False:
+        destination = open('static/uploaded_files/'+group+'/profile/' + f.name, 'wb+')
+    else:
+        destination = open('static/uploaded_files/'+group+'/photos/' + f.name, 'wb+')
 #    filename = f.name
 #    image = Image.open(filename)
 #    (width, height) = image.size
@@ -386,19 +391,37 @@ def handle_uploaded_file(f, group):
     
     for chunk in f.chunks():
         destination.write(chunk)
-    # TEST PROFILE IMG
+    # PROFILE IMG
+    
     this_group = Group.objects.get(url=group)
-    this_group.img = f.name
+    
+    # PHOTOS
+    maxphotoindex = 19
+    if is_groupphotos_page == False:
+        this_group.img = f.name
+    else:
+        x = 0
+        while x < len(this_group.photos):
+            if not this_group.photos[x]:
+                this_group.photos[x] = f.name
+                break
+            x = x + 1
+        if x > maxphotoindex: # if no empty slots
+            # forloop shifting images one slot up
+            for y in range(0, len(this_group.photos)-1):
+                this_group.photos[y] = this_group.photos[y+1]
+            this_group.photos[maxphotoindex] = f.name
+        
     this_group.save()
-    #print this_group.img
+    
     # END TEST
     destination.close()
 
-def upload_file(request, group):
+def upload_file(request, group, is_groupphotos_page=False):
     if request.method == 'POST' and request.FILES:
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'], group)
+            handle_uploaded_file(request.FILES['file'], group, is_groupphotos_page)
             return form
             #return HttpResponseRedirect('/group/' + group + '/info/')
         else:
@@ -418,11 +441,12 @@ def upload_file(request, group):
 
 # groupinfo page
 def groupinfo_page(request, groupname):
-    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True)
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True, is_groupphotos_page=False)
 
 # groupphotos_page
 def groupphotos_page(request, groupname):
-    pass
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=False, is_groupphotos_page=True)
+    #pass
 
 
 def handle_data(groupinfo, group, request):
