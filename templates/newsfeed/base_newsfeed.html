@@ -1,6 +1,25 @@
 {% extends "base_page_with_wall.html" %}
 
 {% block top_title %}
-    {# some kind of information identifying this as your newsfeed here #}
-    <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
+  {# some kind of information identifying this as your newsfeed here #}
+  <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
+
+    {% if pictures %}
+      {% for picture in pictures %}
+        {% if picture.image %} 
+          <div class="photo-container">
+
+          <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+          <a href="/group/{{picture.owner.url}}">{{picture.owner}}</a></span>
+
+          </div>
+
+         {% endif %}
+      {% endfor %}
+
+    {% else %}
+      <p>(No Photos)</p>
+    {% endif %}
+
+      
 {% endblock %}

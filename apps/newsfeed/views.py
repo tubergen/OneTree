@@ -9,6 +9,8 @@ from OneTree.apps.common.models import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
 
+from heapq import heappushpop, heappush
+
 @login_required
 def filter_newsfeed(request):
     if request.is_ajax():
@@ -70,9 +72,6 @@ def remove_post(request):
             
     return HttpResponse(status=400)
 
-    
-
-
 @login_required
 def newsfeed(request):
     errormsg = None
@@ -88,15 +87,46 @@ def newsfeed(request):
     voted_post_set = request.user.get_profile().get_voted_posts();
 
     # called children so that we can use the group page's sidebar
-    children = request.user.get_profile().subscriptions.all();
+    subscriptions = request.user.get_profile().subscriptions.all();
 
-    # for debugging
-    print request.user
+    # get one picture from each of your subscribed groups, then pick the four
+    # most recent ones
+    #pictures = Pictures.objects
+    #.filter(created_date__lte=Y.created_date)
 
+    # get the num_pics most recent pics from your subscribed groups
+    num_pics = 3
+    num_stored = 0 # number of pictures added to most_recent_pics so far
+    most_recent_pics = []
+    for group in subscriptions:
+        pictures = group.pictures.order_by('-upload_date')[0:num_pics]
+        
+        for p in pictures:
+            if num_stored != num_pics:
+                heappush(most_recent_pics, (p.upload_date, p))
+                num_stored += 1
+            elif most_recent_pics:
+                (upload_date, image) = most_recent_pics[0]
+                if upload_date < p.upload_date:
+                    heappushpop(most_recent_pics, (p.upload_date, p))
+            else: # not reached i think
+                pass
+
+    print most_recent_pics
+
+    # now extract the actual pictures
+    new_pics = []
+    for date_pic_tuple in most_recent_pics:
+        new_pics.append(date_pic_tuple[1])
+    new_pics.reverse() # want most recent to least
+
+    print new_pics
+    
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,
+                              'pictures': new_pics,
                               'wall_subtitle': wall_subtitle,
-                              'children': children,
+                              'children': subscriptions,
                               'submit_off': True,
                               'is_newsfeed': True,
                               'voted_post_set': voted_post_set,

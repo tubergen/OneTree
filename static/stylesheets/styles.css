@@ -104,7 +104,7 @@ a {
 
 #group-title-div {
     float: left;
-    width: 60%;
+    width: 70%;
 }
 
 #group-title {
@@ -226,13 +226,16 @@ a {
     text-align: center;
 }
 
+.photo-container-all .photo-container {
+    height: 150px;
+    line-height: 150px;
+}
+
 /* I hope this works in IE */
 .photo-container {
     width: 150px;
-    height: 150px;
     padding: 0;
     margin: 10px;
-    line-height: 150px;
     text-align: center;
     display: inline-block;
 }
