@@ -52,7 +52,6 @@ class Group(models.Model):
                            unique=True, 
                            verbose_name=(group_url),)
 
-
     def _get_full_url(self):
         return group_url + self.url
     full_url = property(_get_full_url)

@@ -512,6 +512,19 @@ def handle_data(groupinfo, group, request):
         
         new_super_admin = request.POST.get('new_super_admin', None)
         if new_super_admin:
-            pass
+            try: 
+                user = User.objects.get(username=new_admin)
+            except User.DoesNotExist:
+                errormsg = 'Invalid username. User does not exist.'
+                return errormsg
+
+            if not user.get_profile().is_superadmin_of(group):
+                group.superadmins.add(user)
+            else:
+                errormsg = 'User already a superadmin.'
+                return errormsg
+
+            superadmins.remove(request.user)
+
 
     return errormsg
