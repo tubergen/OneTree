@@ -573,9 +573,19 @@ def handle_data(groupinfo, request):
     if request.method == 'POST':
         if not verify_admin(request, group):
             errormsg = "You are not an admin!"
-        else:
-            new_data = request.POST['data_content']
+            return errormsg
+
+        new_data = request.POST.get('data_content', None)
+        if new_data:
             groupinfo.data = new_data
             groupinfo.save()
+
+        new_admin = request.POST.get('new_admin', None);
+        if new_admin:
+            pass
+
+        new_super_admin = request.POST.get('new_super_admin', None);
+        if new_super_admin:
+            pass
 
     return errormsg

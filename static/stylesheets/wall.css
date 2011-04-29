@@ -512,4 +512,19 @@
 .group-image-div {
 }
 
+.data-field {
+    text-align: left;
+    float: left;
+}
 
+#change-admin-data {
+    width: 400px;
+    text-align: left;
+}
+    
+#change-admin-data h3, form {
+    text-align: center;
+}
+
+.change-admin-submit {
+}

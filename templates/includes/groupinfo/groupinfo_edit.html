@@ -4,21 +4,21 @@
   {
      if ($('#eventclick').is(':checked'))
      {
-        $('#data_field').show();
+        $('#data-fields').show();
         $('#upload').show();
      }
      else {
 
-        $('#data_field').hide();
+        $('#data-fields').hide();
         $('#upload').hide();
 
      }
 
-//      $('#data_field').focus();
+//      $('#data-fields').focus();
   } 
 
   $(document).ready(function() {
-     $('#data_field').hide();
+     $('#data-fields').hide();
      $('#upload').hide();
   }); 
 
@@ -39,19 +39,20 @@
 
 
 
-<p>
 <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()">Edit Information<br>
 
-<div id="upload">
-<h3>Change Group Logo</h3>
-  <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-  </form>
-</div>
+<div id="change-admin-data">
+
+  <div id="upload">
+  <h3>Change Group Logo</h3>
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
 
 {#<a href="" onclick="toggle_edit_info()">Edit</a>#}
- <div id="data_field"> 
+ <div id="data-fields"> 
   <h3>Edit Group Information</h3>
   <form name="edit_info" action="" method="post">{% csrf_token %}
     {#<div id="edit_field">#}
@@ -59,6 +60,32 @@
       <br><input type="submit" name="data_submit" value="Submit" />
     {#</div>#}
   </form>
- </div>
-</p>
+  
+<h3>Add Group Admin</h3>
+  <form class="new-admin-form" action="" method="post">{% csrf_token %}
+    <span>Username:</span>
+    <input type="text" name="new_admin">
+    <input type="submit" name="data_submit" value="Submit" />
+  </form>
+
+<br/>
+<h3>Remove Group Admin</h3>
+  <form class="new-admin-form" action="" method="post" style="width:100;">{% csrf_token %}
+    <input type=checkbox style="text-align:left" name="remove_admin">name<br>
+    <input type=checkbox name="remove_admin">loooooonger name<br>
+    <input type=checkbox name="remove_admin">name<br>
+    <input type="submit" name="data_submit" value="Submit" />
+  </form>
+
+<br/>
+<h3>Transfer Group SuperAdmin</h3>
+  <p> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. You will become a normal group admin.</p>
+  <form class="new-admin-form" action="" method="post">{% csrf_token %}
+    <span>Username:</span>
+    <input type="text" name="new_admin">
+    <input type="submit" name="data_submit" value="Submit" />
+  </form>
+
+</div>
+
 </CENTER>

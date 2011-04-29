@@ -216,3 +216,7 @@ a {
 .notif-yes, .notif-no {
    float: right;
 }
+
+.new-admin-bar ul, .new-admin-bar li {
+    display: inline;
+}
