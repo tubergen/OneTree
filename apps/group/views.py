@@ -172,7 +172,8 @@ def verify_group(group):
 #######################################
 # GROUP PAGE
 #######################################
-def group_page(request, group_url, partial_form = None):
+def group_page(request, group_url, partial_form=None, is_group_page=True,
+               is_groupinfo_page=False):
     errormsg = None
     context = RequestContext(request)
 
@@ -184,18 +185,23 @@ def group_page(request, group_url, partial_form = None):
                                   context_instance=context)
     group = group[0] # only one element in queryset
 
-    # handle the wall post that was perhaps submitted
-    if 'post_submit' in request.POST:
-        errormsg = handle_submit(request, group)
-        if errormsg:
-            print errormsg
-
     # get groupinfo associated with this group
     groupinfo = GroupInfo.objects.filter(group=group)
     if not groupinfo:
         groupinfo = GroupInfo(group=group, data='')
     else:
         groupinfo = groupinfo[0]
+    form = upload_file(request, group.url)
+    
+    # handle editable info submit
+    if 'data_submit' in request.POST:
+        errormsg = handle_data(groupinfo, group, request)
+        
+    # handle the wall post that was perhaps submitted
+    if 'post_submit' in request.POST:
+        errormsg = handle_submit(request, group)
+        if errormsg:
+            print errormsg
 
     # get user's subscription status to this group
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
@@ -238,11 +244,12 @@ def group_page(request, group_url, partial_form = None):
     posts_on_page = paginate_posts(request, posts)
 
     return render_to_response('group/base_group.html',
-                              {'is_group_page': True,
-                              'posts': posts_on_page.object_list, # easy template compatibility
+                              {'posts': posts_on_page.object_list, # easy template compatibility
                               'posts_on_page': posts_on_page,
                               'is_admin': is_admin,
-         #                     'is_group_page': True, # for the sidebar hierarchy 
+                              'is_group_page': is_group_page,
+                              'is_groupinfo_page': is_groupinfo_page,
+                               'form': form,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,
@@ -258,8 +265,6 @@ def group_page(request, group_url, partial_form = None):
                               'voted_post_set': voted_post_set,
                               'wall_subtitle': wall_subtitle,},
                               context_instance=RequestContext(request))
-
-
 
 def event_page(request, groupname, title):
     errormsg = None
@@ -279,7 +284,6 @@ def event_page(request, groupname, title):
                               {'errormsg': errormsg,
                                'event': this_event},
                               context_instance=RequestContext(request))
-
 
 # REFERENCES:
 # http://docs.djangoproject.com/en/dev/topics/forms/modelforms/
@@ -414,153 +418,7 @@ def upload_file(request, group):
 
 # groupinfo page
 def groupinfo_page(request, groupname):
-    errormsg = None
-    context = RequestContext(request)
-
-    
-    #this_group = Group.objects.get(name=groupname)
-    this_group = Group.objects.get(url=groupname)
-    groupinfo = GroupInfo.objects.filter(group=this_group)
-
-    form = upload_file(request, this_group.url)
-
-    # this shouldn't happen
-#    if not groupinfo:
-#        groupinfo = GroupInfo(group=this_group,
-#                              data='This needs to be editable.')
-#        groupinfo.save()
-
-    # this SHOULD happen 
-#    else:
-#    groupinfo = groupinfo[0]
-
-    # handle editable info submit
-    if 'data_submit' in request.POST:
-        errormsg = handle_data(groupinfo, this_group, request)
-
-# ORIGINAL END OF GROUPINFO
-
-    # check that the url corresponds to a valid group
-  #  group = Group.objects.filter(url=group_url)
-  #  check = verify_group(this_group)
-  #  if check:
-  #      return render_to_response('error_page.html', {'errormsg': check,}, 
-  #                                context_instance=context)
-  #  group = group[0] # only one element in queryset
- 
-    # handle the wall post that was perhaps submitted
-    if 'post_submit' in request.POST:
-        errormsg = handle_submit(request, this_group)
-        if errormsg:
-            print errormsg
-
-    # get groupinfo associated with this group
-#    groupinfo = GroupInfo.objects.filter(group=group)
-#    if not groupinfo:
-#        groupinfo = GroupInfo(group=group, data='')
-#    else:
-#        groupinfo = groupinfo[0]
-
-    # get user's subscription status to this group
-    #    Note: I deliberately do not catch Profile.DoesNotExist here,
-    #    since all logged in users should have a profile
-    try:
-        request.user.get_profile().subscriptions.get(id=this_group.id)
-        user_is_subscribed = True
-    except (Group.DoesNotExist, AttributeError): 
-        # Note: attribute error occurs when user is AnonymousUser
-        user_is_subscribed = False
-
-    # get user's list of voted posts
-    try:
-        voted_post_set = request.user.get_profile().get_voted_posts(this_group)
-    except (AttributeError):
-        # Note: attribute error occurs when user is AnonymousUser
-        voted_post_set = None
-
-    children = this_group.child_set.all()
-
-    siblings = []
-    if this_group.parent:
-        siblings = this_group.parent.child_set.all().exclude(name=this_group.name)
-
-    posts = Filter().get_posts(this_group) # runs posts through an empty filter
-    wall_subtitle = ""
-    if not posts:
-        wall_subtitle = "Sorry, there are no announcements or events here yet."
-    wall_filter_list = Filter.get_wall_filter_list(this_group.name);
-    #annotate(score=hot('post__upvotes', 'post__downvotes', 'post__date')).order_by('score')
-
-    is_admin = False
-    if verify_admin(request, this_group):
-        is_admin = True
-    
-    membership_status = "notmember"
-    if request.user.is_authenticated():
-        membership_status = request.user.get_profile().get_membership_status(this_group)
-
-    posts_on_page = paginate_posts(request, posts)
-
-    return render_to_response('group/base_group.html',
-                              #'base_groupinfo.html',
-                              {'errormsg': errormsg,
-                               'is_groupinfo_page': True,
-                               'groupinfo': groupinfo,
-                               'form': form,
-                              'group': this_group,
-#                              'is_group_page': True,
-                              'posts': posts_on_page.object_list, # easy template compatibility
-                              'posts_on_page': posts_on_page,
-                              'is_admin': is_admin,
-                              'children': children,
-                              'siblings': siblings,
-                              'user_is_subscribed': user_is_subscribed,
-                              'membership_status': membership_status,
-                              'subscribe_view_url':'/_apps/group/views-change_subscribe/',
-                              'membership_view_url':'/_apps/group/views-req_membership/',
-                              'filter_list': wall_filter_list,
-                              'filter_view_url': '/_apps/wall/views-filter_wall/',
-                              'delete_post_view_url': '/_apps/group/views-delete_post/',
-                              'voted_post_set': voted_post_set,
-                              'wall_subtitle': wall_subtitle,},
-                              context_instance=context)
-
-
-
-
-
-
-
-# OLD CODE ------ groupinfo page
-#def groupinfo_page(request, groupname):
-#    errormsg = None
-#    context = RequestContext(request)
-    
-#    this_group = Group.objects.get(name=groupname)
-#    groupinfo = GroupInfo.objects.filter(group=this_group)
-
-#    form = upload_file(request, this_group.url)
-
-    # this shouldn't happen
-#    if not groupinfo:
-#        groupinfo = GroupInfo(group=this_group,
-#                              data='This needs to be editable.')
-#        groupinfo.save()
-
-    # this SHOULD happen 
-#    else:
-#        groupinfo = groupinfo[0]
-
-    # handle editable info submit
-#    if 'data_submit' in request.POST:
-#        errormsg = handle_data(groupinfo, request)
-
-#    return render_to_response('base_groupinfo.html',
-#                              {'errormsg': errormsg,
-#                               'is_groupinfo_page': True,
-#                               'groupinfo': groupinfo,
-#                               'form': form},
-#                              context_instance=context)
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True)
 
 # groupphotos_page
 def groupphotos_page(request, groupname):
