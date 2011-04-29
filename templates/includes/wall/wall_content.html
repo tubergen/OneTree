@@ -318,6 +318,15 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
                 <hr />
             {% endif %}
         {% endif %}
+        {% if not comment.comment_set.all %}
+            {% if forloop.last %}
+                {% if comment_count > 5 %}
+                    <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+                {% else %}
+                    <hr />
+                {% endif %}
+            {% endif %}
+        {% endif %}
 
         {# posting of a reply to a comment #}
         <form name="comment_post_{{ comment.id }}" id="comment_post_id_{{ comment.id }}" class="comment-post comment-level-1" action="/post/comment/" method="post">{% csrf_token %}
