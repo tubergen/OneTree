@@ -5,6 +5,11 @@
     html plain text, and text is repeated in javascript code.
 {% endcomment %}
 
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/jquery.lightbox-0.5.css" media="screen" />
+{% endblock %}
+
 {% block left_content %}
     {% include "includes/sidebar/group_sidebar.html" %}
 {% endblock %}

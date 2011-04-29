@@ -1,10 +1,14 @@
+<script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+
 <div class="photo-container-all">
 {% if group.pictures.all %}
    {% for picture in group.pictures.all %}
        {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
        {% if picture.image %} 
            <div class="photo-container">
+               <a class="lightbox-gallery" href="{{ picture.image.url }}">
                <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+               </a>
            </div>
        {% endif %}
    {% endfor %}
@@ -12,3 +16,9 @@
     <p>(No Photos)</p>
 {% endif %}
 </div>
+
+<script type="text/javascript">
+$(function() {
+	$('a.lightbox-gallery').lightBox(); // Select all links with lightbox class
+});
+</script>
