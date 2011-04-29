@@ -33,10 +33,14 @@
   <div id="upload">
   <h3>Add Group Photos</h3>
   <p>If you have reached the maximum number of photos, your oldest photo will be replaced.</p>
+  {% if piccount < 20 %}
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
       {{ form.as_p }}
       <input type="submit" value="Submit" />
     </form>
+    {% else %}
+    <p>You have reached the maximum number of phots. Try deleting one first.</p>
+   {% endif %}
   </div>
 
 {% comment %}

@@ -85,10 +85,10 @@ class Group(models.Model):
     def __unicode__(self):
         return self.name;
 
-    def getPhoto(self, x):
+#    def getPhoto(self, x):
 #        photo = self.photos[x]
 #        return re.sub("\W+", "", photo.lower())
-        return str(self.photos[x])
+#        return str(self.photos[x])
 
 # Create your models here.
 class GroupForm(ModelForm):
