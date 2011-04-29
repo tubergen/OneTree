@@ -89,6 +89,14 @@ class UserProfile(models.Model):
         except Group.DoesNotExist:
             return False
 
+    ''' Returns true if user is admin of group; false otherwise '''
+    def is_admin_of(self, group):
+        try:
+            group.admins.get(id=self.user.id)
+            return True
+        except User.DoesNotExist:
+            return False
+
     def has_pending_membership(self, group):
         try:
             # there may be a more efficient query here using the related
