@@ -41,14 +41,17 @@ def answer_notif(request):
 
 @login_required
 def notification_page(request):
-    
+    profile = request.user.get_profile()
+
+    ''' Ming: Why are you passing user and profile to the template
+    in the context? You probably don't want to do this. Use
+    {{ request.user }}, {{ request.user.get_profile }} in template. '''
 
 ### Ming's section #################
     errormsg = None
     need_approval = False
 
     user = request.user
-    userprofile = UserProfile.objects.get(user=request.user)
     mgroups = Group.objects.filter(admins=user)
         
     if mgroups:
@@ -60,20 +63,10 @@ def notification_page(request):
 
 ##########################
 
+    (pending_notifs, old_notifs) = profile.get_notifs();
 
-    pending_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=True )
-    old_notifs = request.user.recv_notifications.filter(recv_user=request.user, pending=False )
-
-    for group in request.user.admin_groups.all():
-        pending_notifs = chain(pending_notifs, group.notification_set.filter(pending=True))
-        old_notifs = chain(old_notifs, group.notification_set.filter(pending=False))
-
-    # necessary, b/c chain seems to be exhausted (empty) after you loop over it once
-    pending_notifs = list(pending_notifs)
-    old_notifs = list(old_notifs)
-
-    # we've seen all of these notifications now, so set them to not new
-    for notif in pending_notifs:
+    # set all new notifications to not new, since now we'll see them
+    for notif in profile.get_new_notifs():
         notif.not_new()
 
     pending_notifs = sorted(pending_notifs, key=attrgetter('date'), reverse=True)
@@ -84,7 +77,7 @@ def notification_page(request):
                               'old_notifs': old_notifs,
                               'notif_view_url': '/_apps/notifications/views-answer_notif/',
                               'user': user, 
-                              'userprofile': userprofile,
+                              'userprofile': profile,
                               'groups': mgroups, 
                               'need_approval': need_approval,
                               'active': user.is_active,
