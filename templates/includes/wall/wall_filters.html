@@ -34,7 +34,10 @@ id "wall-content".
         var url = "{{ filter_view_url }}";
 
         $.get(url, filters, function(data) {
-            $('#wall-content').html(data);
+            $('#wall-content').fadeOut(100, function () {
+                $('#wall-content').html(data);
+            });
+            $('#wall-content').fadeIn(150);
         });
     }
 
