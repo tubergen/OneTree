@@ -11,22 +11,24 @@
 
     <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
 
+    <div class="photo-container-all-top">
     {% if pictures %}
         {% for picture in pictures %}
             {% if picture.image %} 
-                <div class="photo-container">
-                    <a class="lightbox-gallery" href="{{ picture.image.url }}">
-                        <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
-                        <a href="/group/{{picture.owner.url}}">{{picture.owner}}</a>
-                    </a>
+                <div class="photo-text-container-top">
+                    <div class="photo-container-top">
+                            <a class="lightbox-gallery" href="{{ picture.image.url }}">
+                                <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+                            </a>
+                    </div>
+                    <p><a href="/group/{{picture.owner.url}}">{{picture.owner}}</a></p>
                 </div>
-
             {% endif %}
         {% endfor %}
-
     {% else %}
         <p>(No Photos)</p>
     {% endif %}
+</div>
 
     <script type="text/javascript">
         $(function() {
