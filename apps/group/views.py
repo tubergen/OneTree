@@ -376,25 +376,40 @@ def ensure_dir(f):
     if not os.path.exists(d):
         os.makedirs(d)
             
-def handle_uploaded_file(f, group, is_groupphotos_page=False):
-    ensure_dir('static/uploaded_files/'+group+'/profile/')
-    ensure_dir('static/uploaded_files/'+group+'/photos/')
+def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
+    '''
+    ensure_dir('static/uploaded_files/'+group_url+'/profile/')
+    ensure_dir('static/uploaded_files/'+group_url+'/photos/')
+    '''
     if is_groupphotos_page==False:
-        destination = open('static/uploaded_files/'+group+'/profile/' + f.name, 'wb+')
+        destination = open('static/uploaded_files/'+group_url+'/profile/' + f.name, 'wb+')
+        ''' jorge add'''
+        destination.close()
     else:
-        destination = open('static/uploaded_files/'+group+'/photos/' + f.name, 'wb+')
+        ''' destination = open('static/uploaded_files/'+group_url+'/photos/' + f.name, 'wb+')
+        '''
+        # create picture to establish group name (used in url while uploading)
+        pic = Picture.objects.create()
+        pic.save() 
+        this_group = Group.objects.get(url=group_url)
+        this_group.pictures.add(pic)
+
+        # save/upload pic
+        pic.image = f
+        pic.save()
+
 #    filename = f.name
 #    image = Image.open(filename)
 #    (width, height) = image.size
 #    (width, height) = scale_dimensions(width, height, longest_side=240)
 
 #    f2 = image.resize((width, height))
-    
+'''    
     for chunk in f.chunks():
         destination.write(chunk)
     # PROFILE IMG
     
-    this_group = Group.objects.get(url=group)
+    this_group = Group.objects.get(url=group_url)
     
     # PHOTOS
     maxphotoindex = 19
@@ -417,15 +432,15 @@ def handle_uploaded_file(f, group, is_groupphotos_page=False):
         this_group.photos[0] = f.name
         
     this_group.save()
-    
+   ''' 
     # END TEST
-    destination.close()
+    # destination.close()
 
-def upload_file(request, group, is_groupphotos_page=False):
+def upload_file(request, group_url, is_groupphotos_page=False):
     if request.method == 'POST' and request.FILES:
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'], group, is_groupphotos_page)
+            handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
             return form
             #return HttpResponseRedirect('/group/' + group + '/info/')
         else:

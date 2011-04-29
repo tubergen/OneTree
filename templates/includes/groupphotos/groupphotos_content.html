@@ -1,28 +1,14 @@
-{% comment %}
-
-Testing Groupphotos_content
-
-{% endcomment %}
-
-{% load set_var %}
-
 <div class="photo-container-all">
-{% if group.photos %}
-   {% for image in group.photos %}
-   <div class="photo-container">
-     <img src="/static/uploaded_files/{{ group.url }}/photos/{{ image }}" height="200" width="200" />
-   </div>
+{% if group.pictures.all %}
+   {% for picture in group.pictures.all %}
+       {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
+       {% if picture.image %} 
+           <div class="photo-container">
+               <img src="{{ picture.image.url }}" />
+           </div>
+       {% endif %}
    {% endfor %}
 {% else %}
-   (No Photos)
+    <p>(No Photos)</p>
 {% endif %}
 </div>
-
-{% comment %}
-<strong>About Us: </strong>{{ groupinfo.data }}<br>
-<br>
-{% endcomment %}
-
-<br>
-
-{# Back to <a href="/group/{{ groupinfo.group.url }}">{{ groupinfo.group }}</a> #}

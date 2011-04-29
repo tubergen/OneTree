@@ -10,6 +10,10 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 from OneTree.apps.common.notification import *
+
+# for pictures
+import os
+from time import strftime
 # more imports at bottom
 
 '''
@@ -181,16 +185,15 @@ class GroupInfo(models.Model):
 ###################################
 # PHOTOS                          #
 ###################################
-#class PhotoSet(models.Model):
-#    group = models.OneToOneField('Group')
-#    pictures = models.ForeignKey('Picture')
 
-#class Picture(models.Model):
-    #image = models.ImageField(upload_to='uploaded_files/')
-#    image = models.CharField(max_length=50)
+class Picture(models.Model):
+    def picture_location(instance, filename):
+        return os.path.join('uploaded_files', str(instance.owner.url),
+                strftime('%Y/%m/%d'), filename)
 
-
-    
+    image = models.ImageField(upload_to=picture_location)
+    owner = models.ForeignKey('Group', blank=True, null=True,
+            related_name='pictures')
     
 class UserInfo(models.Model):
     pass
