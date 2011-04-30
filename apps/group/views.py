@@ -202,7 +202,10 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                is_groupinfo_page=False, is_groupphotos_page=False):
     errormsg = None
     context = RequestContext(request)
-    profile = request.user.get_profile()
+    if request.user.is_authenticated():
+       profile = request.user.get_profile()
+    else:
+       profile = None
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
@@ -272,7 +275,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
         is_admin = True
 
     is_superadmin = False
-    if profile.is_superadmin_of(group):
+    if profile and profile.is_superadmin_of(group):
         is_superadmin = True
     
     membership_status = "notmember"
