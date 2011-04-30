@@ -552,7 +552,12 @@ def handle_data(groupinfo, group, request):
 
         remove_self = request.POST.get('remove_self', None)
         if remove_self:
-            group.admins.remove(request.user)
+            if not request.user.get_profile().is_superadmin_of(group):
+                group.admins.remove(request.user)
+            else:
+                errormsg = "Superadmins can't remove themeselves without " \
+                           "first transferring privileges."
+                return errormsg                
 
         num_admins = request.POST.get('num_admins', None)
         if num_admins:
