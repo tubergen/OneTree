@@ -42,30 +42,100 @@ def change_subscribe(request):
 
 @login_required
 def req_membership(request):
+    print "========REQ_MEMBERSHIP====================="
     if request.method == 'POST':
-        print request.POST.get('group_id')
+        # Obtain group_id
         try:
             group_id = int(request.POST.get('group_id'))
         except TypeError:
             print 'group_id not int.' + err_loc
+            print "=========================="
             return HttpResponse(status=400)
         if group_id:
+            # Get the group that corresponds to the group_id
             group = Group.objects.get(id=group_id)
+            print 'STATUS: getting group > ',
+            print group
+            # Check if there already exist a pending membership request
             pending_mem_req = MembershipReq.objects.filter(sender=request.user,
                                                            recv_group=group,
                                                            pending=True)
-            # do not send duplicate membership requests
+            
+            print 'STATUS: pending_mem_req > ',
+            print pending_mem_req
+
+
+            # If there is no pending membership request, perform a request
             if not pending_mem_req:
                 mem_req = MembershipReq(sender=request.user, recv_group=group)
+                print "STATUS: mem_req > ",
+                print mem_req
                 mem_req.save()
-            else:
+            else: # Otherwise, do not do anything
                 print 'Already a pending membership request.'
+
+            # If request is ajax, ??
             if request.is_ajax():
+                print "======================"
                 return HttpResponse()
             else:
+                print "======================="
                 return HttpResponseRedirect('/group/' +  group.url);
+    print "=============================="
     return HttpResponse(status=400)        
+
+# Function to notify parent group that a child requests for approval
+@login_required
+def req_parent(request, pending_parent_name, requesting_child):
+    # Parameters to be passed in:
+    # - pending_parent_name (name of parent group)
+    # - requesting_child (child group that makes the request)
+
+    # Obtain group object corresponding to pending_parent
+    
+    print "=========REQ_PARENT==============="
+
+    try:
+        pending_parent = Group.objects.get(name=pending_parent_name)
+    except:
+        pending_parent = None
+
+    if pending_parent:
+        # the following line might not be used eventually - need to check
+        pending_parent.inactive_child.add(requesting_child)
+
+        # Check if there already exist a pending parent request
+        pending_parent_req = ParentReq.objects.filter(sender_group=requesting_child,
+                                                      recv_group=pending_parent,
+                                                      pending=True)
         
+        print 'STATUS: pending_parent_req > ',
+        print pending_parent_req
+
+        # If there is no pending membership request, perform a request
+        if not pending_parent_req:
+            parent_req = ParentReq(sender_group=requesting_child,
+                                   recv_group=pending_parent)
+            print "STATUS > Pending notification created"
+            parent_req.save()
+        else: 
+            print 'Already a pending parent request.'
+
+        # COMMENTS BY MING: NOT USED!
+            """
+        # If request is ajax, ??
+        if request.is_ajax():
+            print "======================"
+            return HttpResponse()
+        else:
+            print "======================="
+            return HttpResponseRedirect('/group/' +  group.url);
+    print "=============================="
+    return HttpResponse(status=400)     
+    """
+    print "==========EXIT REQ_PARENT============"
+    return False
+
 '''
 Looks at the wall post that was potentially submitted and, if any data was
 submitted, adds that data to the database. Returns an errorMsg if there was a
@@ -352,25 +422,21 @@ def create_group(request):
             new_group = form.save(commit=False)
 
             # Create the group but prevent parent from being created
-            inactive_parent = new_group.parent
+            pending_parent_name = new_group.parent
             new_group.parent = None
             new_group.save()
 
-            print "=========DATA========="
-            print new_group
-
-            print ">>> END <<<"
+            print "========CREATE_GROUP================"
+            print "STATUS > Before entering req_parent"
 
             # Notify parent group
-            try:
-                parent = Group.objects.get(name=inactive_parent)
-            except:
-                parent = None
+            req_parent(request, pending_parent_name=pending_parent_name, 
+                       requesting_child=new_group)
 
-            if parent:
-                parent.inactive_child.add(new_group)
+            print "========EXIT CREATE_GROUP=========="
 
-
+            #if check is False: # MING: Syntax is correct right
+             #   print "ERROR in create_gorup!"
 
             taglist = request.POST['keywords'].split()
             new_tags = []
@@ -379,10 +445,6 @@ def create_group(request):
                 if created:
                     new_tag.save()
                 new_tags.append(new_tag)
-
-     #       new_group = form.save()
-     #       for tag in new_tags:
-     #           new_group.tags.add(tag)
 
             # associating groupinfo with a group
             info = ''
@@ -400,8 +462,6 @@ def create_group(request):
             #parent = form.cleaned_data['parent']
             #url = form.cleaned_data['url']
 
-            # is this all? should we "clean the data"? what does
-            # validation actually do?? it seems to work.
             return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
 
         else:

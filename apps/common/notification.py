@@ -23,6 +23,9 @@ class Notification(InheritanceCastModel):
     
     sender = models.ForeignKey(auth.models.User, related_name="sent_notifications",
                                null=True, blank=True)
+    sender_group = models.ForeignKey('Group', 
+                                     related_name="sent_group_notifications", 
+                                     null=True, blank=True)
 
     # notifications that haven't been looked at yet
     new = models.BooleanField(default=True)
@@ -80,20 +83,28 @@ class Confirmation(Notification):
         return mark_safe(self.text)
         
 class MembershipReq(Notification):
+    # Parameters that is passed in:
+    # - sender=request.user
+    # - recv_group=group
+
+    # Initialize - what exactly does this do?
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = True
         super(MembershipReq, self).__init__(*args, **kwargs)
 
+    # get URL link of the group (for use in template)
     def get_group_link(self):
         url = self.recv_group.full_url
         recv_group_with_url = '<a href="' + url + '">' + self.recv_group.name + '</a>'
         return recv_group_with_url
 
+    # Confirmation message
     def send_confirmed(self):
         confirm_text = 'You have been confirmed as a member of ' + self.get_group_link()
         confirm = Confirmation(recv_user=self.sender, text=confirm_text)
         confirm.save()
-        
+
+    # Handle approval
     def handle_yes(self):
         self.sender.get_profile().memberships.add(self.recv_group)
         self.send_confirmed()
@@ -101,11 +112,13 @@ class MembershipReq(Notification):
         self.answered_yes = True
         self.save()
 
+    # Handle disapproval
     def handle_no(self):
         self.pending = False
         self.answered_no = False
         self.save()
 
+    # Approved/Disapproved Text
     def _get_answer_descrip(self):
         if not self.pending:
             if self.answered_yes:
@@ -114,6 +127,7 @@ class MembershipReq(Notification):
                 return 'Denied'
     answer_descrip = property(_get_answer_descrip)
     
+    # Unicode for printing
     # we need to make sure users don't put javascript in the url, because
     # i'm going to unescape this
     def __unicode__(self):
@@ -122,5 +136,62 @@ class MembershipReq(Notification):
         except AttributeError:
             sender = ''        
         req_text = sender + ' has requested to be a member of ' + self.get_group_link()
+        return mark_safe(req_text)
+    
+class ParentReq(Notification):
+    # Parameters that are passed in:
+    # - sender_group = requesting_child
+    # - recv_group = pending_parent
+
+    # Initialize
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('pending').default = True
+        super(ParentReq, self).__init__(*args, **kwargs)
+
+    # Get URL link of parent group
+    def get_group_link(self):
+        url = self.recv_group.full_url
+        recv_group_with_url = '<a href="' + url + '">' + self.recv_group.name + '</a>'
+        return recv_group_with_url
+
+    # Confirmation message
+    def send_confirmed(self):
+        confirm_text = 'You are now a child of ' + self.get_group_link()
+        confirm = Confirmation(recv_group=self.sender_group, 
+                               text=confirm_text)
+        confirm.save()
+        
+    # Handle approval
+    def handle_yes(self):
+        self.sender_group.parent=recv_group
+        self.send_confirmed()
+        self.pending = False
+        self.answered_yes = True
+        self.save()
+
+    # Handle disapproval
+    def handle_no(self):
+        self.pending = False
+        self.answered_no = False
+        self.save()
+
+    # Approved/Disapproved Text
+    def _get_answer_descrip(self):
+        if not self.pending:
+            if self.answered_yes:
+                return 'Approved'
+            else:
+                return 'Denied'
+    answer_descrip = property(_get_answer_descrip)
+    
+    # Unicode for printing, etc
+    # we need to make sure users don't put javascript in the url, because
+    # i'm going to unescape this
+    def __unicode__(self):
+        try:
+            sender = self.sender_group.name
+        except AttributeError:
+            sender = ''        
+        req_text = "Group " + sender + ' has requested to be a child of ' + self.get_group_link()
         return mark_safe(req_text)
     
