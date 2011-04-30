@@ -148,6 +148,7 @@ class ParentReq(Notification):
         self._meta.get_field('pending').default = True
         super(ParentReq, self).__init__(*args, **kwargs)
 
+
     # Get URL link of parent group
     def get_group_link(self):
         url = self.recv_group.full_url
@@ -163,10 +164,11 @@ class ParentReq(Notification):
         
     # Handle approval
     def handle_yes(self):
-        self.sender_group.parent=recv_group
+        self.sender_group.parent=self.recv_group
         self.send_confirmed()
         self.pending = False
         self.answered_yes = True
+        self.sender_group.save() # this is needed & different from the save() below
         self.save()
 
     # Handle disapproval
