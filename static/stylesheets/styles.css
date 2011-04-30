@@ -290,3 +290,14 @@ a {
 .photo-container-top img.tall-resize, .photo-container-top img.fat-resize {
     vertical-align: bottom;
 }
+
+.delete-photo {
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.delete-photo:hover {
+    display: visible;
+}
