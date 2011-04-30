@@ -170,7 +170,7 @@ def delete_picture(request):
                 if request.user in group.admins.all():
                     picture.delete()
 
-                return HttpResponse()
+                return HttpResponse('/group/' + group.name + '/photos/')
             
             except ObjectDoesNotExist:
                 print 'Error: Tried to delete non-existent object.' + err_loc
@@ -483,11 +483,15 @@ def upload_file(request, group_url, is_groupphotos_page=False):
             errormsg = 'You have reached the maximum number of phots. Try deleting one first.'
         else:
             form = UploadFileForm(request.POST, request.FILES)
+            if request.FILES['file'].size > 524288: # 512 KB
+                errormsg = 'This image is too large to be uploaded. The size limit is 512KB.'
+                return (form, errormsg)
             if form.is_valid():
                 handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
                 return (form, errormsg)
             else:
-                print 'invalid'
+                errormsg = 'Please upload a valid image.'
+                #print 'invalid'
     else:
         form = UploadFileForm()
 
@@ -519,6 +523,7 @@ def handle_data(groupinfo, group, request):
         if new_data:
             groupinfo.data = new_data
             groupinfo.group = group
+            groupinfo.save()
 
         new_admin = request.POST.get('new_admin', None)
         if new_admin:
