@@ -36,19 +36,12 @@ class UserProfile(models.Model):
         return "%s's profile" % self.user
 
     def has_new_notifs(self):
-        try:
-            # if this returns successfully, there is a new notif
-            self.user.recv_notifications.filter(new=True)[0]
+        if self.user.recv_notifications.filter(new=True).exists():
             return True;
-        except IndexError: # no new notifcations
-            pass
 
         for group in self.user.admin_groups.all():
-            try:
-                group.notification_set.filter(new=True)[0]
+            if group.notification_set.filter(new=True).exists():
                 return True;
-            except IndexError: 
-                pass
             
         return False        
 
