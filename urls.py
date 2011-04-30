@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from OneTree.apps.group.views import group_page, groupinfo_page, groupphotos_page, event_page, delete_post, change_subscribe
+from OneTree.apps.group.views import group_page, groupinfo_page, groupphotos_page, event_page, delete_post, change_subscribe, delete_picture
 from OneTree.apps.user.views import *
 from OneTree.apps.notifications.views import notification_page, answer_notif
 from OneTree.apps.group.views import create_group, req_membership
@@ -15,8 +15,8 @@ from django.views.generic.simple import direct_to_template
 import djapian
 
 # Uncomment the next two lines to enable the admin:
-#from django.contrib import admin
-#admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 # get djapian indexing
 djapian.load_indexes()
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Administration
-    #(r'^admin/', include(admin.site.urls)),
+    (r'^admin/', include(admin.site.urls)),
 
     # Group 
     url(r'^group/$', group_page, {'group_url': 'princeton'}), # just default there for now
@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     (r'^_apps/newsfeed/views-filter_newsfeed/$', filter_newsfeed),
     (r'^_apps/newsfeed/views-remove_post/$', remove_post),
     (r'^_apps/group/views-delete_post/$', delete_post),  
+    (r'^_apps/group/views-delete_picture/$', delete_picture),  
 
     # User
     (r'^secret-signup/$', create_user),

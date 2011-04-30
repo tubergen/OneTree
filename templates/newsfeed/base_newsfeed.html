@@ -2,30 +2,39 @@
 
 {% block head %}
     {{ block.super }}
-    <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/jquery.lightbox-0.5.css" media="screen" />
 {% endblock %}
 
 {% block top_title %}
-  {# some kind of information identifying this as your newsfeed here #}
-  <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
+    {# some kind of information identifying this as your newsfeed here #}
+    <h1 id="group-title">{{user.username}}'s Newsfeed</h1>
 
+    <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
+
+    <div class="photo-container-all-top">
     {% if pictures %}
-      {% for picture in pictures %}
-        {% if picture.image %} 
-          <div class="photo-container">
-            <a class="lightbox-gallery" href="{{ picture.image.url }}">
-            <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
-  	    </a>
-            <a href="/group/{{picture.owner.url}}">{{picture.owner}}</a>
-
-          </div>
-
-         {% endif %}
-      {% endfor %}
-
+        {% for picture in pictures %}
+            {% if picture.image %} 
+                <div class="photo-text-container-top">
+                    <div class="photo-container-top">
+                            <a class="lightbox-gallery" href="{{ picture.image.url }}">
+                                <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+                            </a>
+                    </div>
+                    <p><a href="/group/{{picture.owner.url}}">{{picture.owner}}</a></p>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% else %}
-      <p>(No Photos)</p>
+        <p>(No Photos)</p>
     {% endif %}
+</div>
 
-      
+    <script type="text/javascript">
+        $(function() {
+            $('a.lightbox-gallery').lightBox(); // Select all links with lightbox class
+        });
+    </script>
+
+
 {% endblock %}

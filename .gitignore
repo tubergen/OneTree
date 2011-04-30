@@ -15,4 +15,5 @@ media/uploads
 tmp
 .DS_Store
 djapian_spaces
-static/uploaded_files/
+static/uploaded_files/*
+settings_local.py
