@@ -363,7 +363,6 @@ def create_group(request):
             return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
 
         else:
-            print 'wtf'
             return render_to_response('base_groupsignup.html', {'form': form,},
                     RequestContext(request)) # change redirect destination
     else:
@@ -529,6 +528,9 @@ def handle_data(groupinfo, group, request):
                         return errormsg
                     
                     group.admins.remove(user)
+
+        print group.superadmins.all()
+
         
         new_super_admin = request.POST.get('new_super_admin', None)
         if new_super_admin:
