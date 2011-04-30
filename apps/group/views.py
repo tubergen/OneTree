@@ -202,6 +202,10 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                is_groupinfo_page=False, is_groupphotos_page=False):
     errormsg = None
     context = RequestContext(request)
+    if request.user.is_authenticated():
+       profile = request.user.get_profile()
+    else:
+       profile = None
 
     # check that the url corresponds to a valid group
     group = Group.objects.filter(url=group_url)
@@ -240,7 +244,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
     #    since all logged in users should have a profile
     try:
-        request.user.get_profile().subscriptions.get(id=group.id)
+        profile.subscriptions.get(id=group.id)
         user_is_subscribed = True
     except (Group.DoesNotExist, AttributeError): 
         # Note: attribute error occurs when user is AnonymousUser
@@ -248,7 +252,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
 
     # get user's list of voted posts
     try:
-        voted_post_set = request.user.get_profile().get_voted_posts(group)
+        voted_post_set = profile.get_voted_posts(group)
     except (AttributeError):
         # Note: attribute error occurs when user is AnonymousUser
         voted_post_set = None
@@ -269,10 +273,14 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     is_admin = False
     if verify_admin(request, group):
         is_admin = True
+
+    is_superadmin = False
+    if profile and profile.is_superadmin_of(group):
+        is_superadmin = True
     
     membership_status = "notmember"
     if request.user.is_authenticated():
-        membership_status = request.user.get_profile().get_membership_status(group)
+        membership_status = profile.get_membership_status(group)
 
     posts_on_page = paginate_posts(request, posts)
 
@@ -280,11 +288,12 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               {'posts': posts_on_page.object_list, # easy template compatibility
                               'posts_on_page': posts_on_page,
                               'is_admin': is_admin,
+                              'is_superadmin': is_superadmin,
                               'is_group_page': is_group_page,
                               'is_groupinfo_page': is_groupinfo_page,
-                               'is_groupphotos_page': is_groupphotos_page,
-                               'piccount': piccount,
-                               'form': form,
+                              'is_groupphotos_page': is_groupphotos_page,
+                              'piccount': piccount,
+                              'form': form,
                               'errormsg': errormsg,
                               'group': group,
                               'children': children,
@@ -357,8 +366,6 @@ def create_group(request):
             if parent:
                 parent.inactive_child.add(new_group)
 
-
-
             taglist = request.POST['keywords'].split()
             new_tags = []
             for tags in taglist:
@@ -392,7 +399,6 @@ def create_group(request):
             return HttpResponseRedirect('/group/' + form.cleaned_data['url'])
 
         else:
-            print 'wtf'
             return render_to_response('base_groupsignup.html', {'form': form,},
                     RequestContext(request)) # change redirect destination
     else:
@@ -527,6 +533,10 @@ def handle_data(groupinfo, group, request):
 
         new_admin = request.POST.get('new_admin', None)
         if new_admin:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can add new admins.'
+                return errormsg
+            
             try: 
                 user = User.objects.get(username=new_admin)
             except User.DoesNotExist:
@@ -542,6 +552,10 @@ def handle_data(groupinfo, group, request):
 
         num_admins = request.POST.get('num_admins', None)
         if num_admins:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can remove other admins.'
+                return errormsg
+            
             for i in range(0, int(num_admins)):
                 remove_admin = request.POST.get('remove_admin-' + str(i), None)
                 if remove_admin == 'on':
@@ -553,9 +567,26 @@ def handle_data(groupinfo, group, request):
                         return errormsg
                     
                     group.admins.remove(user)
-        
-        new_super_admin = request.POST.get('new_super_admin', None)
-        if new_super_admin:
-            pass
 
+        new_superadmin = request.POST.get('new_superadmin', None)
+        if new_superadmin:
+            if not request.user.get_profile().is_superadmin_of(group):
+                errormsg = 'Only superadmins can transfer their privileges.'
+                return errormsg
+            
+            try: 
+                user = User.objects.get(username=new_superadmin)
+            except User.DoesNotExist:
+                errormsg = 'Invalid username. User does not exist.'
+                return errormsg
+
+            if not user.get_profile().is_superadmin_of(group):
+                group.superadmins.add(user)
+                if not user.get_profile().is_admin_of(group):
+                    group.admins.add(user)
+            else:
+                errormsg = 'User already a superadmin.'
+                return errormsg
+
+            group.superadmins.remove(request.user)            
     return errormsg

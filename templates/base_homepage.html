@@ -27,7 +27,7 @@
         <div class="main-container container-right-containee">
             <div class="container-top-bar"><strong>{% if user.is_authenticated %}Welcome, {{ user.username }}!{% else %}Login or register!{% endif %}</strong></div>
             {% if user.is_authenticated %}
-                <p>Check out your <a href="/newsfeed/">newsfeed</a>! There must be some exciting new updates... (don't hold that against us)
+                <p>Check out your <a href="/news/">news</a>! There must be some exciting new updates... (don't hold that against us)
                 <p>We need to think of what should go in here for users who are logged in.</p>
             {% else %}
                 <form action="/login/" method="POST">{% csrf_token %}
