@@ -82,7 +82,7 @@
            <input type="checkbox" name="remove_admin-{{forloop.counter0}}">{{admin}}<br>
 	{% endifnotequal %}
       {% endfor %}
-    <input type="submit" name="data_submit" value="Submit" />
+     <input type="submit" name="data_submit" value="Submit" />
     {% else %}
       <p> No admins to remove.</p>
     {% endifnotequal %}
@@ -90,11 +90,22 @@
 
 <br/>
 <h3>Transfer Group SuperAdmin</h3>
-  <p> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. You will become a normal group admin.</p>
+  <p> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. By default you will become a normal group admin.</p>
   <form action="" method="post">{% csrf_token %}
     <span>Username:</span>
-    <input type="text" name="new_superadmin">
+    <input type="text" name="new_superadmin"><br/>
+    <input type="checkbox" name="remove_self" value="{{request.user}}">Do not make me normal admin. Remove all admin privileges.</input>
     <input type="submit" name="data_submit" value="Submit" />
+  </form>
+<br/>
+
+{% else %}
+
+<h3>Remove Yourself as Admin</h3>
+  <p>If you click remove, you will be unable to recover administrative privileges unless the group superadmin reappoints you to admin.</p>
+  <form action="" method="post">{% csrf_token %}
+    <input type="hidden" name="remove_self" value="{{request.user}}">
+    <input type="submit" name="data_submit" value="Remove" />
   </form>
 <br/>
 

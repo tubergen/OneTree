@@ -5,7 +5,7 @@
     {
         var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
         $.post("{{ delete_picture_view_url }}", data, function() {
-            $('#picture-'+picture_id).remove();
+            $('#picture-'+picture_id).hide("fast");
         });
         
    //     if !({{ group }}.pictures.all) {
@@ -28,9 +28,8 @@
                </a>
 
                <div class="delete-photo">
-               {% if is_admin %}<button type="button" class="post-delete delete-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
-           </div>
-
+                   {% if is_admin %}<button type="button" href="#" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
+               </div>
 
 {% comment %}
 {% if is_admin %}<button type="button" class="post-delete" id="photo-button-{{picture.id}}" onClick="delete_picture({{picture.id}})">delete</button>

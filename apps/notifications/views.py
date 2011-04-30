@@ -51,12 +51,11 @@ def notification_page(request):
     errormsg = None
     need_approval = False
 
-    user = request.user
-    mgroups = Group.objects.filter(admins=user)
+    groups = Group.objects.filter(admins=request.user)
         
-    if mgroups:
-        for mgroup in mgroups:
-            if mgroup.inactive_child.all():
+    if groups:
+        for group in groups:
+            if group.inactive_child.all():
                 need_approval = True
             else:
                 pass 
@@ -76,10 +75,8 @@ def notification_page(request):
                              {'pending_notifs': pending_notifs,
                               'old_notifs': old_notifs,
                               'notif_view_url': '/_apps/notifications/views-answer_notif/',
-                              'user': user, 
                               'userprofile': profile,
-                              'groups': mgroups, 
                               'need_approval': need_approval,
-                              'active': user.is_active,
+                              'active': request.user.is_active,
 },
                              RequestContext(request));    
