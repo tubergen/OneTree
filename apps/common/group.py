@@ -31,7 +31,7 @@ class Group(models.Model):
         return os.path.join('uploaded_files', str(self.url),
                             'profile', filename)
 
-    img = models.ImageField(upload_to=profile_location)
+    img = models.ImageField(upload_to=profile_location, blank=True, null=True)
 
 #    photos = []
 #    for x in range(0, 19):

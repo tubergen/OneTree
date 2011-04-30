@@ -482,7 +482,8 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
         this_group = Group.objects.get(url=group_url)
         names = f.name.split('.')
         f.name = 'profile.' + names[1]
-        this_group.img.delete()
+        if this_group.img:
+            this_group.img.delete()
         this_group.img = f
         this_group.save()
 
@@ -491,7 +492,7 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
 
         image.thumbnail((180, 180), Image.ANTIALIAS)
         image.save(this_group.img.path)
-        this_group.img = image 
+        this_group.img = image
         # end thumbnail----------------------------------
 
     else:
