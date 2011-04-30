@@ -1,24 +1,16 @@
 # Django settings for onetree project.
+from settings_local import ADMINS_local, DATABASES_local, MEDIA_ROOT_local, DJAPIAN_DATABASE_PATH_local, DEBUG_local, SECRET_KEY_local, EMAIL_HOST_PASSWORD_local
 
-DEBUG = True
+# detailed debug messages on server errors
+DEBUG = DEBUG_local
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('brian', 'brian.tubergen@gmail.com'),
-    # ('Your Name', 'your_email@domain.com'),
-)
+# when debug is False, a server email will be sent to these addresses
+ADMINS = ADMINS_local
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql', 
-        'NAME': 'django_database',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        #'HOST': 'onetree.princeton.edu',
-        'HOST': '',
-        'PORT': '',      
-    }
-}
+DATABASES = DATABASES_local
+
+FILE_UPLOAD_PERMISSIONS = 0644
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -27,7 +19,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'US/Eastern'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -45,7 +37,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = 'static/'
+MEDIA_ROOT = MEDIA_ROOT_local
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -58,7 +50,7 @@ MEDIA_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ')uzx#5dgobmznw!&m&%kr1j&lur#*0=^f5vlm$#kgl7s^4pmm8'
+SECRET_KEY = SECRET_KEY_local
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -124,7 +116,7 @@ ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'cos.333.2011@gmail.com'
-EMAIL_HOST_PASSWORD = 'cos3332011'
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_local
 EMAIL_USE_TLS = True
 
 # necessary for the UserProfile model to work 
@@ -141,4 +133,4 @@ LOGOUT_URL = '/logout/'
 #HAYSTACK_WHOOSH_PATH = '/home/jlugo/mysite_index'
 
 # stuff for djapian
-DJAPIAN_DATABASE_PATH = './djapian_spaces/'
+DJAPIAN_DATABASE_PATH = DJAPIAN_DATABASE_PATH_local
