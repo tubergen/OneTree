@@ -290,3 +290,47 @@ a {
 .photo-container-top img.tall-resize, .photo-container-top img.fat-resize {
     vertical-align: bottom;
 }
+
+.photo-container {
+    border: 3px double #cccccc;
+    background-color: #000000;
+}
+
+/* width and height tied to photo-container */
+.delete-photo {
+    position: relative;
+    height: 150px;
+    width: 150px;
+    top: -150px;
+    overflow: hidden;
+}
+
+.delete-photo > .delete-photo-button {
+    display: none;
+}
+
+.delete-photo:hover > .delete-photo-button {
+    display: block; 
+}
+
+.photo-container:hover .delete-photo-button {
+    display: block;
+}
+
+.delete-photo-button:hover {
+    display: block;
+}
+
+.delete-photo-button {
+    position: relative;
+    z-index: 3;
+}
+
+.lightbox-gallery, .photo-container img {
+    position: relative;
+    z-index: 2;
+}
+
+.photo-container {
+    z-index: -1;
+}

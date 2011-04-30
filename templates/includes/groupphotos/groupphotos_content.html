@@ -5,8 +5,12 @@
     {
         var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
         $.post("{{ delete_picture_view_url }}", data, function() {
-            $('#picture-'+picture_id).remove();
+            $('#picture-'+picture_id).hide("fast");
         });
+        
+   //     if !({{ group }}.pictures.all) {
+   //         document.getElementById("nophoto1").innerHTML = "(No photos)";
+   //     }
     }
 </script>
 
@@ -23,8 +27,9 @@
                <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
                </a>
 
-               {% if is_admin %}<button type="button" class="post-delete delete-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
-
+               <div class="delete-photo">
+                   {% if is_admin %}<button type="button" href="#" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
+               </div>
 
 {% comment %}
 {% if is_admin %}<button type="button" class="post-delete" id="photo-button-{{picture.id}}" onClick="delete_picture({{picture.id}})">delete</button>
@@ -37,6 +42,7 @@
 
        {% endif %}
    {% endfor %}
+   {# <div id="nophoto1"></div> #}
 {% else %}
     <p>(No Photos)</p>
 {% endif %}

@@ -9,8 +9,8 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from django import forms
 from django.forms.util import ErrorList
-import re
-import string
+import os
+
 
 group_url = "/group/"
 
@@ -25,7 +25,13 @@ class Group(models.Model):
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
     # profile picture
-    img = models.CharField(max_length=50, null=True, blank=True)
+    #img = models.CharField(max_length=50, null=True, blank=True)
+
+    def profile_location(self, filename):
+        return os.path.join('uploaded_files', str(self.url),
+                            'profile', filename)
+
+    img = models.ImageField(upload_to=profile_location)
 
 #    photos = []
 #    for x in range(0, 19):
@@ -52,18 +58,16 @@ class Group(models.Model):
                            unique=True, 
                            verbose_name=(group_url),)
 
-
     def _get_full_url(self):
         return group_url + self.url
     full_url = property(_get_full_url)
 
     def addAdmin(self, user):
-        curNode = self
-        curNode.admins.add(user)
+        self.admins.add(user)
             
     def addSuperAdmin(self, user):
-        curNode = self
-        curNode.admins.add(user)
+        self.superadmins.add(user)
+
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
@@ -81,6 +85,10 @@ class Group(models.Model):
     def add_inactive_parent(self, parent):
         curNode = self
         curNode.inactive_parent.add(parent)
+        
+   # def profile_location(self, filename):
+   #     return os.path.join('uploaded_files', str(self.url),
+   #                         'profile', filename)
         
 
     def __unicode__(self):

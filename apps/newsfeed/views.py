@@ -112,15 +112,11 @@ def newsfeed(request):
             else: # not reached i think
                 pass
 
-    print most_recent_pics
-
     # now extract the actual pictures
     new_pics = []
     for date_pic_tuple in most_recent_pics:
         new_pics.append(date_pic_tuple[1])
     new_pics.reverse() # want most recent to least
-
-    print new_pics
     
     return render_to_response('newsfeed/base_newsfeed.html',
                               {'posts': posts,

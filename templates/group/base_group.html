@@ -78,7 +78,7 @@
     <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
     {% else %}
         <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-        {% endif %}{% if is_admin %}<a href="/group/{{ group.url }}/info">(edit info)</a>{% endif %}</p>
+        {% endif %}{% if is_admin %}{% if not is_groupinfo_page %}<a href="/group/{{ group.url }}/info">(edit info)</a>{% endif %}{% endif %}</p>
 </div>
 
 <ul class="group-interaction-buttons">
