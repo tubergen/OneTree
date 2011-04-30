@@ -63,12 +63,11 @@ class Group(models.Model):
     full_url = property(_get_full_url)
 
     def addAdmin(self, user):
-        curNode = self
-        curNode.admins.add(user)
+        self.admins.add(user)
             
     def addSuperAdmin(self, user):
-        curNode = self
-        curNode.admins.add(user)
+        self.superadmins.add(user)
+
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
