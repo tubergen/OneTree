@@ -13,6 +13,7 @@ from OneTree.apps.group.helpers import *
 from OneTree.apps.common.group import Group, GroupForm
 
 from django import forms
+from django.db import models
 
 from django.contrib.auth.decorators import login_required
 import datetime
@@ -152,12 +153,11 @@ def delete_post(request):
     return HttpResponse(status=400)
 
 def delete_picture(request):
-    err_loc = ' See delete_post in the group_page views.py.'
+    err_loc = ' See delete_picture in the group_page views.py.'
     if request.method == 'POST':
         try:
             group_id = int(request.POST.get('group_id'))
             picture_id = int(request.POST.get('picture_id'))
-#            post_type = int(request.POST.get('post_type'))
         except:
             print 'Picture delete POST data were not valid integers.' + err_loc
             return HttpResponse(status=400)
@@ -166,22 +166,9 @@ def delete_picture(request):
             group = Group.objects.get(id=group_id)
 
             try: 
-#                if post_type == PostType.EVENT:
-#                    manager = group.events
-#                elif post_type == PostType.ANNOUNCEMENT:
-#                    manager = group.announcements                
-#                else:
-#                    print 'Tried to delete non-announcement non-event.' + err_loc
-#                    return HttpResponse(status=400)
-
                 picture = Picture.objects.get(id=picture_id)
-#                if picture.owner.id == group_id:
                 if request.user in group.admins.all():
                     picture.delete()
-#                    else:
-#                        print "Not allowed to delete post"
-#                else:
-#                    manager.remove(post)
 
                 return HttpResponse()
             
@@ -430,15 +417,12 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
     ensure_dir('static/uploaded_files/'+group_url+'/photos/')
     '''
     if is_groupphotos_page==False:
-        ensure_dir('static/uploaded_files/'+group_url+'/profile/')
-        destination = open('static/uploaded_files/'+group_url+'/profile/' + f.name, 'wb+')
         ''' jorge add'''
-        for chunk in f.chunks():
-            destination.write(chunk)
         this_group = Group.objects.get(url=group_url)
-        this_group.img = f.name
+        f.name = 'profile'
+        this_group.img = f
         this_group.save()
-        destination.close()
+
     else:
         ''' destination = open('static/uploaded_files/'+group_url+'/photos/' + f.name, 'wb+')
         '''
@@ -493,12 +477,12 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
 def upload_file(request, group_url, is_groupphotos_page=False):
     errormsg = None
     if request.method == 'POST' and request.FILES:
-        form = UploadFileForm(request.POST, request.FILES)
+        form = UploadFileForm()
         this_group = Group.objects.get(url=group_url)
         if len(this_group.pictures.all()) > 19 and is_groupphotos_page == True:
             errormsg = 'You have reached the maximum number of phots. Try deleting one first.'
         else:
-           # form = UploadFileForm(request.POST, request.FILES)
+            form = UploadFileForm(request.POST, request.FILES)
             if form.is_valid():
                 handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
                 return (form, errormsg)

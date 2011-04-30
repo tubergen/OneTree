@@ -7,6 +7,10 @@
         $.post("{{ delete_picture_view_url }}", data, function() {
             $('#picture-'+picture_id).remove();
         });
+        
+   //     if !({{ group }}.pictures.all) {
+   //         document.getElementById("nophoto1").innerHTML = "(No photos)";
+   //     }
     }
 </script>
 
@@ -37,6 +41,7 @@
 
        {% endif %}
    {% endfor %}
+   {# <div id="nophoto1"></div> #}
 {% else %}
     <p>(No Photos)</p>
 {% endif %}
