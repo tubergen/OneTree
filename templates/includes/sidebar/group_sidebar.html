@@ -5,7 +5,7 @@
         
 {#    <img src="{% if groupinfo.group.img %}/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" /> #}
 
-    <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" />
+    <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" /> {# width="180px" height="180px" /> #}
 
 {#    {% endif %} #}
 

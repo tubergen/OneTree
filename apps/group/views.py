@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 import string
 import os
-import Image
+from PIL import Image
 
 '''
 Note: In common or something, we should keep all of these string
@@ -411,27 +411,26 @@ def create_group(request):
 
 class UploadFileForm(forms.Form):
     file  = forms.ImageField()
-
-def ensure_dir(f):
-    d = os.path.dirname(f)
-    if not os.path.exists(d):
-        os.makedirs(d)
             
 def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
-    '''
-    ensure_dir('static/uploaded_files/'+group_url+'/profile/')
-    ensure_dir('static/uploaded_files/'+group_url+'/photos/')
-    '''
+
     if is_groupphotos_page==False:
-        ''' jorge add'''
         this_group = Group.objects.get(url=group_url)
-        f.name = 'profile'
+        names = f.name.split('.')
+        f.name = 'profile.' + names[1]
+        this_group.img.delete()
         this_group.img = f
         this_group.save()
 
+        # thumbnail--------------------------------------
+        image = Image.open(this_group.img)
+
+        image.thumbnail((180, 180), Image.ANTIALIAS)
+        image.save(this_group.img.path)
+        this_group.img = image 
+        # end thumbnail----------------------------------
+
     else:
-        ''' destination = open('static/uploaded_files/'+group_url+'/photos/' + f.name, 'wb+')
-        '''
         # create picture to establish group name (used in url while uploading)
         pic = Picture.objects.create()
         pic.save() 
@@ -441,44 +440,6 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
         # save/upload pic
         pic.image = f
         pic.save()
-
-#    filename = f.name
-#    image = Image.open(filename)
-#    (width, height) = image.size
-#    (width, height) = scale_dimensions(width, height, longest_side=240)
-
-#    f2 = image.resize((width, height))
-'''    
-    for chunk in f.chunks():
-        destination.write(chunk)
-    # PROFILE IMG
-    
-    this_group = Group.objects.get(url=group_url)
-    
-    # PHOTOS
-    maxphotoindex = 19
-    if is_groupphotos_page == False:
-        this_group.img = f.name
-    else:
-#        x = maxphotoindex
-#        while x > 0:
-
-#            if this_group.getPhoto(x) == "":
-#                this_group.photos[x] = f.name
-#                break
-#            else:
-#                print '%s' %(this_group.getPhoto(x))
-#            x = x + 1
-#        if x > maxphotoindex: # if no empty slots
-            # forloop shifting images one slot up
-        for y in range(0, len(this_group.photos)-1):
-            this_group.photos[len(this_group.photos)-1-y] = this_group.photos[len(this_group.photos)-2-y]
-        this_group.photos[0] = f.name
-        
-    this_group.save()
-   ''' 
-    # END TEST
-    # destination.close()
 
 def upload_file(request, group_url, is_groupphotos_page=False):
     errormsg = None
