@@ -6,6 +6,11 @@
 {% endblock %}
 
 {% block top_content %}
+    {% if not compatible_browser %}
+    <h2>Sorry! Your browser is not supported. Try getting <a href="http://www.mozilla.com/firefox/">Firefox</a> or <a href="http://www.google.com/chrome">Google Chrome</a></h2>
+    {% endif %}
+
+
     <h1 id="title">OneTree (beta version)</h1>
 {% endblock %}
 
