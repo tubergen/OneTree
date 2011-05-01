@@ -1,0 +1,113 @@
+<script type="text/javascript" charset="utf-8">  
+
+  function toggle_edit_info()
+  {
+     if ($('#eventclick').is(':checked'))
+     {
+        $('#data-fields').slideDown("fast");
+        $('#upload').slideDown("fast");
+     }
+     else {
+
+        $('#data-fields').slideUp("fast");
+        $('#upload').slideUp("fast");
+
+     }
+
+//      $('#data-fields').focus();
+  } 
+
+  $(document).ready(function() {
+     $('#data-fields').hide();
+     $('#upload').hide();
+  }); 
+
+</script>
+
+
+{% comment %}
+<div id="profile_img">
+{% if groupinfo.group.img %}
+<img src="/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}" alt="profile pic"/>
+{% else %}
+<p>(No Profile Photo)</p>
+{% endif %}
+</div>
+{% endcomment %}
+
+
+
+<input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()">Edit Information<br>
+
+<div id="change-admin-data">
+
+  <div id="upload">
+  <h3>Change Group Logo</h3>
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit" />
+    </form>
+  </div>
+
+{#<a href="" onclick="toggle_edit_info()">Edit</a>#}
+ <div id="data-fields"> 
+  <h3>Edit Group Information</h3>
+  <form name="edit_info" action="" method="post">{% csrf_token %}
+    {#<div id="edit_field">#}
+      <textarea name="data_content" cols=50 rows=4>{{ groupinfo.data }}</textarea>
+      <br><input type="submit" name="data_submit" value="Submit" />
+    {#</div>#}
+  </form>
+
+{% if is_superadmin %}
+
+<h3>Add Group Admin</h3>
+  <form action="" method="post">{% csrf_token %}
+    <span>Username:</span>
+    <input type="text" name="new_admin">
+    <input type="submit" name="data_submit" value="Submit" />
+  </form>
+
+<br/>
+<h3>Remove Group Admin</h3>
+  <p> To remove yourself as admin, see "Transfer Group SuperAdmin."</p>
+  <form action="" method="post" style="text-align: left">{% csrf_token %}
+    {% ifnotequal group.admins.count 1 %} {# if not just SuperAdmin #}
+      <input type="hidden" name="num_admins" value="{{group.admins.count}}">
+      {% for admin in group.admins.all %}
+	{% ifnotequal admin request.user %}
+           <input type="hidden" name="admin-{{forloop.counter0}}" value="{{admin}}">
+           <input type="checkbox" name="remove_admin-{{forloop.counter0}}">{{admin}}<br>
+	{% endifnotequal %}
+      {% endfor %}
+     <input type="submit" name="data_submit" value="Submit" />
+    {% else %}
+      <p> No admins to remove.</p>
+    {% endifnotequal %}
+  </form>
+
+<br/>
+<h3>Transfer Group SuperAdmin</h3>
+  <p> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. By default you will become a normal group admin.</p>
+  <form action="" method="post">{% csrf_token %}
+    <span>Username:</span>
+    <input type="text" name="new_superadmin"><br/>
+    <input type="checkbox" name="remove_self" value="{{request.user}}">Do not make me normal admin. Remove all admin privileges.</input>
+    <input type="submit" name="data_submit" value="Submit" />
+  </form>
+<br/>
+
+{% else %}
+
+<h3>Remove Yourself as Admin</h3>
+  <p>If you click remove, you will be unable to recover administrative privileges unless the group superadmin reappoints you to admin.</p>
+  <form action="" method="post">{% csrf_token %}
+    <input type="hidden" name="remove_self" value="{{request.user}}">
+    <input type="submit" name="data_submit" value="Remove" />
+  </form>
+<br/>
+
+{% endif %}
+
+</div>
+
