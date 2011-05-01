@@ -4,13 +4,13 @@
   {
      if ($('#eventclick').is(':checked'))
      {
-        $('#data-fields').show();
-        $('#upload').show();
+        $('#data-fields').slideDown("fast");
+        $('#upload').slideDown("fast");
      }
      else {
 
-        $('#data-fields').hide();
-        $('#upload').hide();
+        $('#data-fields').slideUp("fast");
+        $('#upload').slideUp("fast");
 
      }
 
@@ -23,8 +23,6 @@
   }); 
 
 </script>
-
-<CENTER>
 
 
 {% comment %}
@@ -113,4 +111,3 @@
 
 </div>
 
-</CENTER>

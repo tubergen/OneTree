@@ -199,7 +199,9 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
         {# begin left block inside posts #}
 
         <div class="post-left-column">
-        <div class="group-image-div">    <img src="{% if post.origin_group.img %}/static/uploaded_files/{{ post.origin_group.url }}/profile/{{ post.origin_group.img }}{% else %}/static/images/tree.gif{% endif %}" width="35px" height="35px" /></div>
+            <div class="group-image-div">
+                <img src="{% if post.origin_group.img %}{{ post.origin_group.img.url }}{% else %}/static/images/tree.gif{% endif %}" class="{% if post.origin_group.image.height > post.origin_group.image.width %}tall-resize{% else %}fat-resize{% endif %}" {# width="35px" height="35px"#} />
+            </div>
 
         <div class="post-votes">
             <ul>
