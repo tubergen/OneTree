@@ -7,9 +7,9 @@ class GroupIndexer(Indexer):
     fields = ['name']
     tags = [ # I don't get the difference between fields and tags well :(
             ('name', 'name'),
-            ('parent', 'parent'),
+            ('parent.name', 'parent.name'),
     ]
 
-space.add_index(Group, attach_as='indexer')
+space.add_index(Group, GroupIndexer, attach_as='indexer')
 
 complete_indexer = CompositeIndexer(Group.indexer)

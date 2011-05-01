@@ -275,13 +275,13 @@ a {
     height: 100%;
 }
 
-.photo-container img.fat-resize, .photo-container-top img.fat-resize {
+img.fat-resize, img.fat-resize {
     vertical-align: middle;
     width: 100%;
     height: auto;
 }
 
-.photo-container img.tall-resize, .photo-container-top img.tall-resize {
+img.tall-resize, img.tall-resize {
     vertical-align: middle;
     height: 100%;
     width: auto;

@@ -193,67 +193,6 @@ def complete_profile(request):
                               context_instance=context
                               )
 
-    
-@login_required
-def admin_approve(request):
-    context=RequestContext(request)
-
-    need_approval = False
-
-    user = request.user
-    groups = Group.objects.filter(admins=user)
-
-    # FOR DEBUGGING ############
-    if groups:
-        print "Group(s) with children awaiting approval:"
-        for group in groups:
-            if group.inactive_child is not None:
-                print group.name,
-                print ": ",
-                print group.inactive_child.all()
-        print ""
-    else:
-        print "No groups found"
-
-    print "In admin_approve -- groups",
-    print groups
-    ############################
-
-
-    if groups:
-        for group in groups:
-            if group.inactive_child.all():
-                need_approval = True
-            else:
-                pass 
-
-
-    if request.method == 'POST':
-        data = request.POST
-
-        print ">>>>>>>>>>>"
-
-
-        user = request.user
-        groups = Group.objects.filter(admins=user)
-       
-        for group in groups:
-            for child in data.getlist(group.name):
-                childgroup = Group.objects.get(name=child)
-                group.inactive_child.remove(childgroup)
-
-                childgroup.parent = group
-                group.save()
-                childgroup.save()
-                print "SAVED"
-                
-    return render_to_response('user/base_approve.html',
-                              { 'groups': groups, 
-                                'need_approval': need_approval,
-                                },
-                              context_instance=context
-                              )
-
 @login_required
 def change_email(request):
     context=RequestContext(request)
