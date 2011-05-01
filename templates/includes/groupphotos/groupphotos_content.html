@@ -28,7 +28,7 @@
                </a>
 
                <div class="delete-photo">
-                   {% if is_admin %}<button type="button" href="#" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
+                   {% if is_admin %}<button type="button" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
                </div>
 
 {% comment %}

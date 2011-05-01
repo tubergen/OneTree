@@ -6,11 +6,13 @@
      {
         $('#data-fields').show();
         $('#upload').show();
+//        $('#change-admin-data').show();
      }
      else {
 
         $('#data-fields').hide();
         $('#upload').hide();
+//        $('#change-admin-data').hide();
 
      }
 
@@ -20,6 +22,7 @@
   $(document).ready(function() {
      $('#data-fields').hide();
      $('#upload').hide();
+//     $('#change-admin-data').hide()'
   }); 
 
 </script>
@@ -53,12 +56,18 @@
 
 {#<a href="" onclick="toggle_edit_info()">Edit</a>#}
  <div id="data-fields"> 
-  <h3>Edit Group Information</h3>
+  <h3>Edit Group Introduction</h3>
   <form name="edit_info" action="" method="post">{% csrf_token %}
     {#<div id="edit_field">#}
-      <textarea name="data_content" cols=50 rows=4>{{ groupinfo.data }}</textarea>
+      <textarea name="data_content" cols=30 rows=3>{{ groupinfo.data }}</textarea>
       <br><input type="submit" name="data_submit" value="Submit" />
     {#</div>#}
+  </form>
+
+  <h3>Edit Group Information</h3>
+  <form name="edit_biginfo" action="" method="post">{% csrf_token %}
+    <textarea name="biginfo_content" cols=50 rows=4>{{ groupinfo.biginfo }}</textarea>
+    <br><input type="submit" name="data_submit" value="Submit" />
   </form>
 
 {% if is_superadmin %}
@@ -112,5 +121,6 @@
 {% endif %}
 
 </div>
+
 
 </CENTER>
