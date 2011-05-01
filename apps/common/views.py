@@ -11,7 +11,7 @@ def homepage(request):
     # Check browser compatibility... this is a really simple check
     # To really ensure compatibility, we have to do version check too,
     # but I think this is sufficient for 333
-    if 'Chrome' or 'Firefox' in user_agent:
+    if ('Chrome' or 'Firefox') in user_agent:
 	print "Compatible browser detected"
         compatible_browser = True
     else:
