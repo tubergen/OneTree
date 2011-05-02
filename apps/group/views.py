@@ -449,7 +449,7 @@ def upload_file(request, group_url, is_groupphotos_page=False):
         form = UploadFileForm()
         this_group = Group.objects.get(url=group_url)
         if len(this_group.pictures.all()) > 19 and is_groupphotos_page == True:
-            errormsg = 'You have reached the maximum number of phots. Try deleting one first.'
+            errormsg = 'You have reached the maximum number of photos. Delete some before adding more.'
         else:
             form = UploadFileForm(request.POST, request.FILES)
             if request.FILES['file'].size > 524288: # 512 KB
