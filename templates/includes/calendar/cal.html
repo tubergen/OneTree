@@ -1,3 +1,12 @@
+{% comment %}
+Most of this code is unnecessary and was written with a date range picker in mind. I'm leaving it here
+(and using it, although it was written with a range picker in mind) in case we switch back to a date 
+range picker.
+
+In particular, any lines with datepick status don't work right now, since the datepick-status element
+is commented out.
+{% endcomment %}
+
 <link rel="stylesheet" href="/static/datepicker/jquery.datepick.css" type="text/css" charset="utf-8"/> 
 
 <link rel="stylesheet" href="/static/datepicker/css/ui.theme.css" type="text/css" charset="utf-8"/>
@@ -28,12 +37,12 @@
    }
 
    function create_picker() {
-      $('#inlineDatepicker').datepick({rangeSelect: true, 
-                                       onSelect: filter_date,
+      $('#inlineDatepicker').datepick({
+                                       onSelect: filter_date_no_range,
                                        showOtherMonths: true,
                                        selectOtherMonths: true,
                                        fixedWeeks: true,
-                                       onShow: $.datepick.hoverCallback(showHover),
+                                       {# onShow: $.datepick.hoverCallback(showHover), #} {# no hover affect right now #}
                                        renderer: $.datepick.themeRollerRenderer,
                                        });
    }   
@@ -42,8 +51,13 @@
    var date1_str;
    var range_selected = false;
 
-   function filter_date(dates) {
+   function filter_date_no_range(dates) {
+       dates[1] = dates[0];
+       filter_date(dates);
+   }
 
+
+   function filter_date(dates) {
       date0_str = format_amer_date(dates[0]);
       date1_str = format_amer_date(dates[1]);
 
@@ -66,7 +80,6 @@
 
    }
 
-   /* currently unused */
    function reset_datepicker() {
       $('#inlineDatepicker').datepick('destroy');
       create_picker();
@@ -129,7 +142,7 @@
    <div id="top-calendar"> 
       <div id="inlineDatepicker"></div> 
       <div class="below-cal-content">
-         <span class="datepick-status"></span>
+         {# <span class="datepick-status"></span> #}
          <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
       </div>
    </div>

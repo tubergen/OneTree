@@ -3,7 +3,7 @@
 <head>
     <title>{% block title %}Onetree.com{% endblock %}</title>
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/javascripts/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="/static/javascripts/base.js"></script>
 
     {% block head %}{% endblock %}
@@ -22,13 +22,13 @@
                     <ul>
                         {% if user.is_authenticated %}
                             <li><a href="/profile/">{{ user.username }}</a></li>
-                            <li><a href="/notifications/">notifications	{% if new_notif %} NEW {% endif %} </a></li>
-                            <li><a href="/news/">news</a></li>
-                            <li><a href="/group-signup/">group signup</a></li>
-                            <li><a href="/logout/">logout</a></li>
+                            <li><a href="/notifications/">Notifications{% if new_notif %}<span class="new-notif-indicator"><img src="/static/images/colored_star.gif" height="18px" width="18px" />{% endif %}</span></a></li>
+                            <li><a href="/news/">News</a></li>
+                            <li><a href="/group-signup/">Group Signup</a></li>
+                            <li><a href="/logout/">Logout</a></li>
                         {% else %}
-                            <li><a href="/user-signup/">register</a></li>
-                            <li><a href="/login/?next={{ request.path }}">login</a></li>
+                            <li><a href="/user-signup/">Register</a></li>
+                            <li><a href="/login/?next={{ request.path }}">Login</a></li>
                         {% endif %}
                             <li>
                                 <form action='/search/' method='GET'>

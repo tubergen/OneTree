@@ -22,7 +22,9 @@ def filter_newsfeed(request):
             filters.parse_request(request)
             filtered_posts = filters.get_news(user, start_date, end_date);
             return render_to_response('includes/wall/wall_content.html',
-                                     {'posts': filtered_posts,},
+                                     {'posts': filtered_posts,
+                                      'is_newsfeed': True,
+                                      'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
                                      context_instance=RequestContext(request))
 
     print 'HTTP 400 returned in filter_newsfeed()'
@@ -32,9 +34,6 @@ def filter_newsfeed(request):
 Looks at request. If request specifies a post should be deleted / removed, then
 it's deleted if the requester is the administrator of the author group; if not,
 then the post is simply removed from the group's page. 
-
-Don't forget to add authentication to this. Some permissions should be required
-to be able to delete a post. 
 
 SPECIAL NOTE : if there's ever a bug where an event mysteriously appears on the
 wall only when "[this page]'s Posts Only" is selected, and it cannot be deleted,

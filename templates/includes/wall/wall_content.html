@@ -108,23 +108,27 @@ Brian: I moved your code elsewhere so I can use inheritance to put it in the hea
     // otherwise simply removes the post from the wall
     function delete_post(post_id, post_type)
     {
-        var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
-        $.post("{{ delete_post_view_url }}", data, function() {
-            $('#post-box-'+post_id).slideUp("fast");
-        });
+        if (confirm("Are you sure you want to remove this post?")) {
+            var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
+            $.post("{{ delete_post_view_url }}", data, function() {
+                $('#post-box-'+post_id).slideUp("fast");
+            });
+        }
     }
 
     // deletes the comment
 
     function delete_comment(comment_id)
     {
-        var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
-        $.post("/_apps/wall/views-delete_comment/", data, function(data) {
-            // returned data is the 'post was removed' message
-            $('#comment-content-' + comment_id).html(data); 
-            $('#comment-author-' + comment_id).remove();
-            $('#delete-button-' + comment_id).remove();
-        });
+        if (confirm("Are you sure you want to remove this comment?")) {
+            var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
+            $.post("/_apps/wall/views-delete_comment/", data, function(data) {
+                // returned data is the 'post was removed' message
+                $('#comment-content-' + comment_id).html(data); 
+                $('#comment-author-' + comment_id).remove();
+                $('#delete-button-' + comment_id).remove();
+            });
+        }
     }
 
 </script>

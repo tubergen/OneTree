@@ -64,7 +64,7 @@
     {
         var data = {"group_id":'{{group.id}}'};
         $.post("{{membership_view_url}}", data, function(data) { 
-            $('#mem_status').html('Membership Pending...');
+            $('#mem-status').html('Membership Pending...');
         });
         return false;
     }
@@ -90,7 +90,7 @@
             {% else %}
                 <input type="submit" class="button-unsubscribed" id="subscribe-button" value="subscribe">                                {% endif %}
         </form></li>
-        <div id="mem_status">
+        <div id="mem-status">
             {% ifequal membership_status "member" %}
                 <li>You're a member.</li>
             {% else %}
@@ -102,8 +102,15 @@
                             <input type="submit" id="membership-button" value="Request Membership">
                     </form></li>
                 {% endifequal %}
-            {% endifequal %}
+            {% endifequal %}	    
         </div>
+	{% if is_superadmin %}
+    	    <li>You're the group's superadmin.</li>
+	{% else %}
+   	    {% if is_admin %}
+                <li>You're a group admin.</li>
+	    {% endif %}
+	{% endif %}
     {% endif %}
 </ul>
 {% endblock %}

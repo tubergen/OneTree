@@ -159,69 +159,6 @@ def handle_submit(request, group):
             errormsg = "Empty post? Surely you aren't *that* boring."
     return errormsg
 
-'''
-Looks at request. If request specifies a post should be deleted / remmoved, then
-it's deleted if the requester is the administrator of the author group; if not,
-then the post is simply removed from the group's page. 
-
-Don't forget to add authentication to this. Some permissions should be required
-to be able to delete a post. 
-
-I realize generally you make server-side changes with POST, not GET. However,
-I see no reason to give the user a browser warning about "resubmission" here,
-as would be the case with POST.
-
-SPECIAL NOTE : if there's ever a bug where an event mysteriously appears on the
-wall only when "[this page]'s Posts Only" is selected, and it cannot be deleted,
-it might be because of the line "post = manager.get(id=post_id)". If somehow a
-post managed to get deleted from its creater's wall without it being deleted
-completely from the database, then this behavior will occur. I think this is
-impossible now, but I'm not 100% sure.
-
-We could patch this up by instead getting the post with Event.objects.get(id=...)
-etc. for each type of post. However, I am not doing this right now because it
-would hide a bigger issue: that posts which are deleted on the creater's wall
-are not completely deleted from the database.
-'''
-def delete_post(request):
-    err_loc = ' See delete_post in the group_page views.py.'
-    if request.method == 'POST':
-        try:
-            group_id = int(request.POST.get('group_id'))
-            post_id = int(request.POST.get('post_id'))
-            post_type = int(request.POST.get('post_type'))
-        except:
-            print 'Wall post delete POST data were not valid integers.' + err_loc
-            return HttpResponse(status=400)
-            
-        if group_id and post_id and post_type:
-            group = Group.objects.get(id=group_id)
-
-            try: 
-                if post_type == PostType.EVENT:
-                    manager = group.events
-                elif post_type == PostType.ANNOUNCEMENT:
-                    manager = group.announcements                
-                else:
-                    print 'Tried to delete non-announcement non-event.' + err_loc
-                    return HttpResponse(status=400)
-
-                post = manager.get(id=post_id)
-                if post.origin_group.id == group_id:
-                    if request.user in group.admins.all():
-                        post.delete()
-#                    else:
-#                        print "Not allowed to delete post"
-                else:
-                    manager.remove(post)
-
-                return HttpResponse()
-            
-            except ObjectDoesNotExist:
-                print 'Error: Tried to delete non-existent object.' + err_loc
-                
-    return HttpResponse(status=400)
-
 def delete_picture(request):
     err_loc = ' See delete_picture in the group_page views.py.'
     if request.method == 'POST':
@@ -375,7 +312,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'membership_view_url':'/_apps/group/views-req_membership/',
                               'filter_list': wall_filter_list,
                               'filter_view_url': '/_apps/wall/views-filter_wall/',
-                              'delete_post_view_url': '/_apps/group/views-delete_post/',
+                              'delete_post_view_url': '/_apps/wall/views-delete_post/',
                               'delete_picture_view_url': '/_apps/group/views-delete_picture/',
                               'voted_post_set': voted_post_set,
                               'wall_subtitle': wall_subtitle,},
