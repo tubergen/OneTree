@@ -22,7 +22,7 @@
                     <ul>
                         {% if user.is_authenticated %}
                             <li><a href="/profile/">{{ user.username }}</a></li>
-                            <li><a href="/notifications/">Notifications{% if new_notif %}<span class="new-notif-indicator"><img src="/static/images/colored_star.gif" height="18px" width="18px" />{% endif %}</span></a></li>
+                            <li><a href="/notifications/">Notifications{% if new_notif %}<span class="new-notif-indicator"><img src="/static/images/colored_star.gif" height="18px" width="18px" /></span>{% endif %}</a></li>
                             <li><a href="/news/">News</a></li>
                             <li><a href="/group-signup/">Group Signup</a></li>
                             <li><a href="/logout/">Logout</a></li>
