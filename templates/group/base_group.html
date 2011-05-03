@@ -87,7 +87,7 @@
             
 	    <div id="subscribed-content" {% if not user_is_subscribed %} style="display:none" {% endif %}>
 	        <span class="subscribed-text"> You are currently subscribed.</span>
-		<span class="unsubscribe-span">(<button type="submit" class="button-link change-subscribe" value="subscribed">unsubscribe</button>)</span>
+		<span class="change-span">(<button type="submit" class="button-link change-subscribe" value="subscribed">unsubscribe</button>)</span>
 	    </div>
 
 	    <div id="unsubscribed-content" {% if user_is_subscribed %} style="display:none" {% endif %}>
@@ -96,17 +96,10 @@
 
         </form></li>
 
-
-{% comment %}
-        <li><form method="post" action="{{ subscribe_view_url }}">{% csrf_token %}
-                <input type="hidden" name="group_id" value="{{group.id}}">
-            {% if user_is_subscribed %}
-                <input type="submit" class="button-subscribed" id="subscribe-button" value="subscribed">
-            {% else %}
-                <input type="submit" class="button-unsubscribed" id="subscribe-button" value="subscribe">                                {% endif %}
-        </form></li>
-{% endcomment %}
         <div id="mem-status">
+
+
+
             {% ifequal membership_status "member" %}
                 <li>You're a member.</li>
             {% else %}
