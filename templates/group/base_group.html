@@ -86,7 +86,7 @@
             <input type="hidden" name="group_id" value="{{group.id}}">
             
 	    <div id="subscribed-content" {% if not user_is_subscribed %} style="display:none" {% endif %}>
-	        <span class="subscribed-text"> You are currently subscribed.</span>
+	        <span class="status-text"> You are currently subscribed.</span>
 		<span class="change-span">(<button type="submit" class="button-link change-subscribe" value="subscribed">unsubscribe</button>)</span>
 	    </div>
 
@@ -97,8 +97,6 @@
         </form></li>
 
         <div id="mem-status">
-
-
 
             {% ifequal membership_status "member" %}
                 <li>You're a member.</li>
