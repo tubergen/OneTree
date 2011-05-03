@@ -1,12 +1,10 @@
 <div id="sidebar">
 
-  <center>
+  <div id="group-photo">
     {# image -- for now only put image on group page #}
    {# {% if is_group_page %} #}
-        
-{#    <img src="{% if groupinfo.group.img %}/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" /> #}
 
-    <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" /> {# width="180px" height="180px" /> #}
+    <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" width="180px" height="180px" />
 
 {#    {% endif %} #}
 
@@ -15,7 +13,7 @@
         <a class="change-logo" href="/group/{{ group.url }}/info/edit">(Change group logo)</a>
       {% endif %}
     {% endif %}
-  </center>
+  </div>
 
     {% comment %}
     {# list parent #}
@@ -73,6 +71,7 @@
                 {% for sibling in siblings %}
                     <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ sibling.url }}">{{ sibling.name }}</a></li>
                 {% endfor %}
+            </ul>
         </div>
     {# {% endif %} #}
 

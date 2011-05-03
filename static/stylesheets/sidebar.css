@@ -17,6 +17,10 @@
     overflow: hidden;
 }
 
+#group-photo {
+    text-align: center;
+}
+
 .parent-word, .child-word {
     margin: 1em 0 0 0;
     padding: 0;
