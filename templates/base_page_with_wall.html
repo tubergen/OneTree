@@ -9,7 +9,12 @@
 {% endblock %}
 
 {% block left_content %}
-    {% include "includes/sidebar/group_sidebar.html" %}
+    {% if is_notif_page or is_newsfeed %}
+	fsdlakds,
+      {% include "includes/sidebar/news_sidebar.html" %}
+    {% else %}
+      {% include "includes/sidebar/group_sidebar.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block top_content %}

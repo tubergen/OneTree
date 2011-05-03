@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from OneTree.apps.common.notification import *
 from operator import attrgetter
 from OneTree.apps.common.models import *
+from OneTree.apps.newsfeed.views import get_most_recent_pics
 
 from itertools import chain
 
@@ -71,10 +72,17 @@ def notification_page(request):
     pending_notifs = sorted(pending_notifs, key=attrgetter('date'), reverse=True)
     old_notifs = sorted(old_notifs, key=attrgetter('date'), reverse=True)    
 
+    max_old_notifs = 20
+    if len(old_notifs) > max_old_notifs:
+        old_notifs = old_notifs[0:max_old_notifs]
+
+    new_pics = get_most_recent_pics(request.user);
+
     return render_to_response('newsfeed/base_newsfeed.html',
                              {'pending_notifs': pending_notifs,
                               'old_notifs': old_notifs,
                               'notif_view_url': '/_apps/notifications/views-answer_notif/',
+                              'pictures': new_pics,                              
                               'userprofile': profile,
                               'need_approval': need_approval,
                               'active': request.user.is_active,
