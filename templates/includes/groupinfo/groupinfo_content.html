@@ -1,16 +1,9 @@
-{% comment %}
+<h3 id="subtitle">About Us</h3>
 
-Testing Groupinfo_content
-
-{% endcomment %}
-
-{% load set_var %}
-
-{# <CENTER> #}
 <p>
-<strong>About Us: </strong>{{ groupinfo.data }}<br>
+  {% if groupinfo.data %}
+    {{ groupinfo.data }}
+  {% else %}
+    (Sorry, this group has yet to fill out their personal info)
+  {% endif %}
 </p>
-<br>
-<br>
-{# </CENTER> #}
-{# Back to <a href="/group/{{ groupinfo.group.url }}">{{ groupinfo.group }}</a> #}

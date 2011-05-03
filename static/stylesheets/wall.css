@@ -516,10 +516,10 @@
 }
 
 #filter-by-date-picker {
-    display:none; 
-    text-align:center;
-    background-color:#fff; 
-    border:none;
+    display: none; 
+    text-align: center;
+    background-color: #ffffff; 
+    border: none;
 }
 
 .group-image-div {
@@ -528,19 +528,28 @@
     margin-bottom: 5px;
 }
 
-.data-field {
-    text-align: left;
-    float: left;
-}
-
 #change-admin-data {
     width: 400px;
     text-align: left;
+    margin: 0 auto;
 }
-    
-#change-admin-data h3, form {
+
+#edit-info-toggle {
+    margin: 0 auto;
     text-align: center;
 }
 
-.change-admin-submit {
+.group-info-edit-box {
+    background-color: #cccccc;
+    color: black;
+    border: 2px solid white;
+    margin: 1em;
+    padding: 1em;
+    width: 100%:
+}
+
+.group-info-edit-box h3 {
+    margin-top: 0;
+    padding-top: 0;
+    text-decoration: underline;
 }
