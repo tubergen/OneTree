@@ -44,11 +44,19 @@ $(document).ready(function() {
     </div>
 
     <div class="group-info-edit-box">
-      <h3>Edit Group Information</h3>
+      <h3>Edit Group Introduction</h3>
       <form name="edit_info" action="" method="post">{% csrf_token %}
         <textarea name="data_content" cols=40 rows=4>{{ groupinfo.data }}</textarea>
         <br /><input type="submit" name="data_submit" value="Submit" />
       </form>
+    </div>
+
+    <div class="group-info-edit-box">
+      <h3>Edit Group Information</h3>
+      <form name="edit_biginfo" action="" method="post">{% csrf_token %}
+	<textarea name="biginfo_content" cols=40 rows=4>{{ groupinfo.biginfo }}</textarea>
+	<br /><input type="submit" name="data_submit" value="Submit" />
+	</form>
     </div>
 
     {% if is_superadmin %}
