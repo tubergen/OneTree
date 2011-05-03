@@ -1,26 +1,26 @@
 {% comment %}
-The filters depend on the div containing the wall_content include having
-id "wall-content".
+  The filters depend on the div containing the wall_content include having
+  id "wall-content".
 {% endcomment %}
 
-{% if errormsg %}
-<p class="wall-error-text">  
-    {{ errormsg }}
-</p> 
-{% else %}
-  {% if request.POST %}
-    <p class="wall-success-text">
-      Changes saved successfully.
-    </p>
-  {% endif %}
-{% endif %}
-
-{% if is_admin %}
 <div class="container-top-bar">
-{% include "includes/groupinfo/groupinfo_edit.html" %}
+  {% if errormsg %}
+    <p class="wall-error-text">  
+      {{ errormsg }}
+    </p> 
+  {% else %}
+    {% if request.POST %}
+      <p class="wall-success-text">
+        Changes saved successfully.
+      </p>
+    {% endif %}
+  {% endif %}
+
+  {% if is_admin %}
+    {% include "includes/groupinfo/groupinfo_edit.html" %}
+  {% endif %}
 </div>
-{% endif %}
 
 <div id="wall-content">
-
-{% include "includes/groupinfo/groupinfo_content.html" %}</div>
+  {% include "includes/groupinfo/groupinfo_content.html" %}
+</div>

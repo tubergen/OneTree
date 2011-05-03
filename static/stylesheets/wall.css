@@ -81,13 +81,12 @@
     background-color: #3F3F3F;
 }
 
-.top-navigation-tabs {
-}
-
 .container-top-bar {
     background-color: #3F3F3F;
     color: white;
     border-radius: 0;
+    text-align: center;
+    border-radius: 0px;
     -moz-border-radius: 0px;
     -webkit-border-top-right-radius: 0;
     -webkit-border-top-left-radius: 0;
@@ -485,14 +484,23 @@
     margin-bottom: 1.5em;
 }
 
-.wall-error-text {
-    color: #FF0000;
+.wall-success-text, .wall-error-text {
+    background-color: #cccccc;
+    margin: .5em auto;
+    padding: .5em;
+    width: 40%;
     text-align: center;
+    font-weight: bold;
+    color: green;
+    border: 2px solid green;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
-.wall-success-text {
-    color: green;
-    text-align: center;
+.wall-error-text {
+    color: red;
+    border-color: red;
 }
 
 .button-subscribed {
