@@ -334,3 +334,15 @@ img.tall-resize, img.tall-resize {
 .photo-container {
     z-index: -1;
 }
+
+.button-link{
+    color:#000;
+    padding:0px;
+    font-family:Calibri, Arial, Helvetica, sans-serif;
+    background:none;
+    border:none;
+    text-decoration:underline;
+    cursor: pointer;
+    display: inline;
+    color: blue;
+}
