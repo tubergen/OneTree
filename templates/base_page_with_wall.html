@@ -35,8 +35,20 @@
     {% endif %}
 
     {% if is_newsfeed %}
-        <div class="main-container">
-            {% include "includes/wall/wall_display.html" %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/news/news_tabs.html" %}
+            <div class="main-container">
+                {% include "includes/wall/wall_display.html" %}
+	    </div>
+        </div>
+    {% endif %}
+
+    {% if is_notif_page %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/news/news_tabs.html" %}
+   	    <div class="main-container">
+              {% include "includes/notifications/notif_content.html" %}
+	    </div>
         </div>
     {% endif %}
     

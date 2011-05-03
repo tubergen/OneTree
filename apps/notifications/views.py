@@ -71,12 +71,13 @@ def notification_page(request):
     pending_notifs = sorted(pending_notifs, key=attrgetter('date'), reverse=True)
     old_notifs = sorted(old_notifs, key=attrgetter('date'), reverse=True)    
 
-    return render_to_response('notifications/base_notif.html',
+    return render_to_response('newsfeed/base_newsfeed.html',
                              {'pending_notifs': pending_notifs,
                               'old_notifs': old_notifs,
                               'notif_view_url': '/_apps/notifications/views-answer_notif/',
                               'userprofile': profile,
                               'need_approval': need_approval,
                               'active': request.user.is_active,
+                              'is_notif_page': True,
 },
                              RequestContext(request));    
