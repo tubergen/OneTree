@@ -3,35 +3,35 @@
 <script src="/static/javascripts/mattkruse_cal.js"></script>
 <script type="text/javascript" charset="utf">
 
-var cal = new CalendarPopup();
+  var cal = new CalendarPopup();
 
-function clear_fields()
-{
-  $('#title_box').val('');
-  $('#place_box').val('');
-  $('#date_box').val('');   
-  $('#time_box').val('');
-  $('#flag_box').val('');
-  $('#eventclick').attr('checked', false);
-}
+  function clear_fields()
+  {
+     $('#title_box').val('');
+     $('#place_box').val('');
+     $('#date_box').val('');   
+     $('#time_box').val('');
+     $('#flag_box').val('');
+     $('#eventclick').attr('checked', false);
+  }
 
-function toggle_event_fields() 
-{
-  if ($('#eventclick').is(':checked'))
+  function toggle_event_fields() 
   {
-    $('#event_fields').show();
-    $('#title_box').focus();
-  }
-  else
-  {
-    $('#event_fields').hide();     
-    clear_fields();
-  }
-  }
+     if ($('#eventclick').is(':checked'))
+     {
+        $('#event_fields').show();
+        $('#title_box').focus();
+     }
+     else
+     {
+        $('#event_fields').hide();     
+        /* clear_fields(); */
+     }
+  }  
 
   $(document).ready(function() { 
-    $('#event_fields').hide();
-    clear_fields(); /* to avoid strange behavior with browser back button */
+      $('#event_fields').hide();
+  //      clear_fields();  /* to avoid strange behavior with browser back button */
   });
 
 </script>
@@ -44,11 +44,11 @@ function toggle_event_fields()
 
     {# area for event fields #}
     <div id="event_fields">
-      <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title" size=20 /><br />
-      <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" size=20 /><br />
-      <label for="date_box">Date:</label> <input type="text" readonly="readonly" onFocus="this.blur();" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" id="date_box" name="date" size=10 />
+      <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title" value="{% if title %}{{ title }}{% endif %}" size=20 /><br />
+      <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" value="{% if where %}{{ where }}{% endif %}" size=20 /><br />
+      <label for="date_box">Date:</label> <input type="text" readonly="readonly" onFocus="this.blur();" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" id="date_box" name="date" value="{% if date %}{{ date }}{% endif %}" size=10 />
       <a href="#" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a>
-      <label for="time_box">Time:</label> <input type="text" id="time_box" name="time" size=6 />
+      <label for="time_box">Time:</label> <input type="text" id="time_box" name="time" value="{% if time %}{{ time }}{% endif %}" size=6 />
       <select name="timedrop">
         <option value="am">A.M.</option>
         <option value="pm">P.M.</option>

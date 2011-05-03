@@ -145,6 +145,10 @@ error, which can be rendered. Returns None otherwise.
 @login_required
 def handle_submit(request, group):
     errormsg = None
+    title = None
+    where = None
+    date = None
+    time = None
     if request.method == 'POST':
         if not verify_admin(request, group):
             errormsg = "Get outta here, you liar!"
@@ -152,12 +156,15 @@ def handle_submit(request, group):
 
             # later insert logic to distinguish events vs announcement
             if 'eventclick' in request.POST and request.POST['eventclick']:
-                errormsg = handle_event(group, request)
+                (errormsg, title, where, date, time) = handle_event(group, request)
             else:
-                errormsg = handle_ann(group, request)
+                (errormsg, title, where, date, time) = handle_ann(group, request)
         else:
-            errormsg = "Empty post? Surely you aren't *that* boring."
-    return errormsg
+            if 'eventclick in request.POST':
+                (errormsg, title, where, date, time) = handle_event(group, request)
+            else:
+                errormsg = "Empty post? Surely you aren't *that* boring."
+    return (errormsg, title, where, date, time)
 
 def delete_picture(request):
     err_loc = ' See delete_picture in the group_page views.py.'
@@ -208,6 +215,12 @@ def verify_group(group):
 def group_page(request, group_url, partial_form=None, is_group_page=True,
                is_groupinfo_page=False, is_groupphotos_page=False, edit_on=False):
     errormsg = None
+    # For repopulation of event fields
+    title = None
+    where = None
+    date = None
+    time = None
+
     context = RequestContext(request)
     if request.user.is_authenticated():
        profile = request.user.get_profile()
@@ -243,7 +256,8 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
         
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
-        errormsg = handle_submit(request, group)
+        #errormsg = handle_submit(request, group)
+        (errormsg, title, where, date, time) = handle_submit(request, group)
         if errormsg:
             print errormsg
 
@@ -291,6 +305,11 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
 
     posts_on_page = paginate_posts(request, posts)
 
+    print title
+    print where
+    print date
+    print time
+
     return render_to_response('group/base_group.html',
                               {'posts': posts_on_page.object_list, # easy template compatibility
                               'posts_on_page': posts_on_page,
@@ -303,6 +322,10 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'piccount': piccount,
                               'form': form,
                               'errormsg': errormsg,
+                               'title': title,
+                               'where': where,
+                               'date': date,
+                               'time': time,
                               'group': group,
                               'children': children,
                               'siblings': siblings,
