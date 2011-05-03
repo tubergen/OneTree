@@ -17,7 +17,7 @@
         <div class="explanation">OneTree is a brand new site that helps you explore your community by organizing all the sub-communities that comprise it.</div>
         <h3>How does it work?</h3>
         <div class="explanation">Imagine the Princeton community: it itself is comprised of sub-communities like "Arts" and "Sports," which in term are comprised of many smaller sub-communities.</div>
-        <div class="explanation-image"><img src="/static/images/explanation.gif" width="280px" height="300px" /></div>
+        <div class="explanation-image"><img src="/static/images/explanation.gif" width="280" height="300" /></div>
         <div class="explanation">If you're curious about what's going on at Princeton, you might as well aggregate everything going on in all its sub-communities. Or if you're interested in only the arts at Princeton, you can aggregate all of its sub-communities.</div>
         <div class="explanation">OneTree lets you do just that: by visiting any community page, you'll instantly see announcements and events of <em>all</em> sub-communities that comprise it.</div>
         <h3>What next?</h3>
@@ -34,7 +34,7 @@
                 <form action="/login/" method="POST">{% csrf_token %}
                     {% include 'includes/authentication/login.html' %}
                 </form>
-                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a></br>
+                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a><br />
 		  <a href="/profile/account/forgetpwd">Forgot password?</a></p>
             {% endif %}
         </div>

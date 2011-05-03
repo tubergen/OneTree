@@ -17,6 +17,13 @@
     overflow: hidden;
 }
 
+#group-photo {
+    margin: 0 auto;
+    text-align: center;
+    width: 180px;
+    height: 195px;
+}
+
 .parent-word, .child-word {
     margin: 1em 0 0 0;
     padding: 0;
@@ -52,4 +59,9 @@
 
 .child-name {
     margin-left: .3em;
+}
+
+.change-logo {
+    text-align: center;
+    font-size: 8pt;
 }

@@ -3,30 +3,30 @@
 <script src="/static/javascripts/mattkruse_cal.js"></script>
 <script type="text/javascript" charset="utf">
 
-  var cal = new CalendarPopup();
+var cal = new CalendarPopup();
 
-  function clear_fields()
+function clear_fields()
+{
+  $('#title_box').val('');
+  $('#place_box').val('');
+  $('#date_box').val('');   
+  $('#time_box').val('');
+  $('#flag_box').val('');
+  $('#eventclick').attr('checked', false);
+}
+
+function toggle_event_fields() 
+{
+  if ($('#eventclick').is(':checked'))
   {
-     $('#title_box').val('');
-     $('#place_box').val('');
-     $('#date_box').val('');   
-     $('#time_box').val('');
-     $('#flag_box').val('');
-     $('#eventclick').attr('checked', false);
+    $('#event_fields').show();
+    $('#title_box').focus();
   }
-
-  function toggle_event_fields() 
+  else
   {
-     if ($('#eventclick').is(':checked'))
-     {
-        $('#event_fields').show();
-        $('#title_box').focus();
-     }
-     else
-     {
-        $('#event_fields').hide();     
-        clear_fields();
-     }
+    $('#event_fields').hide();     
+    clear_fields();
+  }
   }
 
   $(document).ready(function() { 
@@ -40,25 +40,25 @@
 
   <form name="add_post_form" action="" method="post">{% csrf_token %}
     {# checkbox #}  
-    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()">Event<br>
+    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()" />Event<br />
 
     {# area for event fields #}
     <div id="event_fields">
-      <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title"size=20><br>
-      <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" size=20><br>
-      <label for="date_box">Date:</label> <input type="text" readonly="readonly" onFocus="this.blur();" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" id="date_box" name="date" size=10>
+      <label for="title_box">Title:</label>  <input type="text" id="title_box" name="title" size=20 /><br />
+      <label for="place_box">Where:</label> <input type="text" id="place_box" name="where" size=20 /><br />
+      <label for="date_box">Date:</label> <input type="text" readonly="readonly" onFocus="this.blur();" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" id="date_box" name="date" size=10 />
       <a href="#" onClick="cal.select(document.add_post_form.date_box,'calendar_link','yyyy-MM-dd'); return false;" name="calendar_link" id="calendar_link">select</a>
-      <label for="time_box">Time:</label> <input type="text" id="time_box" name="time" size=4>
+      <label for="time_box">Time:</label> <input type="text" id="time_box" name="time" size=6 />
       <select name="timedrop">
-	<option value="am">A.M.</option>
-	<option value="pm">P.M.</option>
+        <option value="am">A.M.</option>
+        <option value="pm">P.M.</option>
       </select>
-      <br>
-      <label for="flag_box">Flags:</label> <input type="text" id="flag_box" name="flags" size=20>
+      <br />
+      <label for="flag_box">Flags:</label> <input type="text" id="flag_box" name="flags" size=20 />
     </div>    
 
-  <textarea name="post_content" cols=50 rows=4></textarea><br />
-  <input type="submit" name="post_submit" value="Submit" />	
+    <textarea name="post_content" cols=50 rows=4></textarea><br />
+    <input type="submit" name="post_submit" value="Submit" />	
 
   </form>
 </div>

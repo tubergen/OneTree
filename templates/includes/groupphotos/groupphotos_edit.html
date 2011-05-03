@@ -1,55 +1,42 @@
-<script type="text/javascript" charset="utf-8">  
+{# BAD CODE -- this is identical to groupinfo_edit.html #} 
+{# it should eventulaly be referencing the same JS #}
+<script type="text/javascript">  
 
-  function toggle_edit_info()
+function toggle_edit_info()
+{
+  if ($('#eventclick').is(':checked'))
   {
-     if ($('#eventclick').is(':checked'))
-     {
-//        $('#data-fields').show();
-        $('#upload').slideDown("fast");
-//        $('#delete_photos').show();
-     }
-     else {
+    $('#data-fields').slideDown("fast");
+  }
+  else {
 
-//        $('#data-fields').hide();
-        $('#upload').slideUp("fast");
-//        $('#delete_photos').hide();
+    $('#data-fields').slideUp("fast");
 
-     }
+  }
+} 
 
-//      $('#data-fields').focus();
-  } 
-
-  $(document).ready(function() {
-//     $('#data-fields').hide();
-     $('#upload').hide();
-//     $('#delete_photos').hide();
-  }); 
+$(document).ready(function() {
+  $('#data-fields').hide();
+}); 
 
 </script>
 
-<input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()" />Edit Photos<br>
-
-
-  <div id="upload">
-  <h3>Add Group Photos</h3>
-  {% if piccount < 20 %}
-    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Submit" />
-    </form>
-    {% else %}
-    <p>You have reached the maximum number of photos. Try deleting one first.</p>
-   {% endif %}
+<div id="change-admin-data">
+  <div id="edit-info-toggle">
+    <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_edit_info()" />Edit Photos
   </div>
 
-{% comment %}
-  <div id="delete_photos">
-    <h3>Delete Group Photos</h3>
-    <form name="delete_selection" action="" method="post">{% csrf_token %}
-    {% for pic in group.pictures.all %}
-      <input type="checkbox" value="{{ pic.image.url }}">{{ pic.image.name }}</input><br>
-      {% endfor %}
-      <input type="submit" name="delete-submit" value="Submit" />
-    </form>
+  <div id="data-fields">
+    <div class="group-info-edit-box">
+      <h3>Add Group Photos</h3>
+      {% if piccount < 20 %}
+        <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Submit" />
+        </form>
+      {% else %}
+        <p>You have reached the maximum number of photos. Try deleting one first.</p>
+      {% endif %}
+    </div>
   </div>
-{% endcomment %}
+</div>

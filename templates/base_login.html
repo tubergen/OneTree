@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
-{% block top_content %}<span id="title"><h1>User Login</h1></span>{% endblock %}
+{% block top_content %}
+  <h1 id="title">User Login</h1>
+{% endblock %}
 
 {% block main_content %}
-    {% if form.errors %}
-        <p class="error-message">Sorry, that's not a valid username or password</p>
-    {% endif %}
+  {% if form.errors %}
+    <p class="error-message">Sorry, that's not a valid username or password</p>
+  {% endif %}
 
-    <form class="main-container" action="" method="post">
-        {% include 'includes/authentication/login.html' %}
-    </form>
+  <form class="main-container" action="" method="post">
+    {% include 'includes/authentication/login.html' %}
+  </form>
 
 {% endblock %}

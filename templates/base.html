@@ -1,73 +1,85 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
+
 <html lang="en">
-<head>
+  <head>
     <title>{% block title %}Onetree.com{% endblock %}</title>
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/javascripts/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="/static/javascripts/base.js"></script>
 
     {% block head %}{% endblock %}
-</head>
-<body>
+  </head>
+  <body>
     <div id="wrap">
-        <div id="header">
-            {% block header %}
-                {# will probably never be changed by any page #}
-                {# if user logged in display the logged in bar #}
-                {# else display the logged out bar: #}
-                <div id="header_logo">
-                    <img src="/static/images/tree.gif" height="25px" width="25px" />&nbsp;<a href="/">OneTree</a>
-                </div>
-                <div id="header_nav">
-                    <ul>
-                        {% if user.is_authenticated %}
-                            <li><a href="/profile/">{{ user.username }}</a></li>
-                            <li><a href="/notifications/">notifications	{% if new_notif %} NEW {% endif %} </a></li>
-                            <li><a href="/news/">news</a></li>
-                            <li><a href="/group-signup/">group signup</a></li>
-                            <li><a href="/logout/">logout</a></li>
-                        {% else %}
-                            <li><a href="/user-signup/">register</a></li>
-                            <li><a href="/login/?next={{ request.path }}">login</a></li>
-                        {% endif %}
-                            <li>
-                                <form action='/search/' method='GET'>
-                                    <input name="query" class="search-bar" type="text"value="search groups" style="color: gray;" onfocus="this.value=''; this.style.color='black'; this.onfocus=null;"></input>
-                                </form>
-                            </li>
-                    </ul>
-                </div>
-            {% endblock %}
-        </div>
+      <div id="header">
+        {% block header %}
+          {# will probably never be changed by any page #}
+          {# if user logged in display the logged in bar #}
+          {# else display the logged out bar: #}
+          <div id="header_logo">
+            <img src="/static/images/tree.gif" height="25" width="25" />&nbsp;<a href="/">OneTree</a>
+          </div>
+          <div id="header_nav">
+            <ul>
+              {% if user.is_authenticated %}
+                <li><a href="/profile/">{{ user.username }}</a></li>
+                <li><a href="/news/">News</a>
 
-        <div id="content">
-            <div id="left-content">
-                {% block left_content %}
-                {% endblock %}
-            </div>
-            <div id="right-content">
-                <div id="top-content">
-                    {% block top_content %}
-                        {# contains title, arrows, calendar #}
-                            <h1 id="title">Page title</h1>
-                    {% endblock %}
-                </div>
-                <div id="main-content">
-                    {% block main_content %}
-                        {# contains wall, post, and right bar #}
-                    {% endblock %}
-                </div>
-            </div>
-            {% block content %}
-            {% endblock %}
-        </div>
+                  {% if new_notif %}
 
-        <div id="footer">
-            {% block footer %}
-                {# will probably never be changed by any page #}
-                Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen
-            {% endblock %}
+                    <a href="/notifications/">
+                      <span class="new-notif-indicator">
+                        <img src="/static/images/colored_star.gif" height="18" width="18" />
+                      </span>
+                    </a>
+
+                  {% endif %}
+
+                </li>
+                <li><a href="/group-signup/">Group Signup</a></li>
+                <li><a href="/logout/">Logout</a></li>
+              {% else %}
+                <li><a href="/user-signup/">Register</a></li>
+                <li><a href="/login/?next={{ request.path }}">Login</a></li>
+              {% endif %}
+              <li>
+                <form action='/search/' method='GET'>
+                  <input name="query" class="search-bar" type="text" value="search groups" style="color: gray;" onfocus="this.value=''; this.style.color='black'; this.onfocus=null;" />
+                </form>
+              </li>
+            </ul>
+          </div>
+        {% endblock %}
+      </div>
+
+      <div id="content">
+        <div id="left-content">
+          {% block left_content %}
+          {% endblock %}
         </div>
+        <div id="right-content">
+          <div id="top-content">
+            {% block top_content %}
+              {# contains title, arrows, calendar #}
+              <h1 id="title">Page title</h1>
+            {% endblock %}
+          </div>
+          <div id="main-content">
+            {% block main_content %}
+              {# contains wall, post, and right bar #}
+            {% endblock %}
+          </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+      </div>
+
+      <div id="footer">
+        {% block footer %}
+          {# will probably never be changed by any page #}
+          Copyright &#169; 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen
+        {% endblock %}
+      </div>
     </div>
-</body>
+  </body>
 </html>

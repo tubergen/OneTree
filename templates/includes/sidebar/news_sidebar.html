@@ -1,0 +1,17 @@
+<div id="sidebar">
+
+  <center>
+    <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" /> {# width="180px" height="180px" /> #}
+  </center>
+
+
+  <h3 class="child-word">Subscriptions</h3>
+  <ul class="child-list">
+      {% for group in request.user.get_profile.subscriptions.all %}
+        <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ group.url }}">{{ group.name }}</a></li>
+     {% empty %}
+        <h3 class="child-word">No Subscriptions</h3>
+     {% endfor %}
+  </ul>
+
+</div>

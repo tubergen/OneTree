@@ -9,7 +9,11 @@
 {% endblock %}
 
 {% block left_content %}
-    {% include "includes/sidebar/group_sidebar.html" %}
+    {% if is_notif_page or is_newsfeed %}
+        {% include "includes/sidebar/news_sidebar.html" %}
+    {% else %}
+        {% include "includes/sidebar/group_sidebar.html" %}
+    {% endif %}
 {% endblock %}
 
 {% block top_content %}
@@ -19,9 +23,9 @@
         {% endblock %}
     </div>
 
-   {% block calendar %}
+    {% block calendar %}
         {% include "includes/calendar/cal.html" %}
-   {% endblock %}
+    {% endblock %}
 {% endblock %}
 
 {% block main_content %}
@@ -35,26 +39,38 @@
     {% endif %}
 
     {% if is_newsfeed %}
-        <div class="main-container">
-            {% include "includes/wall/wall_display.html" %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/news/news_tabs.html" %}
+            <div class="main-container">
+                {% include "includes/wall/wall_display.html" %}
+            </div>
         </div>
     {% endif %}
-    
+
+    {% if is_notif_page %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/news/news_tabs.html" %}
+            <div class="main-container">
+                {% include "includes/notifications/notif_content.html" %}
+            </div>
+        </div>
+    {% endif %}
+
     {% if is_groupinfo_page %}
         <div class="main-container-navigation-tabs">
             {% include "includes/wall/wall_tabs.html" %}
-   	    <div class="main-container">
-              {% include "includes/groupinfo/groupinfo_display.html" %}
-	    </div>
+            <div class="main-container">
+                {% include "includes/groupinfo/groupinfo_display.html" %}
+            </div>
         </div>
     {% endif %}
-    
+
     {% if is_groupphotos_page %}
-	<div class="main-container-navigation-tabs">
-	  {% include "includes/wall/wall_tabs.html" %}
-	  <div class="main-container">
-            {% include "includes/groupphotos/groupphotos_display.html" %}
-	  </div>
-	</div>
-        {% endif %}
+        <div class="main-container-navigation-tabs">
+            {% include "includes/wall/wall_tabs.html" %}
+            <div class="main-container">
+                {% include "includes/groupphotos/groupphotos_display.html" %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

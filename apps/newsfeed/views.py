@@ -22,7 +22,9 @@ def filter_newsfeed(request):
             filters.parse_request(request)
             filtered_posts = filters.get_news(user, start_date, end_date);
             return render_to_response('includes/wall/wall_content.html',
-                                     {'posts': filtered_posts,},
+                                     {'posts': filtered_posts,
+                                      'is_newsfeed': True,
+                                      'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
                                      context_instance=RequestContext(request))
 
     print 'HTTP 400 returned in filter_newsfeed()'
@@ -32,9 +34,6 @@ def filter_newsfeed(request):
 Looks at request. If request specifies a post should be deleted / removed, then
 it's deleted if the requester is the administrator of the author group; if not,
 then the post is simply removed from the group's page. 
-
-Don't forget to add authentication to this. Some permissions should be required
-to be able to delete a post. 
 
 SPECIAL NOTE : if there's ever a bug where an event mysteriously appears on the
 wall only when "[this page]'s Posts Only" is selected, and it cannot be deleted,
@@ -86,15 +85,30 @@ def newsfeed(request):
 
     voted_post_set = request.user.get_profile().get_voted_posts();
 
-    # called children so that we can use the group page's sidebar
-    subscriptions = request.user.get_profile().subscriptions.all();
+    new_pics = get_most_recent_pics(request.user);
 
     # get one picture from each of your subscribed groups, then pick the four
     # most recent ones
     #pictures = Pictures.objects
     #.filter(created_date__lte=Y.created_date)
+    
+    return render_to_response('newsfeed/base_newsfeed.html',
+                              {'posts': posts,
+                              'pictures': new_pics,
+                              'wall_subtitle': wall_subtitle,
+                              'submit_off': True,
+                              'is_newsfeed': True,
+                              'voted_post_set': voted_post_set,
+                              'filter_list': newsfeed_filter_list,
+                              'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',
+                              'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
+                              context_instance=RequestContext(request))
 
-    # get the num_pics most recent pics from your subscribed groups
+    #return render_to_response('base_newsfeed.html');
+
+''' return the num_pics most recent pics from user's subscribed groups ''' 
+def get_most_recent_pics(user):
+    subscriptions = user.get_profile().subscriptions.all();
     num_pics = 3
     num_stored = 0 # number of pictures added to most_recent_pics so far
     most_recent_pics = []
@@ -117,18 +131,5 @@ def newsfeed(request):
     for date_pic_tuple in most_recent_pics:
         new_pics.append(date_pic_tuple[1])
     new_pics.reverse() # want most recent to least
-    
-    return render_to_response('newsfeed/base_newsfeed.html',
-                              {'posts': posts,
-                              'pictures': new_pics,
-                              'wall_subtitle': wall_subtitle,
-                              'children': subscriptions,
-                              'submit_off': True,
-                              'is_newsfeed': True,
-                              'voted_post_set': voted_post_set,
-                              'filter_list': newsfeed_filter_list,
-                              'filter_view_url': '/_apps/newsfeed/views-filter_newsfeed/',
-                              'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
-                              context_instance=RequestContext(request))
 
-    #return render_to_response('base_newsfeed.html');
+    return new_pics
