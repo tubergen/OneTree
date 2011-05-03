@@ -225,7 +225,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     # get groupinfo associated with this group
     groupinfo = GroupInfo.objects.filter(group=group)
     if not groupinfo:
-        groupinfo = GroupInfo(group=group, data='')
+        groupinfo = GroupInfo(group=group, data='', biginfo='')
     else:
         groupinfo = groupinfo[0]
 
@@ -384,8 +384,10 @@ def create_group(request):
 
             # associating groupinfo with a group
             info = ''
+            big_info = ''
             groupinfo = GroupInfo(group=new_group,
-                                  data=info)
+                                  data=info,
+                                  biginfo=big_info)
             groupinfo.save()
 
             # there is probably a more elegant way to associate admin to a group
@@ -431,6 +433,7 @@ def handle_uploaded_file(f, group_url, is_groupphotos_page=False):
         image.thumbnail((180, 180), Image.ANTIALIAS)
         image.save(this_group.img.path)
         this_group.img = image
+        #this_group.save()
         # end thumbnail----------------------------------
 
     else:
@@ -503,9 +506,21 @@ def handle_data(groupinfo, group, request):
 
         new_data = request.POST.get('data_content', None)
         if new_data:
+            if len(new_data) > 200: # 200 char limit
+                errormsg = 'The blurb you entered is too long. The limit is 200 characters.'
+                return errormsg
             groupinfo.data = new_data
             groupinfo.group = group
             groupinfo.save()
+
+        new_biginfo = request.POST.get('biginfo_content', None)
+        if new_biginfo:
+            print new_biginfo
+            groupinfo.biginfo = new_biginfo
+            groupinfo.group = group
+            groupinfo.save()
+        else:
+            print 'no biginfo'
 
         new_admin = request.POST.get('new_admin', None)
         if new_admin:

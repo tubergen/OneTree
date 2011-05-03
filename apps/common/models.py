@@ -178,7 +178,8 @@ class Tag(models.Model):
 # OTHER -- WE MAY OR MAY NOT WANT TO PUT THIS HERE?
 class GroupInfo(models.Model):
     group = models.ForeignKey('Group')
-    data = models.TextField()
+    data = models.CharField(max_length=150)
+    biginfo = models.TextField()
     # blurb should be what data is now
     # blurb = models.CharField(max_length=50)
 
