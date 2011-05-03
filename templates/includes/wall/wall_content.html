@@ -30,44 +30,49 @@ function bind_vote(type, post_id, post_type)
 
 // Bind the correct functions to the buttons depending on whether 
 // the user has logged in and voted on this post before
-$(document).ready(function() {
+function setup_voting() {
   {% if user.is_authenticated %}
-  // make all posts' voting active
-  {% for post in posts %}
-  bind_vote('up', {{post.id}}, {{post.post_type}});
-  bind_vote('down', {{post.id}}, {{post.post_type}});
+
+    // make all posts' voting active
+    {% for post in posts %}
+      bind_vote('up', {{post.id}}, {{post.post_type}});
+      bind_vote('down', {{post.id}}, {{post.post_type}});
+    {% endfor %}
+
+    // retroactively remove voting from some of them
+    {% for post_vote in voted_post_set %}
+      var vote = {{ post_vote.vote }};
+      var post_id = {{ post_vote.post.id }};
+      var post_type = {{post_vote.post.post_type}};
+
+      if (vote == 1)
+      {
+        $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
+      }
+      else if (vote == 2)
+      {
+        $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
+      }
+      else 
+      {
+      }
   {% endfor %}
+ {% else %}
+   {% for post in posts %}
+     $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
+       alert('Log in to vote !');
+     });
 
-  // retroactively remove voting from some of them
-  {% for post_vote in voted_post_set %}
-  var vote = {{ post_vote.vote }};
-  var post_id = {{ post_vote.post.id }};
-  var post_type = {{post_vote.post.post_type}};
+     $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
+         alert('Log in to vote !');
+       });
 
-  if (vote == 1)
-  {
-    $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
-  }
-  else if (vote == 2)
-  {
-    $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
-  }
-  else 
-  {
-  }
-  {% endfor %}
-  {% else %}
-  {% for post in posts %}
-  $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
-    alert('Log in to vote !');
-  });
+   {% endfor %}
+ {% endif %}
+}
 
-  $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
-    alert('Log in to vote !');
-  });
-
-  {% endfor %}
-  {% endif %}
+$(document).ready(function() {
+  setup_voting();
 });
 
 // vote_type specifies if this was up or down vote; post_id identifies post

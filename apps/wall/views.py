@@ -145,21 +145,30 @@ def filter_wall(request):
             filters = Filter();
             filters.parse_request(request);
             filtered_posts = filters.get_posts(group, start_date, end_date);
+            profile = request.user.get_profile()
 
             posts_on_page = paginate_posts(request, filtered_posts)
 
             if request.user.is_authenticated():
-                is_admin = request.user.get_profile().is_admin_of(group)
+                is_admin = profile.is_admin_of(group)
             else:
                 is_admin = False
+
+            # get user's list of voted posts
+            try:
+                voted_post_set = profile.get_voted_posts(group)
+            except (AttributeError):
+                # Note: attribute error occurs when user is AnonymousUser
+                voted_post_set = None
 
             return render_to_response('includes/wall/wall_content.html',
                                       {'posts': posts_on_page.object_list,
                                        'posts_on_page': posts_on_page,
+                                       'voted_post_set': voted_post_set,
                                        'group': group,
                                        'is_admin': is_admin,
                                        'delete_post_view_url': '/_apps/wall/views-delete_post/',},
-                                      context_instance=RequestContext(request))
+                                       context_instance=RequestContext(request))
 
     print 'HTTP 400 returned in filter_wall()'    
     return HttpResponse(status=400)

@@ -21,8 +21,20 @@ def filter_newsfeed(request):
             filters = Filter()
             filters.parse_request(request)
             filtered_posts = filters.get_news(user, start_date, end_date);
+            profile = user.get_profile()
+            
+            ''' get user's list of voted posts ... this could potentially be
+            a ton of posts. in future, we should probably just get the vote
+            status of the events and anns we're displaying. '''
+            try:
+                voted_post_set = profile.get_voted_posts()
+            except (AttributeError):
+                # Note: attribute error occurs when user is AnonymousUser
+                voted_post_set = None
+            
             return render_to_response('includes/wall/wall_content.html',
                                      {'posts': filtered_posts,
+                                      'voted_post_set': voted_post_set,                                      
                                       'is_newsfeed': True,
                                       'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
                                      context_instance=RequestContext(request))
