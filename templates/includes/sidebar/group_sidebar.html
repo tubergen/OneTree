@@ -1,5 +1,6 @@
 <div id="sidebar">
 
+  <center>
     {# image -- for now only put image on group page #}
    {# {% if is_group_page %} #}
         
@@ -8,6 +9,13 @@
     <img src="{% if groupinfo.group.img %}{{ groupinfo.group.img.url }}{% else %}/static/images/tree.gif{% endif %}" /> {# width="180px" height="180px" /> #}
 
 {#    {% endif %} #}
+
+    {% if is_group_page or is_groupinfo_page or is_groupphotos_page%}
+      {% if is_admin %}
+        <a class="change-logo" href="/group/{{ group.url }}/info/edit">(Change group logo)</a>
+      {% endif %}
+    {% endif %}
+  </center>
 
     {% comment %}
     {# list parent #}

@@ -206,7 +206,7 @@ def verify_group(group):
 # GROUP PAGE
 #######################################
 def group_page(request, group_url, partial_form=None, is_group_page=True,
-               is_groupinfo_page=False, is_groupphotos_page=False):
+               is_groupinfo_page=False, is_groupphotos_page=False, edit_on=False):
     errormsg = None
     context = RequestContext(request)
     if request.user.is_authenticated():
@@ -299,6 +299,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'is_group_page': is_group_page,
                               'is_groupinfo_page': is_groupinfo_page,
                               'is_groupphotos_page': is_groupphotos_page,
+                               'edit_on':edit_on,
                               'piccount': piccount,
                               'form': form,
                               'errormsg': errormsg,
@@ -471,8 +472,20 @@ def upload_file(request, group_url, is_groupphotos_page=False):
 
 
 # groupinfo page
-def groupinfo_page(request, groupname):
-    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True, is_groupphotos_page=False)
+def groupinfo_page(request, groupname, edit_on=False):
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True, is_groupphotos_page=False, edit_on=edit_on)
+
+@login_required
+def edit_groupinfo_page(request, groupname, edit_on=False):
+    try:
+        group = Group.objects.get(url=groupname)
+    except Group.DoesNotExist:
+        return HttpResponse(status=400)        
+        
+    if request.user.get_profile().is_admin_of(group):
+        return groupinfo_page(request, groupname, edit_on=True)
+    else:
+        return HttpResponse(status=400)
 
 # groupphotos_page
 def groupphotos_page(request, groupname):

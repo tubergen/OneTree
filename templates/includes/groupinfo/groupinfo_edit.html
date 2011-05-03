@@ -20,6 +20,13 @@
   $(document).ready(function() {
      $('#data-fields').hide();
      $('#upload').hide();
+
+     {% if is_admin %}
+       {% if edit_on %}
+          $('#eventclick').attr('checked', 'checked');
+          toggle_edit_info();
+       {% endif %}
+     {% endif %}
   }); 
 
 </script>
