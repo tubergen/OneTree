@@ -4,8 +4,8 @@ from itertools import chain
 from operator import attrgetter
 import Queue
 
-filter_ids = ['this_group_only', 'events_only', 'anns_only', 'this_date_only'];
-filter_descrips = ["'s posts", 'Events', 'Non-Events', None]
+filter_ids = ['this_group_only', 'events_only', 'anns_only', 'this_date_only', 'sort_by_date'];
+filter_descrips = ["'s posts", 'Events', 'Non-Events', None, 'Sort by date',]
 
 class Filter:
     @staticmethod
@@ -92,6 +92,21 @@ class Filter:
        else:
            posts = self.post_type_only(anns, events)
        return posts;
+
+    '''
+    Sorts posts based on hotness by default. Sorts based on date (date posted
+    for announcements, event date for events) if sort_by_date filter is set.
+    '''                                                                
+    def sort_posts(self, posts):
+        if self.filters.get('sort_by_date'):
+            # primary sort is by date, secondary sort is by hot score
+            posts.sort(key=lambda post: post.hotscore(), reverse=True)            
+            posts.sort(key=lambda post: post.get_date(), reverse=True)
+        else:
+            # primary sort is hot score, secondary sort is date
+            posts.sort(key=lambda post: post.get_date(), reverse=True)
+            posts.sort(key=lambda post: post.hotscore(), reverse=True)            
+
     '''
     Get posts that meet the criteria specified by this filter
     If anybody knows how to write better filter logic, do it
@@ -106,9 +121,7 @@ class Filter:
         # is this inefficient? in future, get/chain ~20 posts instead of all
         try:
             posts = list(posts)
-            # primary sort is hot score, secondary sort is date
-            posts.sort(key=attrgetter('date'), reverse=True)            
-            posts.sort(key=calc_hot_score, reverse=True)
+            self.sort_posts(posts)
         except:
             print ("Failed to form a list of posts in filter.py getFilter(), "
                    "perhaps because no posts passed through filter.")
@@ -180,6 +193,5 @@ class Filter:
         sort primarily on hot score, then on date to keep a stable ordering.
         '''
         if top_posts != None:
-            top_posts.sort(key=attrgetter('date'), reverse=True)
-            top_posts.sort(key=calc_hot_score, reverse=True)
+            self.sort_posts(top_posts)
         return top_posts    

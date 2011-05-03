@@ -93,6 +93,9 @@ class Post(models.Model):
 class Announcement(Post):
     post_type = PostType.ANNOUNCEMENT
 
+    def get_date(self):
+        return self.date;
+
 # ===============================
 # EVENT
 # ===============================
@@ -103,6 +106,9 @@ class Event(Post):
     event_url = models.CharField(max_length=30, unique=True)
     flags = models.ManyToManyField('Flag')
     post_type = PostType.EVENT
+
+    def get_date(self):
+        return self.event_date;
 
 # ===============================
 # COMMENT
