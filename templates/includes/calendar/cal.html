@@ -37,7 +37,7 @@ is commented out.
    }
 
    function create_picker() {
-      $('#inlineDatepicker').datepick({
+      $('#inlineDatepicker').datepick({multiSelect: 1,
                                        onSelect: filter_date_no_range,
                                        showOtherMonths: true,
                                        selectOtherMonths: true,
@@ -52,8 +52,14 @@ is commented out.
    var range_selected = false;
 
    function filter_date_no_range(dates) {
-       dates[1] = dates[0];
-       filter_date(dates);
+       if (dates.length < 1) {
+	   reset_filters();
+           return;
+       }
+
+       var dates_clone = dates.slice(0);
+       dates_clone[1] = dates_clone[0];
+       filter_date(dates_clone);
    }
 
 
@@ -77,15 +83,18 @@ is commented out.
       filters["end_date"] = format_date(dates1);
 
       apply_filter('this_date_only');
-
    }
+
+   function reset_filters() {
+      delete filters["start_date"];
+      delete filters["end_date"];
+      remove_filter('this_date_only');
+   }       
 
    function reset_datepicker() {
       $('#inlineDatepicker').datepick('destroy');
       create_picker();
-      delete filters["start_date"];
-      delete filters["end_date"];
-      remove_filter('this_date_only');
+      reset_filters();
       cal_click_count = 0;
       range_selected = false;
       $('.datepick-status').html('Select a date range');
@@ -125,8 +134,8 @@ is commented out.
             $('.datepick-status').html('Select a date range');
       });
       // populate these here so they don't appear for people without javascript
-      $('.datepick-status').html('Select a date range');
-      $('.cal-reset').html('reset');
+      /* $('.datepick-status').html('Select a date range');
+      $('.cal-reset').html('reset'); */
    });
 </script> 
 
@@ -140,10 +149,12 @@ is commented out.
 
 <body> 
    <div id="top-calendar"> 
-      <div id="inlineDatepicker"></div> 
+      <div id="inlineDatepicker"></div>
+      {% comment %}
       <div class="below-cal-content">
-         {# <span class="datepick-status"></span> #}
+         <span class="datepick-status"></span>
          <a class="cal-reset" href="JavaScript:reset_datepicker()"></a>
       </div>
+      {% endcomment %}
    </div>
 </body> 
