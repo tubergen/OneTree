@@ -49,7 +49,6 @@ def req_membership(request):
         try:
             group_id = int(request.POST.get('group_id'))
             change_type = request.POST.get('change_type')
-            print change_type
         except TypeError:
             print 'group_id not int.' + err_loc
             return HttpResponse(status=400)
