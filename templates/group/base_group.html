@@ -19,6 +19,7 @@
     <script type="text/javascript" charset="utf-8">
 
     var user_is_subscribed;
+    var mem_status;
 
     {% if user.is_authenticated %}
     $(document).ready(function() {
@@ -35,8 +36,11 @@
         });
 
         // override default POST behavior
-        $('#membership-button').click(req_membership);
-        
+        $('.change-membership').click(function(event) {
+             id = $(this).attr('id');
+             change_membership(id);
+             return false;
+        });
     });
 
     function send_subscribe_change()
@@ -59,11 +63,39 @@
         });
     }
 
-    function req_membership()
+    function change_membership(id)
     {
-        var data = {"group_id":'{{group.id}}'};
+        var change_type;
+        if (id == 'cancel-button') {
+           if (!confirm("Are you sure you want to cancel your membership request?"))
+               return false;
+           change_type = 'cancel_mem_req';
+        }
+        else if (id == 'leave-button') {
+           if (!confirm("Are you sure you no longer want to be a member of this group?"))
+               return false;
+           change_type = 'leave_membership';
+        }
+        else {
+           change_type = 'req_membership';
+        }
+
+        var data = {"group_id":'{{group.id}}', "change_type":change_type};
         $.post("{{membership_view_url}}", data, function(data) { 
-            $('#mem-status').html('Membership Pending...');
+            $('.mem-status-content').hide();
+
+            if (id == 'req-mem-button') {
+               $('#pending-member').show();
+            }
+            else if (id == 'cancel-button') {
+               $('#not-member').show();
+            }
+            else if (id == 'leave-button') {
+               $('#not-member').show();
+            }
+            else {
+               alert('Error with membership status.');
+            }
         });
         return false;
     }
@@ -87,30 +119,49 @@
             
 	    <div id="subscribed-content" {% if not user_is_subscribed %} style="display:none" {% endif %}>
 	        <span class="status-text"> You are currently subscribed.</span>
-		<span class="change-span">(<button type="submit" class="button-link change-subscribe" value="subscribed">unsubscribe</button>)</span>
+		<span class="change-span">(<button type="submit" class="button-link change-subscribe" name="change_type" value="subscribed">unsubscribe</button>)</span>
 	    </div>
 
 	    <div id="unsubscribed-content" {% if user_is_subscribed %} style="display:none" {% endif %}>
-                <input type="submit" class="button-unsubscribed change-subscribe" id="subscribe-button" value="subscribe">                                
+                <input type="submit" class="button-unsubscribed change-subscribe" id="subscribe-button" name="change_type" value="subscribe">                                
 	    </div>
 
         </form></li>
 
         <div id="mem-status">
+          <li><form method="post" action="{{ membership_view_url }}">{% csrf_token %}
+            <input type="hidden" name="group_id" value="{{group.id}}">
+	    {# hidden field for non-javascript people to figure out what was clicked #}
+	    <input type="hidden" name="change_type" 
+               {% ifequal membership_status "member"%}  
+		   value="leave_membership" 
+	       {% else %}
+                 {% ifequal membership_status "pending"%}  
+		   value="cancel_mem_req"
+	         {% else %}
+		   value="req_membership"
+		 {% endifequal %}
+	       {% endifequal %}
+	    >
+            
+	    <div class="mem-status-content" {% ifnotequal membership_status "member"%} style="display:none" {% endifnotequal %}>
+	        <span class="status-text"> You are a member.</span>
+		<span class="change-span">(<button type="submit" id='leave-button' class="button-link change-membership">leave</button>)</span>
+	    </div>
 
-            {% ifequal membership_status "member" %}
-                <li>You're a member.</li>
-            {% else %}
-                {% ifequal membership_status "pending" %}
-                    <li>Membership Pending...</li>
-                {% else %}
-                    <li><form method="post" action="{{ membership_view_url }}">{% csrf_token %}
-                            <input type="hidden" name="group_id" value="{{group.id}}">
-                            <input type="submit" id="membership-button" value="Request Membership">
-                    </form></li>
-                {% endifequal %}
-            {% endifequal %}	    
+	    <div id="pending-member" class="mem-status-content" {% ifnotequal membership_status "pending"%} style="display:none" {% endifnotequal %}>
+	        <span class="status-text"> Membership request pending...</span>
+		<span class="change-span">(<button type="submit" id='cancel-button' class="button-link change-membership">cancel</button>)</span>
+	    </div>
+
+	    {# if membership_status => true when membership_status is set #}
+	    <div id="not-member" class="mem-status-content" {% if membership_status %} style="display:none" {% endif %}>
+                <button type="submit" id="req-mem-button" class="change-membership">Request Membership</button>
+	    </div>
+
+          </form></li>
         </div>
+
 	{% if is_superadmin %}
     	    <li>You're the group's superadmin.</li>
 	{% else %}

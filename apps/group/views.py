@@ -43,46 +43,46 @@ def change_subscribe(request):
 
 @login_required
 def req_membership(request):
-    print "========REQ_MEMBERSHIP====================="
+    err_loc = ' See req_membership in group views.py.'
     if request.method == 'POST':
         # Obtain group_id
         try:
             group_id = int(request.POST.get('group_id'))
+            change_type = request.POST.get('change_type')
+            print change_type
         except TypeError:
             print 'group_id not int.' + err_loc
-            print "=========================="
             return HttpResponse(status=400)
-        if group_id:
+        if group_id and change_type:
             # Get the group that corresponds to the group_id
             group = Group.objects.get(id=group_id)
-            print 'STATUS: getting group > ',
-            print group
+
             # Check if there already exist a pending membership request
             pending_mem_req = MembershipReq.objects.filter(sender=request.user,
                                                            recv_group=group,
                                                            pending=True)
-            
-            print 'STATUS: pending_mem_req > ',
-            print pending_mem_req
 
-
-            # If there is no pending membership request, perform a request
-            if not pending_mem_req:
-                mem_req = MembershipReq(sender=request.user, recv_group=group)
-                print "STATUS: mem_req > ",
-                print mem_req
-                mem_req.save()
-            else: # Otherwise, do not do anything
-                print 'Already a pending membership request.'
+            if pending_mem_req and change_type == 'cancel_mem_req':
+                pending_mem_req.delete();
+            elif change_type == 'leave_membership':
+                request.user.get_profile().memberships.remove(group);
+            elif change_type == 'req_membership':
+                # If there is no pending membership request, perform a request
+                if not pending_mem_req:
+                    mem_req = MembershipReq(sender=request.user, recv_group=group)
+                    mem_req.save()
+                else: # Otherwise, do not do anything
+                    print 'Already a pending membership request.'
+            else:
+                print 'Invalid change type.' + err_loc
+                return HttpResponse(status=400)                
 
             # If request is ajax, ??
             if request.is_ajax():
-                print "======================"
                 return HttpResponse()
             else:
-                print "======================="
                 return HttpResponseRedirect('/group/' +  group.url);
-    print "=============================="
+    print change_type
     return HttpResponse(status=400)        
 
 # Function to notify parent group that a child requests for approval
@@ -285,7 +285,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     if profile and profile.is_superadmin_of(group):
         is_superadmin = True
     
-    membership_status = "notmember"
+    membership_status = None
     if request.user.is_authenticated():
         membership_status = profile.get_membership_status(group)
 
