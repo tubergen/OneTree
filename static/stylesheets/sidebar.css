@@ -18,7 +18,10 @@
 }
 
 #group-photo {
+    margin: 0 auto;
     text-align: center;
+    width: 180px;
+    height: 195px;
 }
 
 .parent-word, .child-word {

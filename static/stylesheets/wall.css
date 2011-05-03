@@ -181,7 +181,7 @@
 .post-left-column {
     float: left;
     margin-left: 1em;
-    margin-right: 1.5em;
+    margin-right: 1em;
     margin-top: .5em;
 }
 
@@ -208,9 +208,11 @@
 .post-votes {
     text-align: left;
     float: left;
-    width: 7%;
+    width: 3.5em;
     position: relative;
     padding: .2em;
+    padding-right: 0;
+    padding-left: 0;
     line-height: 1em;
 }
 
@@ -525,6 +527,7 @@
 .group-image-div {
     width: 35px;
     height: 35px;
+    margin: 0 auto;
     margin-bottom: 5px;
 }
 

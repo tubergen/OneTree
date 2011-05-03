@@ -26,110 +26,110 @@ function bind_vote(type, post_id, post_type)
   $('#' + type + '-button-' + post_type + '-' + post_id).click(function() {
     update_vote_script(type, post_id, post_type);
   });
+}
+
+// Bind the correct functions to the buttons depending on whether 
+// the user has logged in and voted on this post before
+$(document).ready(function() {
+  {% if user.is_authenticated %}
+  // make all posts' voting active
+  {% for post in posts %}
+  bind_vote('up', {{post.id}}, {{post.post_type}});
+  bind_vote('down', {{post.id}}, {{post.post_type}});
+  {% endfor %}
+
+  // retroactively remove voting from some of them
+  {% for post_vote in voted_post_set %}
+  var vote = {{ post_vote.vote }};
+  var post_id = {{ post_vote.post.id }};
+  var post_type = {{post_vote.post.post_type}};
+
+  if (vote == 1)
+  {
+    $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
   }
-
-  // Bind the correct functions to the buttons depending on whether 
-  // the user has logged in and voted on this post before
-  $(document).ready(function() {
-    {% if user.is_authenticated %}
-    // make all posts' voting active
-    {% for post in posts %}
-    bind_vote('up', {{post.id}}, {{post.post_type}});
-    bind_vote('down', {{post.id}}, {{post.post_type}});
-    {% endfor %}
-
-    // retroactively remove voting from some of them
-    {% for post_vote in voted_post_set %}
-    var vote = {{ post_vote.vote }};
-    var post_id = {{ post_vote.post.id }};
-    var post_type = {{post_vote.post.post_type}};
-
-    if (vote == 1)
-    {
-      $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
-    }
-    else if (vote == 2)
-    {
-      $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
-    }
-    else 
-    {
-    }
-    {% endfor %}
-    {% else %}
-    {% for post in posts %}
-    $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
-      alert('Log in to vote !');
-    });
-
-    $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
-      alert('Log in to vote !');
-    });
-
-    {% endfor %}
-    {% endif %}
+  else if (vote == 2)
+  {
+    $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
+  }
+  else 
+  {
+  }
+  {% endfor %}
+  {% else %}
+  {% for post in posts %}
+  $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
+    alert('Log in to vote !');
   });
 
-  // vote_type specifies if this was up or down vote; post_id identifies post
-  function update_vote_script(vote_type, post_id, post_type)
-  {
-    var score_id = '#vote-score-' + post_type + '-' + post_id;
-    var old_score = parseInt($(score_id).html());
+  $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
+    alert('Log in to vote !');
+  });
 
-    var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
+  {% endfor %}
+  {% endif %}
+});
 
-    $.post("/_apps/wall/views-update_vote/", data, function(data) {
-      var change = parseInt(data)
-      $(score_id).html(old_score + change);
+// vote_type specifies if this was up or down vote; post_id identifies post
+function update_vote_script(vote_type, post_id, post_type)
+{
+  var score_id = '#vote-score-' + post_type + '-' + post_id;
+  var old_score = parseInt($(score_id).html());
 
-      var up_but = '#up-button-' + post_type + '-' + post_id;
-      var down_but = '#down-button-' + post_type + '-' + post_id;
+  var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
 
-      if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
-      {
-        $(up_but).addClass('up-selected')
-        $(down_but).removeClass('down-selected')
-      }
-      else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
-      {
-        $(up_but).removeClass('up-selected')
-        $(down_but).addClass('down-selected')
-      }
-      else
-      {
-        $(up_but).removeClass('up-selected')
-        $(down_but).removeClass('down-selected')
-      }
+  $.post("/_apps/wall/views-update_vote/", data, function(data) {
+    var change = parseInt(data)
+    $(score_id).html(old_score + change);
 
-    });
+    var up_but = '#up-button-' + post_type + '-' + post_id;
+    var down_but = '#down-button-' + post_type + '-' + post_id;
+
+    if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
+    {
+      $(up_but).addClass('up-selected')
+      $(down_but).removeClass('down-selected')
+    }
+    else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
+    {
+      $(up_but).removeClass('up-selected')
+      $(down_but).addClass('down-selected')
+    }
+    else
+    {
+      $(up_but).removeClass('up-selected')
+      $(down_but).removeClass('down-selected')
     }
 
-    // deletes post specififed by post_id if it's being deleted by the author group
-    // otherwise simply removes the post from the wall
-    function delete_post(post_id, post_type)
-    {
-      if (confirm("Are you sure you want to remove this post?")) {
-        var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
-        $.post("{{ delete_post_view_url }}", data, function() {
-          $('#post-box-'+post_id).slideUp("fast");
-        });
-      }
-      }
+  });
+}
 
-      // deletes the comment
+// deletes post specififed by post_id if it's being deleted by the author group
+// otherwise simply removes the post from the wall
+function delete_post(post_id, post_type)
+{
+  if (confirm("Are you sure you want to remove this post?")) {
+    var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
+    $.post("{{ delete_post_view_url }}", data, function() {
+      $('#post-box-'+post_id).slideUp("fast");
+    });
+  }
+}
 
-      function delete_comment(comment_id)
-      {
-        if (confirm("Are you sure you want to remove this comment?")) {
-          var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
-          $.post("/_apps/wall/views-delete_comment/", data, function(data) {
-            // returned data is the 'post was removed' message
-            $('#comment-content-' + comment_id).html(data); 
-            $('#comment-author-' + comment_id).remove();
-            $('#delete-button-' + comment_id).remove();
-          });
-        }
-        }
+// deletes the comment
+
+function delete_comment(comment_id)
+{
+  if (confirm("Are you sure you want to remove this comment?")) {
+    var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
+    $.post("/_apps/wall/views-delete_comment/", data, function(data) {
+      // returned data is the 'post was removed' message
+      $('#comment-content-' + comment_id).html(data); 
+      $('#comment-author-' + comment_id).remove();
+      $('#delete-button-' + comment_id).remove();
+    });
+  }
+}
 
       </script>
 
@@ -272,15 +272,6 @@ function bind_vote(type, post_id, post_type)
         {% set comment_count = 0 %}
         {% for comment in post.comment_set.all reversed %} {# chronological order #}
           {% set comment_count += 1 %}
-          {% comment %}
-            {% if not forloop.first %}
-              {% if comment_count > 5 %}
-                <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
-              {% else %}
-                <hr />
-              {% endif %}
-            {% endif %}
-          {% endcomment %}
 
           {# a top-level comment #}
           <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
