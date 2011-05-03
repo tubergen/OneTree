@@ -1,4 +1,6 @@
-<script type="text/javascript" charset="utf-8">  
+{# BAD CODE -- this is identical to groupinfo_edit.html  #}
+{# it should eventulaly be referencing the same JS #}
+<script type="text/javascript">  
 
 function toggle_edit_info()
 {
@@ -11,9 +13,7 @@ function toggle_edit_info()
     $('#data-fields').slideUp("fast");
 
   }
-
-//      $('#data-fields').focus();
-} 
+  } 
 
 $(document).ready(function() {
   $('#data-fields').hide();
@@ -27,18 +27,6 @@ $(document).ready(function() {
 }); 
 
 </script>
-
-
-{% comment %}
-  <div id="profile_img">
-    {% if groupinfo.group.img %}
-      <img src="/static/uploaded_files/{{ groupinfo.group.url }}/profile/{{ groupinfo.group.img }}" alt="profile pic"/>
-    {% else %}
-      <p>(No Profile Photo)</p>
-    {% endif %}
-  </div>
-{% endcomment %}
-
 
 
 <div id="change-admin-data">
