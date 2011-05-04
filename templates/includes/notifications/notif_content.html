@@ -26,14 +26,20 @@
 </script>
 
 {% for pending_notif in pending_notifs %}
-  <div class="notif-box">
+  <div class="notif-box post-content">
     <div class="notif-text" id="notif-text-{{pending_notif.id}}">{{pending_notif.date}}: {{pending_notif.cast}}</div>
     <form method="post" action="{{ notif_view_url }}">{% csrf_token %}
         <input type="hidden" name="notif_id" value="{{pending_notif.id}}">
+	{% if pending_notif.cast.answer_no %}
         <button type="submit" class="notif-no" id="notif-no-{{pending_notif.id}}" 
-	    name="answer" value="no">Deny</button>
+	    name="answer" value="no">{{pending_notif.cast.answer_no}}</button>
+	{% endif %}
+	{% if pending_notif.cast.answer_yes %}
         <button type="submit" class="notif-yes" id="notif-yes-{{pending_notif.id}}"
-	    name="answer" value="yes">Approve</button>
+	    name="answer" value="yes">{{pending_notif.cast.answer_yes}}</button>
+	{% else %}
+	@@@@@
+	{% endif %}
     </form>
   </div>
 
