@@ -151,7 +151,7 @@
 
     <div class="edit-intro-box" style="display:none">
       <form name="edit_info" action="" method="post">{% csrf_token %}
-        <textarea style="width: 90%; height: 2em;">{{ groupinfo.data }}</textarea>
+        <textarea name="data_content" style="width: 90%; height: 2em;">{{ groupinfo.data }}</textarea>
         <br /><input type="submit" name="data_submit" value="Submit" />
         (<a class="edit-group-intro" href="/group/{{ group.url }}/">cancel</a>)
       </form>
