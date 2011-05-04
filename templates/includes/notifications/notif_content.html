@@ -26,7 +26,7 @@
 </script>
 
 {% for pending_notif in pending_notifs %}
-  <div class="notif-box post-content">
+  <div class="notif-box">
     <div class="notif-text" id="notif-text-{{pending_notif.id}}">{{pending_notif.date}}: {{pending_notif.cast}}</div>
     <form method="post" action="{{ notif_view_url }}">{% csrf_token %}
         <input type="hidden" name="notif_id" value="{{pending_notif.id}}">
@@ -46,9 +46,13 @@
 {% endfor %}
 
 {% for old_notif in old_notifs %}
-  <div class="notif-box post-content">
+  <div class="notif-box">
     <strong>{{old_notif.cast.answer_descrip}}</strong> {{old_notif.date}}: {{old_notif.cast}}
   </div>
 {% endfor %}
 
-
+{% if not old_notifs %}
+  {% if not pending_notifs %}
+    <p>No notifications</p>
+  {% endif %}
+{% endif %}

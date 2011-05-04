@@ -346,3 +346,17 @@ img.tall-resize, img.tall-resize {
     display: inline;
     color: blue;
 }
+
+/* ---------- Notifications/newsfeed stuff ---------- */
+/* notif boxes are practically the same as post boxes */
+.notif-box {
+    padding: .5em;
+    background-color: #F5F5F5;
+    text-align: left;
+    border: 1px solid #000000;
+    overflow: hidden;
+}
+
+.notif-box:hover {
+    background-color: #FAFAFA;
+}
