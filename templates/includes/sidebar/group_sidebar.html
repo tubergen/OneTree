@@ -40,6 +40,7 @@
         >(Change group logo)</a>
       {% endif %}
     {% endif %}
+  </div>
 
     <div class="change-logo-box" 
       {% ifnotequal extra_display_option 'display_change_group_logo' %}
@@ -57,8 +58,6 @@
       <br/>
       (<a class="change-logo" href="/group/{{ group.url }}/">cancel</a>)
     </div>
-
-  </div>
 
     {% comment %}
     {# list parent #}
