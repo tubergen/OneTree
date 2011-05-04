@@ -33,13 +33,25 @@
 
     {% if is_group_page or is_groupinfo_page or is_groupphotos_page%}
       {% if is_admin %}
-        <a id="change-logo-link" class="change-logo" href="/group/{{ group.url }}/info/edit">(Change group logo)</a>
+        <a id="change-logo-link" class="change-logo" href="/group/{{ group.url }}/info/edit"
+          {% ifequal extra_display_option 'display_change_group_logo' %}
+   	    style="display:none"
+          {% endifequal %}
+        >(Change group logo)</a>
       {% endif %}
     {% endif %}
 
-    <div class="change-logo-box" style="display:none">
-      <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    <div class="change-logo-box" 
+      {% ifnotequal extra_display_option 'display_change_group_logo' %}
+	 style="display:none"
+      {% endifnotequal %}
+    >
+      <form enctype="multipart/form-data" action="/group/{{group.url}}/" method="post">{% csrf_token %}
+	{% if errormsg %}
+  	  <span class="errormsg">{{ errormsg }}</span>
+	{% endif %}
         {{ form.as_p }}
+        <input type="hidden" name="change-logo-from-sidebar" value="Submit" />
         <input type="submit" value="Submit" />
       </form> 
       <br/>

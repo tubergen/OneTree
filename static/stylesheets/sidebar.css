@@ -83,3 +83,7 @@
     list-style-type: none;
     display: none;
 }
+
+.change-logo-box .errormsg {
+    color: red;
+}

@@ -208,6 +208,23 @@ def verify_group(group):
 
     return errormsg
 
+'''
+Checks if the request specifies that the errormsg should be suppressed,
+and returns suppress_wall_errormsg = True if that's the case.
+
+Also allows for specifying an extra display option that can be added to
+the context. Returns a tuple of the form (errormsg, suppress_wall_errormsg,
+                                          extra_display option).
+'''
+def suppress_errormsg(request, errormsg):
+    suppress_wall_errormsg = False;
+    if request.method == 'POST':
+        if request.POST.get('change-logo-from-sidebar'):
+            if errormsg:
+                suppress_wall_errormsg = True
+                return (errormsg, suppress_wall_errormsg, 'display_change_group_logo')
+    return (errormsg, suppress_wall_errormsg, None)
+
 #######################################
 # GROUP PAGE
 #######################################
@@ -304,14 +321,14 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
 
     posts_on_page = paginate_posts(request, posts)
 
-    print title
-    print where
-    print date
-    print time
+    # suppress errormsg if specified in request, and add extra option to context
+    (errormsg, suppress_wall_errormsg, extra_display_option) = suppress_errormsg(request, errormsg)
 
     return render_to_response('group/base_group.html',
                               {'posts': posts_on_page.object_list, # easy template compatibility
                               'posts_on_page': posts_on_page,
+                              'extra_display_option': extra_display_option,
+                              'suppress_wall_errormsg': suppress_wall_errormsg,
                               'is_admin': is_admin,
                               'is_superadmin': is_superadmin,
                               'is_group_page': is_group_page,
