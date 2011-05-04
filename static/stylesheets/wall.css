@@ -559,3 +559,8 @@
     padding-top: 0;
     text-decoration: underline;
 }
+
+.group-info-edit-box textarea {
+    width: 90%;
+    height: 5em;
+}

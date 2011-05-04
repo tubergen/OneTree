@@ -51,9 +51,9 @@
 	{% if errormsg %}
   	  <span class="errormsg">{{ errormsg }}</span>
 	{% endif %}
-        {{ form.as_p }}
+        <p style="width: 100px"><input type="file" name="file" id="id_file" /></p>
         <input type="hidden" name="change-logo-from-sidebar" value="Submit" />
-        <input type="submit" value="Submit" />
+        <p><input type="submit" value="Submit" /></p>
       </form> 
       <br/>
       (<a class="change-logo" href="/group/{{ group.url }}/">cancel</a>)
