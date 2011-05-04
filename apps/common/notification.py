@@ -87,6 +87,11 @@ class MembershipReq(Notification):
     # - sender=request.user
     # - recv_group=group
 
+    # Initialize - what exactly does this do?
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('pending').default = True
+        super(MembershipReq, self).__init__(*args, **kwargs)
+
     # default values for answer yes and no
     def _answer_yes(self):
         return 'Approve'
@@ -95,11 +100,6 @@ class MembershipReq(Notification):
     def _answer_no(self):
         return 'Deny'
     answer_no = property(_answer_no)
-
-    # Initialize - what exactly does this do?
-    def __init__(self, *args, **kwargs):
-        self._meta.get_field('pending').default = True
-        super(MembershipReq, self).__init__(*args, **kwargs)
 
     # get URL link of the group (for use in template)
     def get_group_link(self):
@@ -134,6 +134,7 @@ class MembershipReq(Notification):
                 return 'Approved'
             else:
                 return 'Denied'
+        return 'hihihi'
     answer_descrip = property(_get_answer_descrip)
     
     # Unicode for printing
@@ -157,6 +158,14 @@ class ParentReq(Notification):
         self._meta.get_field('pending').default = True
         super(ParentReq, self).__init__(*args, **kwargs)
 
+    # default values for answer yes and no
+    def _answer_yes(self):
+        return 'Approve'
+    answer_yes = property(_answer_yes)
+    
+    def _answer_no(self):
+        return 'Deny'
+    answer_no = property(_answer_no)
 
     # Get URL link of parent group
     def get_group_link(self):
