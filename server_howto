@@ -14,3 +14,9 @@ to clone, password is: passphrase
 
 may have to restart apache:
 sudo /etc/init.d/apache2 restart
+
+---
+
+also, search not working? run:
+
+./manage.py index --rebuild
