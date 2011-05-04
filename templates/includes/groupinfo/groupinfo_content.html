@@ -1,10 +1,12 @@
 <div class="members-list">
-   <h3 class="subtitle">Members</h3>
+  <h3 class="subtitle">Members</h3>
 
   <ul>
-  {% for member_prof in group.members.all %}
-    <li>{{member_prof.user}}</li>
-  {% endfor %}
+    {% for member_prof in group.members.all %}
+      <li>{{member_prof.user}}</li>
+      {% empty %}
+      <li>(no members yet)</li>
+    {% endfor %}
   </ul>
 </div>
 
@@ -12,9 +14,11 @@
 <div class="about-us">
   <h3 class="subtitle">About Us</h3>
 
+  <div id="main-content">
     {% if groupinfo.biginfo %}
       <p class="group-info-text">{{ groupinfo.biginfo }} </p>
     {% else %}
       <span class="no-info-msg">(Sorry, this group has yet to fill out their about us)</span>
     {% endif %}
+  </div>
 </div>
