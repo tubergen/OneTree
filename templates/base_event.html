@@ -2,19 +2,20 @@
 
 {% block top_content %}
 <span id="title"><h1>{{ event.event_title }}</h1></span>
-<h2><strong>Created by: </strong>{{ event.origin_group }}</h2>
+<h2><strong>Created by: </strong><a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a></h2>
+{# Back to <a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a> #}
 {% endblock %}
 
 {% block main_content %}
 <p>
-  <strong>Where: </strong>{{ event.event_place }}<br>
-  <strong>When: </strong>{{ event.event_date }}<br>
+  <strong>Where: </strong>{{ event.event_place }}<br />
+  <strong>When: </strong>{{ event.event_date }}
+  {% comment %}
   <strong>Flags: </strong>{{ event.flags.all|join:", " }}
-  <hr>
-  More info:<br>
+  {% endcomment %}
+  <hr />
+  More info:<br />
   {{ event.text }}
 </p>
-<br>
-<br>
-Back to <a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a>
+
 {% endblock %}
