@@ -150,6 +150,8 @@ def handle_submit(request, group):
     where = None
     date = None
     time = None
+    postdata = None
+    errortype = -1
     if request.method == 'POST':
         if not verify_admin(request, group):
             errormsg = "Get outta here, you liar!"
@@ -157,15 +159,15 @@ def handle_submit(request, group):
 
             # later insert logic to distinguish events vs announcement
             if 'eventclick' in request.POST and request.POST['eventclick']:
-                (errormsg, title, where, date, time) = handle_event(group, request)
+                (errormsg, title, where, date, time, postdata, errortype) = handle_event(group, request)
             else:
-                (errormsg, title, where, date, time) = handle_ann(group, request)
+                (errormsg, title, where, date, time, postdata, errortype) = handle_ann(group, request)
         else:
             if 'eventclick in request.POST':
-                (errormsg, title, where, date, time) = handle_event(group, request)
+                (errormsg, title, where, date, time, postdata, errortype) = handle_event(group, request)
             else:
                 errormsg = "Empty post? Surely you aren't *that* boring."
-    return (errormsg, title, where, date, time)
+    return (errormsg, title, where, date, time, postdata, errortype)
 
 def delete_picture(request):
     err_loc = ' See delete_picture in the group_page views.py.'
@@ -238,6 +240,8 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     where = None
     date = None
     time = None
+    postdata = ''
+  #  eventblurb = ''
 
     context = RequestContext(request)
     if request.user.is_authenticated():
@@ -272,12 +276,18 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     if 'data_submit' in request.POST:
         errormsg = handle_data(groupinfo, group, request)
         
+    errortype = -1
+
     # handle the wall post that was perhaps submitted
     if 'post_submit' in request.POST:
         #errormsg = handle_submit(request, group)
-        (errormsg, title, where, date, time) = handle_submit(request, group)
+        (errormsg, title, where, date, time, postdata, errortype) = handle_submit(request, group)
         if errormsg:
-            print errormsg
+            print errormsg      
+
+    # create shorter blurb for events
+ #   if postdata:
+ #       eventblurb = (postdata[:150] + '...') if len(postdata) > 150 else postdata 
 
     # get user's subscription status to this group
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
@@ -344,6 +354,8 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                                'where': where,
                                'date': date,
                                'time': time,
+                               'postdata': postdata,
+                               'errortype': errortype,
                               'group': group,
                               'children': children,
                               'siblings': siblings,
@@ -503,8 +515,8 @@ def upload_file(request, group_url, is_groupphotos_page=False):
         this_group = Group.objects.get(url=group_url)
         if len(this_group.pictures.all()) > 19 and is_groupphotos_page == True:
             errormsg = 'You have reached the maximum number of photos. Delete some before adding more.'
-        elif len(request.FILES['file'].name) > 15 and is_groupphotos_page == True:
-            errormsg = 'The name of your image is too long. Please rename your image so that it has no more than 15 characters (including the file extension) and try again.'
+        elif len(request.FILES['file'].name) > 30 and is_groupphotos_page == True:
+            errormsg = 'The name of your image is too long. Please rename your image so that it has no more than 30 characters (including the file extension) and try again.'
         else:
             form = UploadFileForm(request.POST, request.FILES)
             if request.FILES['file'].size > 1048576: # 1 MB
