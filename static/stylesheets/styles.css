@@ -146,6 +146,7 @@ a {
 
 .error-message {
     color: #FF0000;
+    text-align: center;
 }
 
 .form-field {
@@ -179,6 +180,14 @@ a {
 
 .form-error-list ul {
     list-style: none;
+    margin: 0;
+    margin-top: 1em;
+    padding: 0;
+}
+
+.form-error-list ul li {
+    margin: 0;
+    padding: 0;
 }
 
 .form-help {
