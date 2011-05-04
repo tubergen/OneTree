@@ -54,22 +54,22 @@
              return false;
         });
 
-        // override default link behavior
+        {% if is_admin %}
         var edit_on = false;
+        // override default link behavior
         $('.edit-group-intro').click(function(event) { 
              edit_on = !edit_on;
              if (edit_on) {
-                 $('.group-intro').hide();
-                 $('.edit-info-box').show();
-                 $('.edit-group-intro').html('cancel');
+                 $('.group-intro-text').hide();
+                 $('.edit-intro-box').show();
              }
              else {
-                 $('.group-intro').show();
-                 $('.edit-info-box').hide();
-                 $('.edit-group-intro').html('edit information');
+                 $('.group-intro-text').show();
+                 $('.edit-intro-box').hide();
              }
              return false; 
         });
+        {% endif %}
     });
 
     function send_subscribe_change()
@@ -140,22 +140,20 @@
 <div id="group-name-blurb">
   <h1 id="group-title">{{ group.name }}</h1>
   {% if groupinfo.data %}
-    <p class="group-intro" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
+    <p class="group-intro-text" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
   {% else %}
-    <p class="group-intro" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+    <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
   {% endif %}
   {% if is_admin %}
-    {% if not is_groupinfo_page %}
-      (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
-    {% endif %}
+    (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
   {% endif %}
 </div>
 
-    <div class="edit-info-box" style="display:none">
+    <div class="edit-intro-box" style="display:none">
       <form name="edit_info" action="" method="post">{% csrf_token %}
         <textarea name="data_content" cols=70 rows=2>{{ groupinfo.data }}</textarea>
         <br /><input type="submit" name="data_submit" value="Submit" />
-        (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">cancel</a>)
+        (<a class="edit-group-intro" href="/group/{{ group.url }}/">cancel</a>)
       </form>
     </div>
 

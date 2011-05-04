@@ -1,3 +1,26 @@
+<script type="text/javascript" charset="utf-8">
+    {% if user.is_authenticated %}
+    $(document).ready(function() {
+        {% if is_admin %}
+        var change_on = false;
+        // override default link behavior
+        $('.change-logo').click(function(event) { 
+             change_on = !change_on;
+             if (change_on) {
+                 $('#change-logo-link').hide();
+                 $('.change-logo-box').show();
+             }
+             else {
+                 $('#change-logo-link').show();
+                 $('.change-logo-box').hide();
+             }
+             return false; 
+        });
+        {% endif %}
+    });
+    {% endif %}
+</script>
+
 <div id="sidebar">
 
   <div id="group-photo">
@@ -10,9 +33,19 @@
 
     {% if is_group_page or is_groupinfo_page or is_groupphotos_page%}
       {% if is_admin %}
-        <a class="change-logo" href="/group/{{ group.url }}/info/edit">(Change group logo)</a>
+        <a id="change-logo-link" class="change-logo" href="/group/{{ group.url }}/info/edit">(Change group logo)</a>
       {% endif %}
     {% endif %}
+
+    <div class="change-logo-box" style="display:none">
+      <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+      </form> 
+      <br/>
+      (<a class="change-logo" href="/group/{{ group.url }}/">cancel</a>)
+    </div>
+
   </div>
 
     {% comment %}
