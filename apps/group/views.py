@@ -547,8 +547,10 @@ def handle_data(groupinfo, group, request):
 
         new_data = request.POST.get('data_content', None)
         if new_data:
-            if len(new_data) > 50: # 200 char limit
-                errormsg = 'The blurb you entered is too long. The limit is 50 characters.'
+            max_intro_len = 200  # char limit on group intro
+            if len(new_data) > max_intro_len: 
+                errormsg = 'The group introduction you entered is too long. The limit is ' \
+                           + str(max_intro_len) + ' characters.'
                 return errormsg
             groupinfo.data = new_data
             groupinfo.group = group
