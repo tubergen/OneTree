@@ -21,6 +21,18 @@
     var user_is_subscribed;
     var mem_status;
 
+    function toggle_blurb()
+    {
+       if ($('#edit-group-blurb').is(':visible'))
+       {
+          $('#edit-group-blurb').slideUp("fast");
+       }
+       else
+       {
+          $('#edit-group-blurb').slideDown("fast");
+       }
+    }
+
     {% if user.is_authenticated %}
     $(document).ready(function() {
         {% if user_is_subscribed %}
@@ -41,6 +53,9 @@
              change_membership(id);
              return false;
         });
+    
+        $('#edit-group-blurb').hide();
+
     });
 
     function send_subscribe_change()
@@ -109,8 +124,20 @@
     <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
     {% else %}
         <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-        {% endif %}{% if is_admin %}{% if not is_groupinfo_page %}(<a href="/group/{{ group.url }}/info/edit">edit info</a>){% endif %}{% endif %}</p>
+	  {% comment %}
+        {% endif %}{% if is_admin %}(<a href="/group/{{ group.url }}/info/edit">edit info</a>){% endif %}</p>
+	{% endcomment %}
+	{% endif %}{% if is_admin %}(<a href="#" onClick="toggle_blurb()">edit blurb</a>){% endif %}</p>
+
+<div id="edit-group-blurb">
+  <form name="edit_blurb" action="" method="post">{% csrf_token %}
+    <textarea name="blurb_content" cols=30 rows=3>{{ groupinfo.data }}</textarea>
+    	<br /><input type="submit" name="blurb_submit" value="Submit" />
+  </form>
 </div>
+
+</div>
+
 
 <ul class="group-interaction-buttons">
     {% if user.is_authenticated %}
