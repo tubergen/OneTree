@@ -476,10 +476,12 @@ def upload_file(request, group_url, is_groupphotos_page=False):
         this_group = Group.objects.get(url=group_url)
         if len(this_group.pictures.all()) > 19 and is_groupphotos_page == True:
             errormsg = 'You have reached the maximum number of photos. Delete some before adding more.'
+        elif len(request.FILES['file'].name) > 15 and is_groupphotos_page == True:
+            errormsg = 'The name of your image is too long. Please rename your image so that it has no more than 15 characters (including the file extension) and try again.'
         else:
             form = UploadFileForm(request.POST, request.FILES)
-            if request.FILES['file'].size > 524288: # 512 KB
-                errormsg = 'This image is too large to be uploaded. The size limit is 512KB.'
+            if request.FILES['file'].size > 1048576: # 1 MB
+                errormsg = 'This image is too large to be uploaded. The size limit is 1 MB.'
                 return (form, errormsg)
             if form.is_valid():
                 handle_uploaded_file(request.FILES['file'], group_url, is_groupphotos_page)
