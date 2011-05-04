@@ -155,9 +155,15 @@ class ParentReq(Notification):
         recv_group_with_url = '<a href="' + url + '">' + self.recv_group.name + '</a>'
         return recv_group_with_url
 
+    def get_sender_group_link(self):
+        url = self.sender_group.full_url
+        sender_group_with_url = '<a href="' + url + '">' + self.sender_group.name + '</a>'
+        return sender_group_with_url
+
     # Confirmation message
     def send_confirmed(self):
-        confirm_text = 'You are now a child of ' + self.get_group_link()
+#        confirm_text = self.get_childgroup_link()
+        confirm_text =  'Group ' + self.get_sender_group_link() + ' is now a child of ' + self.get_group_link()
         confirm = Confirmation(recv_group=self.sender_group, 
                                text=confirm_text)
         confirm.save()
@@ -194,6 +200,6 @@ class ParentReq(Notification):
             sender = self.sender_group.name
         except AttributeError:
             sender = ''        
-        req_text = "Group " + sender + ' has requested to be a child of ' + self.get_group_link()
+        req_text = "Group " + self.get_sender_group_link() + ' has requested to be a child of ' + self.get_group_link()
         return mark_safe(req_text)
     

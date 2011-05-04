@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models import Q
 
 from OneTree.apps.common.models import *
 from OneTree.apps.common.notification import *
@@ -11,6 +12,7 @@ from OneTree.apps.helpers.enums import PostType
 from OneTree.apps.helpers.paginate import paginate_posts
 from OneTree.apps.group.helpers import *
 from OneTree.apps.common.group import Group, GroupForm
+from django.forms.formsets import formset_factory
 
 from django import forms
 from django.db import models
@@ -371,6 +373,12 @@ def event_page(request, groupname, title):
 def create_group(request):
     if request.method == 'POST':        
         form = GroupForm(request.POST) # Form bound to POST data
+
+
+        print "========CREATE_GROUP================"
+
+
+
         if form.is_valid(): 
 
             # Save information of group to be registered but do not commit 
@@ -382,7 +390,7 @@ def create_group(request):
             new_group.parent = None
             new_group.save()
 
-            print "========CREATE_GROUP================"
+
             print "STATUS > Before entering req_parent"
 
             # Notify parent group
@@ -429,6 +437,8 @@ def create_group(request):
                     RequestContext(request)) # change redirect destination
     else:
         form = GroupForm() # An unbound form - can use this for error messages
+
+        form.fields['parent'].queryset = Group.objects.filter(Q(parent__isnull=False) | Q(toplevelgroup=True))
 
     return render_to_response('base_groupsignup.html', {'form': form,}, RequestContext(request))
 
