@@ -10,7 +10,7 @@ ADMINS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql', 
+        'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'django_database',
         'USER': 'root',
         'PASSWORD': 'root',

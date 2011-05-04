@@ -9,7 +9,10 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from django import forms
 from django.forms.util import ErrorList
+from django.forms.formsets import formset_factory
+from django.forms.models import modelformset_factory
 import os
+
 
 
 group_url = "/group/"
@@ -22,6 +25,7 @@ class Group(models.Model):
     name = models.CharField(max_length=15, verbose_name="name", unique=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
+    toplevelgroup = models.BooleanField()
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
     # profile picture
@@ -83,8 +87,22 @@ class Group(models.Model):
 
 # Create your models here.
 class GroupForm(ModelForm):
-    parent = forms.ModelChoiceField(Group.objects.all(), required=True,
-        empty_label=None)
+    # Parent as CharField (Comment out to revert back to dropdown menu)
+#    parent = forms.CharField()
+
+    def clean_parent(self):
+        print "STATUS > running clean_parent"
+        data = self.cleaned_data['parent']
+        if data is None:
+            raise forms.ValidationError("You are an orphaned group =[ Please specify a parent")
+        print "STATUS > printing cleaned_parent data: "
+
+        try:
+            parentgroup = Group.objects.get(name=data)
+        except:
+            raise forms.ValidationError("Specified parent does not exist")
+
+        return parentgroup
 
     error_css_class = 'error'
     required_css_class = 'required'
