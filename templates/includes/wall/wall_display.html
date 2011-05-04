@@ -15,9 +15,11 @@
 
 {# error is for post submitting #}
 {% if errormsg %}
-  <p class="wall-error-text">  
-    {{ errormsg }}
-  </p> 
+  {% if not suppress_wall_errormsg %}
+    <p class="wall-error-text">  
+      {{ errormsg }}
+    </p> 
+  {% endif %}
 {% endif %}
 
 {% if is_admin %}

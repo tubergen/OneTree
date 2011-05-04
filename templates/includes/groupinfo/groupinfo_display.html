@@ -5,9 +5,11 @@
 
 <div class="container-top-bar">
   {% if errormsg %}
-    <p class="wall-error-text">  
-      {{ errormsg }}
-    </p> 
+    {% if not suppress_wall_errormsg %}
+      <p class="wall-error-text">  
+        {{ errormsg }}
+      </p> 
+    {% endif %}
   {% else %}
     {% if request.POST %}
       <p class="wall-success-text">

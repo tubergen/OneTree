@@ -21,7 +21,6 @@
     margin: 0 auto;
     text-align: center;
     width: 180px;
-    min-height: 195px; 
 }
 
 .parent-word, .child-word {
@@ -82,4 +81,8 @@
     color: red;
     list-style-type: none;
     display: none;
+}
+
+.change-logo-box .errormsg {
+    color: red;
 }

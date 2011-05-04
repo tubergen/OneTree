@@ -1,39 +1,46 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" href="/static/stylesheets/search.css" type="text/css" media="screen" /> 
+  {{ block.super }}
+  <link rel="stylesheet" href="/static/stylesheets/search.css" type="text/css" media="screen" /> 
 {% endblock %}
 
 {% block top_content %}
-    <h1 id="title">search groups</h1>
+  <h1 id="title">search groups</h1>
 {% endblock %}
 
 {% block main_content %}
-    <div class="main-container">
-        <div id="search-form">
-            <form action='./' method='GET'>{% csrf_token %}
-                {% include "includes/forms/forms.html" %}
-                <p><input type="submit" value="Search!"/></p>
-            </form>
-        </div>
-        <div id="results">
-            {% if results %}
-                <h2>Search results:</h2>
-                <ol id="results-list">
-                    {% for hit in results %}
-                        <li><a href="/group/{{ hit.instance.url }}">{{ hit.instance }}</a> ({{ hit.percent }}% match)
-                            <ul>
-                                <li>
-                                    {{ hit.instance.groupinfo_set.all.data }}
-                                </li>
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ol>
-            {% else %}
-                <p>nothing :( but don't give up! try another query!</p>
-            {% endif %}
-        </div>
+  <div class="main-container">
+    <div id="search-form">
+      <form class="container-top-bar" action='./' method='GET'>
+        {{ form.query }}
+        <input type="submit" value="Search!"/>
+      </form>
+
     </div>
+    <div id="results">
+      {% if results %}
+        <h2 id="subtitle">Search results</h2>
+        <ol id="results-list">
+          {% for hit in results %}
+            <li><a href="/group/{{ hit.instance.url }}"><span style="font-size: 12pt;">{{ hit.instance }}</span></a> <span style="font-size: 8pt;">({{ hit.percent }}% match)</span>
+              {% if hit.instance.groupinfo_set.all %}
+                <ul>
+                  {% for info in hit.instance.groupinfo_set.all %}
+                    {% if info.data %}
+                      <li>
+                        <strong>Description:</strong> {{ info.data }}
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p style="text-align: center;">nothing :( but don't give up! try another search!</p>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
