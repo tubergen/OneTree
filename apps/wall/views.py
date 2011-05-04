@@ -161,6 +161,9 @@ def filter_wall(request):
                 # Note: attribute error occurs when user is AnonymousUser
                 voted_post_set = None
 
+            # don't want users renavigated to the URL for this ajax call
+            request.path = '/group/' + group.url
+
             return render_to_response('includes/wall/wall_content.html',
                                       {'posts': posts_on_page.object_list,
                                        'posts_on_page': posts_on_page,
