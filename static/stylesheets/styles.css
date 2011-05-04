@@ -162,7 +162,7 @@ a {
   clear: left;
   width: 39%;
   position: relative;
-  overflow: auto;
+  overflow: show;
   text-align: right;
 }
 
@@ -438,3 +438,5 @@ img.tall-resize, img.tall-resize {
 .align-left {
     text-align: left;
 }
+
+

@@ -2,8 +2,8 @@
   <h3 class="subtitle">Members</h3>
 
   <ul>
-    {% for member_prof in group.members.all %}
-      <li>{{member_prof.user}}</li>
+    {% for member_profile in group.members.all %}
+      <li>{{member_profile.user}}</li>
       {% empty %}
       <li>(no members yet)</li>
     {% endfor %}

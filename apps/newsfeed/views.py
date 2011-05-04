@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from OneTree.apps.common.models import *
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.enums import PostType
+from OneTree.apps.helpers.paginate import paginate_posts
 
 from heapq import heappushpop, heappush
 
@@ -22,6 +23,8 @@ def filter_newsfeed(request):
             filters.parse_request(request)
             filtered_posts = filters.get_news(user, start_date, end_date);
             profile = user.get_profile()
+
+            posts_on_page = paginate_posts(request, filtered_posts)
             
             ''' get user's list of voted posts ... this could potentially be
             a ton of posts. in future, we should probably just get the vote
@@ -36,7 +39,8 @@ def filter_newsfeed(request):
             request.path = '/news/'
             
             return render_to_response('includes/wall/wall_content.html',
-                                     {'posts': filtered_posts,
+                                     {'posts': posts_on_page.object_list,
+                                      'posts_on_page': posts_on_page,
                                       'voted_post_set': voted_post_set,                                      
                                       'is_newsfeed': True,
                                       'delete_post_view_url': '/_apps/newsfeed/views-remove_post/',},
@@ -106,9 +110,12 @@ def newsfeed(request):
     # most recent ones
     #pictures = Pictures.objects
     #.filter(created_date__lte=Y.created_date)
+
+    posts_on_page = paginate_posts(request, posts)
     
     return render_to_response('newsfeed/base_newsfeed.html',
-                              {'posts': posts,
+                              {'posts': posts_on_page.object_list,
+                              'posts_on_page': posts_on_page,                               
                               'pictures': new_pics,
                               'wall_subtitle': wall_subtitle,
                               'submit_off': True,
