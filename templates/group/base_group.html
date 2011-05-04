@@ -41,6 +41,23 @@
              change_membership(id);
              return false;
         });
+
+        // override default link behavior
+        var edit_on = false;
+        $('.edit-group-intro').click(function(event) { 
+             edit_on = !edit_on;
+             if (edit_on) {
+                 $('.group-intro').hide();
+                 $('.edit-info-box').show();
+                 $('.edit-group-intro').html('cancel');
+             }
+             else {
+                 $('.group-intro').show();
+                 $('.edit-info-box').hide();
+                 $('.edit-group-intro').html('edit information');
+             }
+             return false; 
+        });
     });
 
     function send_subscribe_change()
@@ -109,13 +126,26 @@
 </script>
 
 <div id="group-name-blurb">
-<h1 id="group-title">{{ group.name }}</h1>
-{% if groupinfo.data %}
-    <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
-    {% else %}
-        <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-        {% endif %}{% if is_admin %}{% if not is_groupinfo_page %}(<a href="/group/{{ group.url }}/info/edit">edit introduction</a>){% endif %}{% endif %}</p>
+  <h1 id="group-title">{{ group.name }}</h1>
+  {% if groupinfo.data %}
+    <p class="group-intro" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
+  {% else %}
+    <p class="group-intro" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+  {% endif %}
+  {% if is_admin %}
+    {% if not is_groupinfo_page %}
+      (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
+    {% endif %}
+  {% endif %}
 </div>
+
+    <div class="edit-info-box" style="display:none">
+      <form name="edit_info" action="" method="post">{% csrf_token %}
+        <textarea name="data_content" cols=70 rows=2>{{ groupinfo.data }}</textarea>
+        <br /><input type="submit" name="data_submit" value="Submit" />
+        (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">cancel</a>)
+      </form>
+    </div>
 
 <ul class="group-interaction-buttons">
     {% if user.is_authenticated %}
