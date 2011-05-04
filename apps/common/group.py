@@ -45,7 +45,7 @@ class Group(models.Model):
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     # bridge b/t group and tags?
-    keywords = models.CharField(max_length=30, blank=True, null=True, help_text="Used for search results")
+    keywords = models.CharField(max_length=30, blank=True, null=True, help_text="(separate by space; used for search results)")
     url = models.SlugField(max_length=30, 
                            unique=True, 
                            verbose_name=(group_url),)
@@ -78,35 +78,17 @@ class Group(models.Model):
         curNode = self
         curNode.inactive_parent.add(parent)
         
-   # def profile_location(self, filename):
-   #     return os.path.join('uploaded_files', str(self.url),
-   #                         'profile', filename)
-        
-
     def __unicode__(self):
         return self.name;
 
-#    def getPhoto(self, x):
-#        photo = self.photos[x]
-#        return re.sub("\W+", "", photo.lower())
-#        return str(self.photos[x])
-
 # Create your models here.
 class GroupForm(ModelForm):
-#    def is_valid(self):
-#        if 'url' in self and 'name' in self and 'parent' in self:
-#            return True
-#        return False
-#
-# do we have to do this? it seems like it validates already...
-    
-    # NEEDS VALIDATION?
+    parent = forms.ModelChoiceField(Group.objects.all(), required=True,
+        empty_label=None)
 
-    parent = models.ForeignKey('Group', related_name="child_set", blank=False,
-                               null=False, verbose_name="parent")
     error_css_class = 'error'
     required_css_class = 'required'
 
     class Meta:
         model = Group
-        fields = ('name', 'parent', 'url', 'keywords', ) # tags removed
+        fields = ('name', 'parent', 'url', 'keywords', )
