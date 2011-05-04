@@ -116,6 +116,12 @@ def req_parent(request, pending_parent_name, requesting_child):
 
         # If there is no pending membership request, perform a request
         if not pending_parent_req:
+            print "STATUS > printing requesting child: ",
+            print requesting_child
+            requesting_child.pending_parent_name = pending_parent
+            requesting_child.save()
+            print "STATUS > New pending parent name: ",
+            print requesting_child.pending_parent_name
             parent_req = ParentReq(sender_group=requesting_child,
                                    recv_group=pending_parent)
             print "STATUS > Pending notification created"
@@ -413,6 +419,7 @@ def create_group(request):
             # Create the group but prevent parent from being created
             pending_parent_name = new_group.parent
             new_group.parent = None
+            new_group.pending_parent = pending_parent_name
             new_group.save()
 
             print "STATUS > Before entering req_parent"
@@ -596,11 +603,32 @@ def handle_data(groupinfo, group, request):
             if pending_mem_req:
                 print "Withdrawing old parent request... "
                 pending_mem_req.delete()
+            else:
+                pass
+            
+            # Check that new pending parent name exist
+            check = Group.objects.filter(name=new_parent)
+            if not check:
+                print "IN HERE"
+                errormsg = 'No parent group with name specified'
+                return errormsg
+
+            # Save new pending parent name
+            group.pending_parent_name = new_parent
+            group.save()
 
             req_parent(request, pending_parent_name=new_parent, 
                        requesting_child=group)
         else:
             print "STATUS > No new parent"
+            print "STATUS > Group: ",
+            print group
+            group.pending_parent_name=""
+            group.save()        
+            errormsg = 'No parent group with name specified'
+            return errormsg
+
+
 
 
         new_admin = request.POST.get('new_admin', None)
