@@ -9,7 +9,10 @@ from itertools import chain
 from OneTree.apps.user.models import RegistrationProfile
 from django import forms
 from django.forms.util import ErrorList
+from django.forms.formsets import formset_factory
+from django.forms.models import modelformset_factory
 import os
+
 
 
 group_url = "/group/"
@@ -22,6 +25,7 @@ class Group(models.Model):
     name = models.CharField(max_length=15, verbose_name="name", unique=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
+    toplevelgroup = models.BooleanField()
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
     # profile picture
@@ -45,7 +49,7 @@ class Group(models.Model):
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     # bridge b/t group and tags?
-    keywords = models.CharField(max_length=30, blank=True, null=True, help_text="Used for search results")
+    keywords = models.CharField(max_length=30, blank=True, null=True, help_text="(separate by space; used for search results)")
     url = models.SlugField(max_length=30, 
                            unique=True, 
                            verbose_name=(group_url),)
@@ -78,35 +82,31 @@ class Group(models.Model):
         curNode = self
         curNode.inactive_parent.add(parent)
         
-   # def profile_location(self, filename):
-   #     return os.path.join('uploaded_files', str(self.url),
-   #                         'profile', filename)
-        
-
     def __unicode__(self):
         return self.name;
 
-#    def getPhoto(self, x):
-#        photo = self.photos[x]
-#        return re.sub("\W+", "", photo.lower())
-#        return str(self.photos[x])
-
 # Create your models here.
 class GroupForm(ModelForm):
-#    def is_valid(self):
-#        if 'url' in self and 'name' in self and 'parent' in self:
-#            return True
-#        return False
-#
-# do we have to do this? it seems like it validates already...
-    
-    # NEEDS VALIDATION?
+    # Parent as CharField (Comment out to revert back to dropdown menu)
+#    parent = forms.CharField()
 
-    parent = models.ForeignKey('Group', related_name="child_set", blank=False,
-                               null=False, verbose_name="parent")
+    def clean_parent(self):
+        print "STATUS > running clean_parent"
+        data = self.cleaned_data['parent']
+        if data is None:
+            raise forms.ValidationError("You are an orphaned group =[ Please specify a parent")
+        print "STATUS > printing cleaned_parent data: "
+
+        try:
+            parentgroup = Group.objects.get(name=data)
+        except:
+            raise forms.ValidationError("Specified parent does not exist")
+
+        return parentgroup
+
     error_css_class = 'error'
     required_css_class = 'required'
 
     class Meta:
         model = Group
-        fields = ('name', 'parent', 'url', 'keywords', ) # tags removed
+        fields = ('name', 'parent', 'url', 'keywords', )

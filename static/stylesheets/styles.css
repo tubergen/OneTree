@@ -147,6 +147,7 @@ a {
 
 .error-message {
     color: #FF0000;
+    text-align: center;
 }
 
 .form-field {
@@ -172,6 +173,32 @@ a {
 .form-error {
     background-color: #DDDDDD;
     color: #FF0000;
+}
+
+.form-error-list {
+    text-align: center;
+}
+
+.form-error-list ul {
+    list-style: none;
+    margin: 0;
+    margin-top: 1em;
+    padding: 0;
+}
+
+.form-error-list ul li {
+    margin: 0;
+    padding: 0;
+}
+
+.form-help {
+    font-style: italic;
+    font-size: 8pt;
+    color: #888888;
+}
+
+.form-error .form-help {
+    color: black;
 }
 
 .main-container {
@@ -378,4 +405,18 @@ img.tall-resize, img.tall-resize {
 .no-info-msg {
     float: none;
     text-align: center;    
+}
+
+/* ---------- Notifications/newsfeed stuff ---------- */
+/* notif boxes are practically the same as post boxes */
+.notif-box {
+    padding: .5em;
+    background-color: #F5F5F5;
+    text-align: left;
+    border: 1px solid #000000;
+    overflow: hidden;
+}
+
+.notif-box:hover {
+    background-color: #FAFAFA;
 }

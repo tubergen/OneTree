@@ -13,7 +13,7 @@ function toggle_edit_info()
     $('#data-fields').slideUp("fast");
 
   }
-  } 
+} 
 
 $(document).ready(function() {
   $('#data-fields').hide();
@@ -26,9 +26,9 @@ $(document).ready(function() {
   {% endif %}
 
   $('#super-admin-descrip-link').click(function(event) {
-     $('#super-admin-descrip-link').hide();
-     $('#super-admin-descrip').show();
-     return false;
+    $('#super-admin-descrip-link').hide();
+    $('#super-admin-descrip').show();
+    return false;
   });
 
   $('#super-admin-descrip-link').show();
@@ -44,28 +44,30 @@ $(document).ready(function() {
   </div>
 
   <div id="data-fields"> 
-    <div class="group-info-edit-box">
-      <h3>Change Group Logo</h3>
-      <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-      </form>
-    </div>
+    {% comment %}
+      <div class="group-info-edit-box">
+        <h3>Change Group Logo</h3>
+        <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
 
-    <div class="group-info-edit-box">
-      <h3>Edit Group Introduction</h3>
-      <form name="edit_info" action="" method="post">{% csrf_token %}
-        <textarea name="data_content" cols=40 rows=4>{{ groupinfo.data }}</textarea>
-        <br /><input type="submit" name="data_submit" value="Submit" />
-      </form>
-    </div>
+      <div class="group-info-edit-box">
+        <h3>Edit Group Introduction</h3>
+        <form name="edit_info" action="" method="post">{% csrf_token %}
+          <textarea name="data_content">{{ groupinfo.data }}</textarea>
+          <br /><input type="submit" name="data_submit" value="Submit" />
+        </form>
+      </div>
+    {% endcomment %}
 
     <div class="group-info-edit-box">
       <h3>Edit About Us</h3>
       <form name="edit_biginfo" action="" method="post">{% csrf_token %}
-	<textarea name="biginfo_content" cols=40 rows=4>{{ groupinfo.biginfo }}</textarea>
-	<br /><input type="submit" name="data_submit" value="Submit" />
-	</form>
+        <textarea name="biginfo_content">{{ groupinfo.biginfo }}</textarea>
+        <br /><input type="submit" name="data_submit" value="Submit" />
+      </form>
     </div>
 
     {% if is_superadmin %}
@@ -100,7 +102,7 @@ $(document).ready(function() {
 
       <div class="group-info-edit-box">
         <h3>Transfer Group SuperAdmin</h3> 
-	<a id="super-admin-descrip-link" href="#super-admin-descrip-link" style="display: none">What's this?</a>
+        <a id="super-admin-descrip-link" href="#super-admin-descrip-link" style="display: none">What's this?</a>
 
         <p id="super-admin-descrip"> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. By default you will become a normal group admin.</p>
         <form action="" method="post">{% csrf_token %}

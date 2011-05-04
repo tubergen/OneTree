@@ -194,13 +194,6 @@
     background-color: #F5F5F5;
     text-align: left;
     border: 1px solid #000000;
- /*   border-radius: 10px;
-    border-bottom-right-radius: 0;
-    -moz-border-radius: 10px;
-    -moz-border-bottom-right-radius: 0;
-    -webkit-border-radius: 10px;
-    -webkit-border-bottom-right-radius: 0;
-    */
     overflow: hidden;
 }
 
@@ -558,4 +551,9 @@
     margin-top: 0;
     padding-top: 0;
     text-decoration: underline;
+}
+
+.group-info-edit-box textarea {
+    width: 90%;
+    height: 5em;
 }
