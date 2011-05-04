@@ -173,6 +173,24 @@ a {
     color: #FF0000;
 }
 
+.form-error-list {
+    text-align: center;
+}
+
+.form-error-list ul {
+    list-style: none;
+}
+
+.form-help {
+    font-style: italic;
+    font-size: 8pt;
+    color: #888888;
+}
+
+.form-error .form-help {
+    color: black;
+}
+
 .main-container {
     word-break: break-word;
     text-align: center;
