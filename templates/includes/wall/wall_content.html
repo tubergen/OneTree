@@ -242,7 +242,17 @@ function delete_comment(comment_id)
                 {% if post.flags.all %} <p class="event-flags">{{ post.flags.all|join:", " }}</p>{% endif %}
               {% endif %}
 
-              <div class="post-text">{{ post.text }}</div>
+	      {% if post.event_date %}
+		 {% if post.text|length >= 200 %}
+	 	 <div class="post-text">{{ post.text|slice:":200"|truncatewords:20 }}... <a href="/group/{{ group.url }}/event/{{ post.event_url }}">(more info)</a></div>
+		 {% else %}
+		 <div class="post-text">{{ post.text }}</div>
+		 {% endif %}
+	      {% else %}
+	       <div class="post-text">{{ post.text }}</div>
+	      {% endif %}
+
+
               <div class="post-bottom-bar">
                 <div class="post-reply-button">
                   {% if user.is_authenticated %}
@@ -313,21 +323,10 @@ function delete_comment(comment_id)
           {# end top-level comment #}
 
           {# hr #}
-          {% if not forloop.last %}
-            {% if comment_count > 5 %}
-              <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
-            {% else %}
-              <hr />
-            {% endif %}
-          {% endif %}
-          {% if not comment.comment_set.all %}
-            {% if forloop.last %}
-              {% if comment_count > 5 %}
-                <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
-              {% else %}
-                <hr />
-              {% endif %}
-            {% endif %}
+          {% if comment_count > 5 %}
+            <hr class="hr-too-many hr-too-many-{{forloop.parentloop.counter}}" />
+          {% else %}
+            <hr />
           {% endif %}
 
           {# posting of a reply to a comment #}

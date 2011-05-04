@@ -9,6 +9,8 @@ def handle_event(group, request):
     where = None
     date = None
     timeevent = None
+    postdata = request.POST['post_content']
+    posttype = 1
     maxlen = 30
     if not request.POST['title'] or not request.POST['where'] or not request.POST['date'] or not request.POST['time'] or not request.POST['post_content']:
         errormsg = 'Please fill out all required fields for an event.'
@@ -16,6 +18,7 @@ def handle_event(group, request):
         where = request.POST['where']
         date  = request.POST['date']
         timeevent = request.POST['time']
+        postdata = request.POST['post_content']
     
     else:
         title = request.POST['title'].strip()
@@ -25,14 +28,13 @@ def handle_event(group, request):
             where = request.POST['where']
             date  = request.POST['date']
             timeevent = request.POST['time']
-            return (errormsg, name, where, date, timeevent)
+            postdata = request.POST['post_content']
+            return (errormsg, name, where, date, timeevent, postdata, posttype)
         url = string.join(request.POST['title'].split(), '')
         url = url.strip()
         when = request.POST['date'] + ' '
         url += when
         url = url.strip()
-        print when
-        print url
         place = request.POST['where'].strip()
         if len(place) > maxlen:
             errormsg = 'Error: Location length must not exceed '+str(maxlen)+' characters.\n Your location is currently '+str(len(place))+' characters long.'
@@ -40,7 +42,8 @@ def handle_event(group, request):
             where = request.POST['where']
             date  = request.POST['date']
             timeevent = request.POST['time']
-            return (errormsg, name, where, date, timeevent)
+            postdata = request.POST['post_content']
+            return (errormsg, name, where, date, timeevent, postdata, posttype)
         '''      flaglist = request.POST['flags'].split(',')
         for x in range(0, len(flaglist)):
             flaglist[x] = flaglist[x].strip()
@@ -61,7 +64,8 @@ def handle_event(group, request):
             where = request.POST['where']
             date  = request.POST['date']
             timeevent = request.POST['time']
-            return (errormsg, name, where, date, timeevent)
+            postdata = request.POST['post_content']
+            return (errormsg, name, where, date, timeevent, postdata, posttype)
                         
         if request.POST['timedrop'] == 'am':
             if time[0] == '12':
@@ -91,17 +95,25 @@ def handle_event(group, request):
         group.events.add(new_event)
         group.addEventToParent(new_event) 
 
-    return (errormsg, name, where, date, timeevent)
+    return (errormsg, name, where, date, timeevent, postdata, posttype)
 
 
 # code for handling announcement
 def handle_ann(group, request):
-    new_announcement = Announcement(text=request.POST['post_content'],
-                                    upvotes = 0,
-                                    downvotes = 0,
-                                    origin_group=group)
+    errormsg = None
+    posttype = 0
+    postdata = request.POST['post_content']
+    maxlen = 400
+    if len(postdata) > maxlen:
+        errormsg = 'Your post is too long. The maximum length is ' + str(maxlen) + ' characters. You currently have ' + str(len(postdata)) + ' characters.'
+    else:
+        new_announcement = Announcement(text=request.POST['post_content'],
+                                        upvotes = 0,
+                                        downvotes = 0,
+                                        origin_group=group)
+        
+        new_announcement.save()
+        group.announcements.add(new_announcement)
+        group.addAnnToParent(new_announcement)
 
-    new_announcement.save()
-    group.announcements.add(new_announcement)
-    group.addAnnToParent(new_announcement)
-    return (None, None, None, None, None)
+    return (errormsg, None, None, None, None, postdata, posttype)
