@@ -19,7 +19,7 @@ group_url = "/group/"
 # ===============================
 class Group(models.Model):
 
-    name = models.CharField(max_length=30, verbose_name="name", unique=True)
+    name = models.CharField(max_length=15, verbose_name="name", unique=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
@@ -32,11 +32,6 @@ class Group(models.Model):
                             'profile', filename)
 
     img = models.ImageField(upload_to=profile_location, blank=True, null=True)
-
-#    photos = []
-#    for x in range(0, 19):
-#        photos.append(models.CharField(max_length=50, null=True, blank=True))
-#    photos = [models.CharField(max_length=50, null=True, blank=True)]*20
 
     #users = models.ManyToManyField(auth.models.User, through='Membership', 
     #                               blank=True, null=True, related_name='users')
