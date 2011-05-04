@@ -33,9 +33,6 @@ class Group(models.Model):
 
     img = models.ImageField(upload_to=profile_location, blank=True, null=True)
 
-    #users = models.ManyToManyField(auth.models.User, through='Membership', 
-    #                               blank=True, null=True, related_name='users')
-
     # A group can have many posts. A post can appear on many groups.
     announcements = models.ManyToManyField('Announcement', blank=True, null=True)
     events = models.ManyToManyField('Event', blank=True, null=True)
@@ -48,7 +45,7 @@ class Group(models.Model):
     
     tags = models.ManyToManyField('Tag', blank=True, null=True)
     # bridge b/t group and tags?
-    keywords = models.CharField(max_length=30, blank=True, null=True)
+    keywords = models.CharField(max_length=30, blank=True, null=True, help_text="Used for search results")
     url = models.SlugField(max_length=30, 
                            unique=True, 
                            verbose_name=(group_url),)
@@ -105,7 +102,8 @@ class GroupForm(ModelForm):
     
     # NEEDS VALIDATION?
 
-
+    parent = models.ForeignKey('Group', related_name="child_set", blank=False,
+                               null=False, verbose_name="parent")
     error_css_class = 'error'
     required_css_class = 'required'
 

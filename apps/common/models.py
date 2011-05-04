@@ -11,6 +11,9 @@ from OneTree.apps.user.models import RegistrationProfile
 from OneTree.apps.common.group import Group
 from OneTree.apps.common.notification import *
 
+# for search
+import djapian
+
 # for pictures
 import os
 from time import strftime

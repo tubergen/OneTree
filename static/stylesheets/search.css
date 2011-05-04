@@ -1,3 +1,15 @@
 #search-form {
     text-align: center;
 }
+
+#results {
+    text-align: left;
+}
+
+#results #subtitle {
+    margin-left: 1em;
+}
+
+#results-list > li {
+    margin-top: 1em;
+}
