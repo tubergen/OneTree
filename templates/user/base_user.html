@@ -1,44 +1,36 @@
-{% extends "base_sidebar.html" %}
+{% extends "base.html" %}
 
 {% block top_content %}
-<span id="title"><h1>{{ user.username }}</h1></span>
+  <h1 id="title">{{ user.username }}</h1></span>
 {% endblock %}
 
-{% block left_content %}
-
-<strong><p>Subscribed Groups</p></strong>
-
-{% for group in userprofile.subscriptions.all %}
-<a href="/group/{{ group }}">{{ group }}</a>
-
-{% empty %}
-Not subscribed to any groups at the moment
-{% endfor %}
-
-{% endblock %}
 
 {% block main_content %}
+  <div class="main-container">
+    <div class="container-top-bar">
+      {% if not active %}
+        <strong>Your account is still inactive.</strong> Please check your e-mail for the activation key.
+      {% else %}
+        <strong>Welcome, {{ user.username }}!</strong> Manage your settings and groups below.
+      {% endif %}
+    </div>
 
-{% if not active %}
-<p><strong>Your account is still inactive. Please check your e-mail for the activation key.</strong></p>
-{% endif %}
-<ul class="account">
-<li><a href="account/changepwd">Change my password</a></li>
+    <div id="main-content" class="align-left">
+      <h3 class="list-title">Account settings</h3>
+      <ul class="account-list">
+        <li><a href="account/changepwd">Change my password</a></li>
+      </ul>
 
+      {% if groups %}
+        <h3 class="list-title">Groups you're admin of</h3>
+        <ul class="account-list">
+          {% for group in groups %}
+            <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
 
-<p>
-  {% if groups %}
-  <strong>You are currently administering these groups:</strong> <br/>
-
-  <ul class="groups">
-    {% for group in groups %}
-    <li><a href="/group/{{ group.url }}">{{ group.name }} </a></li>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <p>You are not currently an administrator of any groups.</p>
-  {% endif %}
-
-</p>
-
-{% endblock %}
+  </p>
+</div>
+  {% endblock %}

@@ -10,6 +10,7 @@ body {
     font-size: 10pt;
     margin: 0;
     padding: 0;
+    word-wrap: break-word;
 }
 
 textarea, input {
@@ -386,4 +387,21 @@ img.tall-resize, img.tall-resize {
 
 .notif-box:hover {
     background-color: #FAFAFA;
+}
+
+/* ---------- user profile page ---------- */
+.account-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 2em;
+}
+
+.list-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.align-left {
+    text-align: left;
 }
