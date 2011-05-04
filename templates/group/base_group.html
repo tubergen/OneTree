@@ -49,6 +49,11 @@
         var data = {};
         data["group_id"] = {{ group.id }};
 
+        if (user_is_subscribed) {
+           if (!confirm("Are you sure you want to unsubscribe from this group?"))
+               return false;
+        }
+
         $.post(url, data, function() {
             user_is_subscribed = !user_is_subscribed;
             if (user_is_subscribed) {
