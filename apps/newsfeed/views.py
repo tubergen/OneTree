@@ -31,6 +31,9 @@ def filter_newsfeed(request):
             except (AttributeError):
                 # Note: attribute error occurs when user is AnonymousUser
                 voted_post_set = None
+
+            # don't want users renavigated to the URL for this ajax call
+            request.path = '/news/'
             
             return render_to_response('includes/wall/wall_content.html',
                                      {'posts': filtered_posts,

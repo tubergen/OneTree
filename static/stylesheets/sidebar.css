@@ -21,7 +21,7 @@
     margin: 0 auto;
     text-align: center;
     width: 180px;
-    height: 195px;
+    min-height: 195px; 
 }
 
 .parent-word, .child-word {
@@ -64,4 +64,22 @@
 .change-logo {
     text-align: center;
     font-size: 8pt;
+}
+
+.change-logo-box input {
+    font-size: 8pt;
+    float: left;
+}
+
+.change-logo-box {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.change-logo-box .errorlist {
+    padding: 0;
+    margin: 0;
+    color: red;
+    list-style-type: none;
+    display: none;
 }

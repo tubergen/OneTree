@@ -105,7 +105,10 @@
 }
 
 .group-interaction-buttons {
-    position: absolute;
+/*  this was messing up "edit introduction."
+    hopefully it's ok to comment it out.
+  
+    position: absolute; */
     bottom: 0px;
 }
 .group-interaction-buttons li {

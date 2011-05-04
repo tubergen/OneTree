@@ -106,7 +106,7 @@ class Event(Post):
     event_title = models.CharField(max_length=30)
     event_place = models.CharField(max_length=30)
     event_date = models.DateTimeField()
-    event_url = models.CharField(max_length=30, unique=True)
+    event_url = models.CharField(max_length=40, unique=True)
     flags = models.ManyToManyField('Flag')
     post_type = PostType.EVENT
 
@@ -187,9 +187,10 @@ class Tag(models.Model):
 # OTHER -- WE MAY OR MAY NOT WANT TO PUT THIS HERE?
 class GroupInfo(models.Model):
     group = models.ForeignKey('Group')
-    data = models.CharField(max_length=150)
+    data = models.CharField(max_length=50)
     biginfo = models.TextField()
     # blurb should be what data is now
+    # don't feel like changing all of those names, just leave as data
     # blurb = models.CharField(max_length=50)
 
 ###################################

@@ -19,7 +19,7 @@ group_url = "/group/"
 # ===============================
 class Group(models.Model):
 
-    name = models.CharField(max_length=30, verbose_name="name", unique=True)
+    name = models.CharField(max_length=15, verbose_name="name", unique=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",

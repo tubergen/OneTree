@@ -21,6 +21,18 @@
     var user_is_subscribed;
     var mem_status;
 
+    function toggle_blurb()
+    {
+       if ($('#edit-group-blurb').is(':visible'))
+       {
+          $('#edit-group-blurb').slideUp("fast");
+       }
+       else
+       {
+          $('#edit-group-blurb').slideDown("fast");
+       }
+    }
+
     {% if user.is_authenticated %}
     $(document).ready(function() {
         {% if user_is_subscribed %}
@@ -41,6 +53,23 @@
              change_membership(id);
              return false;
         });
+
+        {% if is_admin %}
+        var edit_on = false;
+        // override default link behavior
+        $('.edit-group-intro').click(function(event) { 
+             edit_on = !edit_on;
+             if (edit_on) {
+                 $('.group-intro-text').hide();
+                 $('.edit-intro-box').show();
+             }
+             else {
+                 $('.group-intro-text').show();
+                 $('.edit-intro-box').hide();
+             }
+             return false; 
+        });
+        {% endif %}
     });
 
     function send_subscribe_change()
@@ -48,6 +77,11 @@
         var url = "{{ subscribe_view_url }}";
         var data = {};
         data["group_id"] = {{ group.id }};
+
+        if (user_is_subscribed) {
+           if (!confirm("Are you sure you want to unsubscribe from this group?"))
+               return false;
+        }
 
         $.post(url, data, function() {
             user_is_subscribed = !user_is_subscribed;
@@ -104,13 +138,24 @@
 </script>
 
 <div id="group-name-blurb">
-<h1 id="group-title">{{ group.name }}</h1>
-{% if groupinfo.data %}
-    <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
-    {% else %}
-        <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-        {% endif %}{% if is_admin %}{% if not is_groupinfo_page %}(<a href="/group/{{ group.url }}/info/edit">edit info</a>){% endif %}{% endif %}</p>
+  <h1 id="group-title">{{ group.name }}</h1>
+  {% if groupinfo.data %}
+    <p class="group-intro-text" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
+  {% else %}
+    <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+  {% endif %}
+  {% if is_admin %}
+    (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
+  {% endif %}
 </div>
+
+    <div class="edit-intro-box" style="display:none">
+      <form name="edit_info" action="" method="post">{% csrf_token %}
+        <textarea name="data_content" cols=70 rows=2>{{ groupinfo.data }}</textarea>
+        <br /><input type="submit" name="data_submit" value="Submit" />
+        (<a class="edit-group-intro" href="/group/{{ group.url }}/">cancel</a>)
+      </form>
+    </div>
 
 <ul class="group-interaction-buttons">
     {% if user.is_authenticated %}
