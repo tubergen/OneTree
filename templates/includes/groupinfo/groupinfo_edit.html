@@ -73,6 +73,17 @@ $(document).ready(function() {
     {% if is_superadmin %}
 
       <div class="group-info-edit-box">
+        <h3>Request New Parent</h3>
+	<p>This will change the current parent of this group.</p>
+        <form action="" method="post">{% csrf_token %}
+          <span>Parent group name:</span>
+          <input type="text" name="new_parent" />
+          <input type="submit" name="data_submit" value="Request" />
+        </form>
+      </div>
+
+
+      <div class="group-info-edit-box">
         <h3>Add Group Admin</h3>
         <form action="" method="post">{% csrf_token %}
           <span>Username:</span>

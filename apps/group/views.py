@@ -390,11 +390,7 @@ def event_page(request, groupname, title):
 def create_group(request):
     if request.method == 'POST':        
         form = GroupForm(request.POST) # Form bound to POST data
-
-
         print "========CREATE_GROUP================"
-
-
 
         if form.is_valid(): 
 
@@ -406,7 +402,6 @@ def create_group(request):
             pending_parent_name = new_group.parent
             new_group.parent = None
             new_group.save()
-
 
             print "STATUS > Before entering req_parent"
 
@@ -574,6 +569,27 @@ def handle_data(groupinfo, group, request):
             groupinfo.save()
         else:
             print 'no biginfo'
+
+        new_parent = request.POST.get('new_parent', None)
+        if new_parent:
+            print "STATUS > new parent name: ",
+            print new_parent
+            print "STATUS > group: ",
+            print group
+            
+            pending_mem_req = ParentReq.objects.filter(sender_group=group, pending=True)
+            print "STATUS > Printing pending_mem_req =========="
+            print pending_mem_req
+
+            if pending_mem_req:
+                print "Withdrawing old parent request... "
+                pending_mem_req.delete()
+
+            req_parent(request, pending_parent_name=new_parent, 
+                       requesting_child=group)
+        else:
+            print "STATUS > No new parent"
+
 
         new_admin = request.POST.get('new_admin', None)
         if new_admin:
