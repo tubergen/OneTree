@@ -37,6 +37,10 @@ class Notification(InheritanceCastModel):
     # true if answer was yes, false if it was no
     answered_yes = models.BooleanField(default=False)
 
+    # default values for answer yes and no
+    answer_yes = None
+    answer_no = None
+    
     class Meta:
         ordering = ['-date']
 
@@ -87,6 +91,10 @@ class MembershipReq(Notification):
     # - sender=request.user
     # - recv_group=group
 
+    # default values for answer yes and no
+    answer_yes = 'Approved'
+    answer_no = 'Denied'
+
     # Initialize - what exactly does this do?
     def __init__(self, *args, **kwargs):
         self._meta.get_field('pending').default = True
@@ -122,9 +130,9 @@ class MembershipReq(Notification):
     def _get_answer_descrip(self):
         if not self.pending:
             if self.answered_yes:
-                return 'Approved'
+                return answer_yes
             else:
-                return 'Denied'
+                return answer_no
     answer_descrip = property(_get_answer_descrip)
     
     # Unicode for printing

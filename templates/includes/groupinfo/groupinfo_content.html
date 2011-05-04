@@ -1,9 +1,20 @@
-<h3 id="subtitle">About Us</h3>
+<div class="members-list">
+   <h3 class="subtitle">Members</h3>
 
-<p>
-  {% if groupinfo.biginfo %}
-    {{ groupinfo.biginfo }}
-  {% else %}
-    (Sorry, this group has yet to fill out their personal info)
-  {% endif %}
-</p>
+  <ul>
+  {% for member_prof in group.members.all %}
+    <li>{{member_prof.user}}</li>
+  {% endfor %}
+  </ul>
+</div>
+
+
+<div class="about-us">
+  <h3 class="subtitle">About Us</h3>
+
+    {% if groupinfo.biginfo %}
+      <p class="group-info-text">{{ groupinfo.biginfo }} </p>
+    {% else %}
+      <span class="no-info-msg">(Sorry, this group has yet to fill out their about us)</span>
+    {% endif %}
+</div>

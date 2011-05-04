@@ -96,7 +96,8 @@ a {
     overflow: hidden;
 }
 
-#subtitle, #title, #group-title {
+/* subtitle really shouldn't be an id imo */
+.subtitle, #subtitle, #title, #group-title {
     font-family: Verdana, Arial, sans-serif;
     padding: 0;
     margin: 1em 0;
@@ -202,6 +203,7 @@ a {
 }
 
 .main-container {
+    overflow: hidden;
     word-break: break-word;
     text-align: center;
     margin: 0 auto 1em auto;
@@ -373,6 +375,37 @@ img.tall-resize, img.tall-resize {
     cursor: pointer;
     display: inline;
     color: blue;
+}
+
+.group-info-text {
+    text-align: left;
+}
+
+.about-us {
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 550px;
+}
+
+.members-list {
+    padding-right: 10px;
+    float: right;
+    width: 170px;
+    text-align: center;
+}
+
+.members-list ul {
+    display: block;
+    text-align: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.no-info-msg {
+    float: none;
+    text-align: center;    
 }
 
 /* ---------- Notifications/newsfeed stuff ---------- */
