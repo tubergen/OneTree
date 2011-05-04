@@ -129,7 +129,7 @@
     <p style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
     {% else %}
         <p style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-<<<<<<< HEAD
+
 	  {% comment %}
         {% endif %}{% if is_admin %}(<a href="/group/{{ group.url }}/info/edit">edit info</a>){% endif %}</p>
 	{% endcomment %}
@@ -140,9 +140,11 @@
     <textarea name="blurb_content" cols=30 rows=3>{{ groupinfo.data }}</textarea>
     	<br /><input type="submit" name="blurb_submit" value="Submit" />
   </form>
-=======
+
+  {% comment %}
         {% endif %}{% if is_admin %}{% if not is_groupinfo_page %}(<a href="/group/{{ group.url }}/info/edit">edit introduction</a>){% endif %}{% endif %}</p>
->>>>>>> a1cb632eb6a1ff5afcf7b2e4379caca26b2aa085
+{% endcomment %}
+
 </div>
 
 </div>
