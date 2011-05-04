@@ -21,6 +21,18 @@
     var user_is_subscribed;
     var mem_status;
 
+    function toggle_blurb()
+    {
+       if ($('#edit-group-blurb').is(':visible'))
+       {
+          $('#edit-group-blurb').slideUp("fast");
+       }
+       else
+       {
+          $('#edit-group-blurb').slideDown("fast");
+       }
+    }
+
     {% if user.is_authenticated %}
     $(document).ready(function() {
         {% if user_is_subscribed %}
