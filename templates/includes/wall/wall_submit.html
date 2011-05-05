@@ -48,6 +48,7 @@
 
 </script>
 {% if not group.pending_parent %}
+{% if group.parent or group.toplevelgroup %}
 <div id="wall-submit">
 
   <form name="add_post_form" action="" method="post">{% csrf_token %}
@@ -74,4 +75,5 @@
 
   </form>
 </div>
+{% endif %}
 {% endif %}
