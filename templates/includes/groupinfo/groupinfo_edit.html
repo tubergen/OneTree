@@ -26,8 +26,7 @@ $(document).ready(function() {
   {% endif %}
 
   $('#super-admin-descrip-link').click(function(event) {
-    $('#super-admin-descrip-link').hide();
-    $('#super-admin-descrip').show();
+    $('#super-admin-descrip').toggle();
     return false;
   });
 
@@ -118,9 +117,9 @@ $(document).ready(function() {
 
       {% if not group.pending_parent %}
       <div class="group-info-edit-box">
-        <h3>Transfer Group SuperAdmin</h3> 
-        <a id="super-admin-descrip-link" href="#super-admin-descrip-link" style="display: none">What's this?</a>
-
+        <div style="margin-bottom: 1em;"><h3 style="display: inline;">Transfer Group SuperAdmin</h3> 
+        <a id="super-admin-descrip-link" href="#super-admin-descrip-link" style="display: none; font-style: italic; font-size: 8pt;">(what's this?)</a>
+      </div>
         <p id="super-admin-descrip"> You are currently the group superadmin. The superadmin is an admin with the additional ability to add and remove other administrators. If you choose to transfer the group superadmin to another user, you will be unable to recover this privilege unless the new superadmin transfers it back to you. By default you will become a normal group admin.</p>
         <form action="" method="post">{% csrf_token %}
           <span>Username:</span>
