@@ -37,7 +37,7 @@ is commented out.
    }
 
    function create_picker() {
-      $('#inlineDatepicker').datepick({multiSelect: 1,
+      $('#inlineDatepicker').datepick({
                                        onSelect: filter_date_no_range,
                                        showOtherMonths: true,
                                        selectOtherMonths: true,
@@ -51,11 +51,22 @@ is commented out.
    var date1_str;
    var range_selected = false;
 
+   var last_date = null;
    function filter_date_no_range(dates) {
        if (dates.length < 1) {
 	   reset_filters();
            return;
        }
+       else if (last_date != null && dates[0].getTime() == last_date.getTime())
+       {
+           reset_datepicker();
+	   last_date = null;
+	   return;
+       }
+       else { 
+           last_date = dates[0];
+       }
+
        var dates_clone = dates.slice(0);
        dates_clone[1] = dates_clone[0];
        filter_date(dates_clone);
@@ -91,11 +102,15 @@ is commented out.
 
    function reset_datepicker() {
       $('#inlineDatepicker').datepick('destroy');
+      $('#inlineDatepicker').empty();
       create_picker();
       reset_filters();
+
+      /*
       cal_click_count = 0;
       range_selected = false;
       $('.datepick-status').html('Select a date range');
+      */
    }
 
    function format_amer_date(date) {
