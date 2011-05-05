@@ -30,7 +30,7 @@ def create_user(request):
 
             user = authenticate(username=username, password=password)
             if user is None:
-#                print "Sorry"
+                print "Sorry"
             else:
                 print login(request, user)
 
