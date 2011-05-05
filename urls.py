@@ -12,7 +12,7 @@ from django.contrib.auth.views import logout, password_change, password_change_d
 from OneTree.apps.auth.views import login
 from django.views.generic.simple import direct_to_template
 
-#import haystack
+#import djapian
 import djapian
 
 # Uncomment the next two lines to enable the admin:

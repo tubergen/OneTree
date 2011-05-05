@@ -161,7 +161,7 @@ def user_page(request, username):
                                'active': user.is_active, },
                               context_instance=RequestContext(request))    
 
-@login_required
+@login_required # jorge: don't think this is used?
 def user_account(request, username):
     context=RequestContext(request)
 

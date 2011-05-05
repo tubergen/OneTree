@@ -1,153 +1,153 @@
 {% extends "base_page_with_wall.html" %}
 
 {% comment %}
-    Code here is kind of sloppy now where I've hard-coded messages in 
-    html plain text, and text is repeated in javascript code.
+  Code here is kind of sloppy now where I've hard-coded messages in 
+  html plain text, and text is repeated in javascript code.
 {% endcomment %}
 
 {% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="/static/stylesheets/jquery.lightbox-0.5.css" media="screen" />
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/stylesheets/jquery.lightbox-0.5.css" media="screen" />
 {% endblock %}
 
 {% block left_content %}
-    {% include "includes/sidebar/group_sidebar.html" %}
+  {% include "includes/sidebar/group_sidebar.html" %}
 {% endblock %}
 
 
 {% block top_title %}
 
-    {% if group.pending_parent  %}
+  {% if group.pending_parent  %}
     <strong>This group is awaiting parent approval by <a href="/group/{{ group.pending_parent.name }}">{{ group.pending_parent.name }}</a></strong>.
-    {% else %}
+  {% else %}
     {% if not group.parent %}
-    {% if not group.toplevelgroup %}
-    <strong>Sorry, your parent request has been denied. Please choose another group as your parent.</strong>
+      {% if not group.toplevelgroup %}
+        <strong>Sorry, your parent request has been denied. Please choose another group as your parent.</strong>
+      {% endif %}
     {% endif %}
-    {% endif %}
-    {% endif %}
-
-    
+  {% endif %}
 
 
-    <script type="text/javascript" charset="utf-8">
 
-    var user_is_subscribed;
-    var mem_status;
 
-    function toggle_blurb()
+  <script type="text/javascript" charset="utf-8">
+
+  var user_is_subscribed;
+  var mem_status;
+
+  function toggle_blurb()
+  {
+    if ($('#edit-group-blurb').is(':visible'))
     {
-       if ($('#edit-group-blurb').is(':visible'))
-       {
-          $('#edit-group-blurb').slideUp("fast");
-       }
-       else
-       {
-          $('#edit-group-blurb').slideDown("fast");
-       }
+      $('#edit-group-blurb').slideUp("fast");
     }
+    else
+    {
+      $('#edit-group-blurb').slideDown("fast");
+    }
+  }
 
-    {% if user.is_authenticated %}
-    $(document).ready(function() {
-        {% if user_is_subscribed %}
-           user_is_subscribed = true;
-        {% else %} 
-           user_is_subscribed = false;
-        {% endif %}
+  {% if user.is_authenticated %}
+  $(document).ready(function() {
+    {% if user_is_subscribed %}
+    user_is_subscribed = true;
+    {% else %} 
+    user_is_subscribed = false;
+    {% endif %}
 
-        // override default POST behavior
-        $('.change-subscribe').click(function(event) {
-            send_subscribe_change();
-            return false;
-        });
-
-        // override default POST behavior
-        $('.change-membership').click(function(event) {
-             id = $(this).attr('id');
-             change_membership(id);
-             return false;
-        });
-
-        {% if is_admin %}
-        var edit_on = false;
-        // override default link behavior
-        $('.edit-group-intro').click(function(event) { 
-             edit_on = !edit_on;
-             if (edit_on) {
-                 $('.group-intro-text').hide();
-                 $('.edit-intro-box').show();
-             }
-             else {
-                 $('.group-intro-text').show();
-                 $('.edit-intro-box').hide();
-             }
-             return false; 
-        });
-        {% endif %}
+    // override default POST behavior
+    $('.change-subscribe').click(function(event) {
+      send_subscribe_change();
+      return false;
     });
 
-    function send_subscribe_change()
-    {
-        var url = "{{ subscribe_view_url }}";
-        var data = {};
-        data["group_id"] = {{ group.id }};
+    // override default POST behavior
+    $('.change-membership').click(function(event) {
+      id = $(this).attr('id');
+      change_membership(id);
+      return false;
+    });
 
-        if (user_is_subscribed) {
-           if (!confirm("Are you sure you want to unsubscribe from this group?"))
-               return false;
-        }
+    {% if is_admin %}
+    var edit_on = false;
+    // override default link behavior
+    $('.edit-group-intro').click(function(event) { 
+      edit_on = !edit_on;
+      if (edit_on) {
+        $('.group-intro-text').hide();
+        $('.edit-intro-box').show();
+      }
+      else {
+        $('.group-intro-text').show();
+        $('.edit-intro-box').hide();
+      }
+      return false; 
+    });
+    {% endif %}
+  });
 
-        $.post(url, data, function() {
-            user_is_subscribed = !user_is_subscribed;
-            if (user_is_subscribed) {
-               $('#unsubscribed-content').hide();
-               $('#subscribed-content').show();
-            }
-            else {
-               $('#unsubscribed-content').show();
-               $('#subscribed-content').hide();
-            }
+  function send_subscribe_change()
+  {
+    var url = "{{ subscribe_view_url }}";
+    var data = {};
+    data["group_id"] = {{ group.id }};
 
-        });
-    }
-
-    function change_membership(id)
-    {
-        var change_type;
-        if (id == 'cancel-button') {
-           if (!confirm("Are you sure you want to cancel your membership request?"))
-               return false;
-           change_type = 'cancel_mem_req';
-        }
-        else if (id == 'leave-button') {
-           if (!confirm("Are you sure you no longer want to be a member of this group?"))
-               return false;
-           change_type = 'leave_membership';
-        }
-        else {
-           change_type = 'req_membership';
-        }
-
-        var data = {"group_id":'{{group.id}}', "change_type":change_type};
-        $.post("{{membership_view_url}}", data, function(data) { 
-            $('.mem-status-content').hide();
-
-            if (id == 'req-mem-button') {
-               $('#pending-member').show();
-            }
-            else if (id == 'cancel-button') {
-               $('#not-member').show();
-            }
-            else if (id == 'leave-button') {
-               $('#not-member').show();
-            }
-            else {
-               alert('Error with membership status.');
-            }
-        });
+    if (user_is_subscribed) {
+      if (!confirm("Are you sure you want to unsubscribe from this group?"))
         return false;
     }
-    {% endif %}
+
+  $.post(url, data, function() {
+    user_is_subscribed = !user_is_subscribed;
+    if (user_is_subscribed) {
+      $('#unsubscribed-content').hide();
+      $('#subscribed-content').show();
+    }
+    else {
+      $('#unsubscribed-content').show();
+      $('#subscribed-content').hide();
+    }
+
+  });
+  }
+
+  function change_membership(id)
+  {
+    var change_type;
+    if (id == 'cancel-button') {
+      if (!confirm("Are you sure you want to cancel your membership request?"))
+        return false;
+      change_type = 'cancel_mem_req';
+    }
+    else if (id == 'leave-button') {
+      if (!confirm("Are you sure you no longer want to be a member of this group?"))
+        return false;
+      change_type = 'leave_membership';
+    }
+    else {
+      change_type = 'req_membership';
+    }
+
+  var data = {"group_id":'{{group.id}}', "change_type":change_type};
+  $.post("{{membership_view_url}}", data, function(data) { 
+    $('.mem-status-content').hide();
+
+    if (id == 'req-mem-button') {
+      $('#pending-member').show();
+    }
+    else if (id == 'cancel-button') {
+      $('#not-member').show();
+    }
+    else if (id == 'leave-button') {
+      $('#not-member').show();
+    }
+    else {
+      alert('Error with membership status.');
+    }
+  });
+  return false;
+  }
+  {% endif %}
 
 </script>
 
@@ -155,16 +155,16 @@
   <h1 id="group-title">{{ group.name }}</h1>
   {% if groupinfo.data %}
     <p class="group-intro-text" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
-  {% else %}
+    {% else %}
       {% comment %}
-    <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
-      {% endcomment %}
-    <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This group has not entered an introduction yet.
-  {% endif %}
-  {% if is_admin %}
-    (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
-  {% endif %}
-</div>
+        <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+        {% endcomment %}
+        <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">Welcome to {{ group.name}}'s group page!
+        {% endif %}
+        {% if is_admin %}
+          (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>
+      {% endif %}
+    </div>
 
     <div class="edit-intro-box" style="display:none">
       <form name="edit_info" action="" method="post">{% csrf_token %}
@@ -174,63 +174,63 @@
       </form>
     </div>
 
-<ul class="group-interaction-buttons">
-    {% if user.is_authenticated %}
+    <ul class="group-interaction-buttons">
+      {% if user.is_authenticated %}
         <li><form method="post" action="{{ subscribe_view_url }}">{% csrf_token %}
             <input type="hidden" name="group_id" value="{{group.id}}">
-            
-	    <div id="subscribed-content" {% if not user_is_subscribed %} style="display:none" {% endif %}>
-	        <span class="status-text"> You are currently subscribed.</span>
-		<span class="change-span">(<button type="submit" class="button-link change-subscribe" name="change_type" value="subscribed">unsubscribe</button>)</span>
-	    </div>
 
-	    <div id="unsubscribed-content" {% if user_is_subscribed %} style="display:none" {% endif %}>
-                <input type="submit" class="button-unsubscribed change-subscribe" id="subscribe-button" name="change_type" value="subscribe">                                
-	    </div>
+            <div id="subscribed-content" {% if not user_is_subscribed %} style="display:none" {% endif %}>
+              <span class="status-text"> You are currently subscribed.</span>
+              <span class="change-span">(<button type="submit" class="button-link change-subscribe" name="change_type" value="subscribed">unsubscribe</button>)</span>
+            </div>
 
-        </form></li>
+            <div id="unsubscribed-content" {% if user_is_subscribed %} style="display:none" {% endif %}>
+              <input type="submit" class="button-unsubscribed change-subscribe" id="subscribe-button" name="change_type" value="subscribe">                                
+            </div>
+
+          </form></li>
 
         <div id="mem-status">
           <li><form method="post" action="{{ membership_view_url }}">{% csrf_token %}
-            <input type="hidden" name="group_id" value="{{group.id}}">
-	    {# hidden field for non-javascript people to figure out what was clicked #}
-	    <input type="hidden" name="change_type" 
-               {% ifequal membership_status "member"%}  
-		   value="leave_membership" 
-	       {% else %}
-                 {% ifequal membership_status "pending"%}  
-		   value="cancel_mem_req"
-	         {% else %}
-		   value="req_membership"
-		 {% endifequal %}
-	       {% endifequal %}
-	    >
-            
-	    <div class="mem-status-content" {% ifnotequal membership_status "member"%} style="display:none" {% endifnotequal %}>
-	        <span class="status-text"> You are a member.</span>
-		<span class="change-span">(<button type="submit" id='leave-button' class="button-link change-membership">leave</button>)</span>
-	    </div>
+              <input type="hidden" name="group_id" value="{{group.id}}">
+              {# hidden field for non-javascript people to figure out what was clicked #}
+              <input type="hidden" name="change_type" 
+                  {% ifequal membership_status "member"%}  
+                    value="leave_membership" 
+                  {% else %}
+                    {% ifequal membership_status "pending"%}  
+                      value="cancel_mem_req"
+                    {% else %}
+                      value="req_membership"
+                    {% endifequal %}
+                  {% endifequal %}
+                  >
 
-	    <div id="pending-member" class="mem-status-content" {% ifnotequal membership_status "pending"%} style="display:none" {% endifnotequal %}>
-	        <span class="status-text"> Membership request pending...</span>
-		<span class="change-span">(<button type="submit" id='cancel-button' class="button-link change-membership">cancel</button>)</span>
-	    </div>
+                  <div class="mem-status-content" {% ifnotequal membership_status "member"%} style="display:none" {% endifnotequal %}>
+                    <span class="status-text"> You are a member.</span>
+                    <span class="change-span">(<button type="submit" id='leave-button' class="button-link change-membership">leave</button>)</span>
+                  </div>
 
-	    {# if membership_status => true when membership_status is set #}
-	    <div id="not-member" class="mem-status-content" {% if membership_status %} style="display:none" {% endif %}>
-                <button type="submit" id="req-mem-button" class="change-membership">Request Membership</button>
-	    </div>
+                  <div id="pending-member" class="mem-status-content" {% ifnotequal membership_status "pending"%} style="display:none" {% endifnotequal %}>
+                    <span class="status-text"> Membership request pending...</span>
+                    <span class="change-span">(<button type="submit" id='cancel-button' class="button-link change-membership">cancel</button>)</span>
+                  </div>
 
-          </form></li>
-        </div>
+                  {# if membership_status => true when membership_status is set #}
+                  <div id="not-member" class="mem-status-content" {% if membership_status %} style="display:none" {% endif %}>
+                    <button type="submit" id="req-mem-button" class="change-membership">Request Membership</button>
+                  </div>
 
-	{% if is_superadmin %}
-    	    <li>You're the group's superadmin.</li>
-	{% else %}
-   	    {% if is_admin %}
+                </form></li>
+            </div>
+
+            {% if is_superadmin %}
+              <li>You're the group's superadmin.</li>
+            {% else %}
+              {% if is_admin %}
                 <li>You're a group admin.</li>
-	    {% endif %}
-	{% endif %}
-    {% endif %}
-</ul>
-{% endblock %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </ul>
+      {% endblock %}
