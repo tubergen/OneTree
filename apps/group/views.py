@@ -185,7 +185,8 @@ def delete_picture(request):
                 if request.user in group.admins.all():
                     picture.delete()
 
-                return HttpResponse('/group/' + group.name + '/photos/')
+#                return HttpResponse('/group/' + group.name + '/photos/')
+                return HttpResponse('/group/' + group.url + '/photos/')
             
             except ObjectDoesNotExist:
                 print 'Error: Tried to delete non-existent object.' + err_loc
@@ -270,6 +271,8 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     for pic in pics:
         piccount += 1
 
+    maxpics = 20
+
     # handle editable info submit
     if 'data_submit' in request.POST:
         errormsg = handle_data(groupinfo, group, request)
@@ -346,6 +349,7 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
                               'is_groupphotos_page': is_groupphotos_page,
                                'edit_on':edit_on,
                               'piccount': piccount,
+                               'maxpics': maxpics,
                               'form': form,
                               'errormsg': errormsg,
                                'title': title,
@@ -552,7 +556,7 @@ def groupphotos_page(request, groupname):
     
     # Try to get group
     try:
-        group = Group.objects.get(name=groupname)
+        group = Group.objects.get(url=groupname)
     except:
         print "ERROR in groupphotos_page (group/views.py)"
         return HttpResponse(status=400)
