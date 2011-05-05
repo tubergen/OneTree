@@ -270,7 +270,7 @@ a {
 }
 
 .photo-container-top {
-    line-height: 80px;
+    line-height: 95px;
 }
 
 /* I hope this works in IE */
@@ -298,7 +298,7 @@ a {
 
 .photo-container-top {
     width: 100px;
-    height: 80px;
+    height: 95px;
     margin: 0;
     padding: 0;
 }

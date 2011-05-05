@@ -150,7 +150,7 @@ def handle_submit(request, group):
     errortype = -1
     if request.method == 'POST':
         if not verify_admin(request, group):
-            errormsg = "Get outta here, you liar!"
+            errormsg = "You don't seem to have the proper permissions to post. Please login as admin of this group."
         elif 'post_content' in request.POST and request.POST['post_content']:
 
             # later insert logic to distinguish events vs announcement
@@ -159,7 +159,7 @@ def handle_submit(request, group):
             else:
                 (errormsg, title, where, date, time, postdata, errortype) = handle_ann(group, request)
         else:
-            if 'eventclick in request.POST':
+            if 'eventclick' in request.POST:
                 (errormsg, title, where, date, time, postdata, errortype) = handle_event(group, request)
             else:
                 errormsg = "Empty post? Surely you aren't *that* boring."
