@@ -30,12 +30,10 @@ def create_user(request):
 
             user = authenticate(username=username, password=password)
             if user is None:
-                print "Sorry"
+#                print "Sorry"
             else:
-                print "hey ",
                 print login(request, user)
 
-            print "login done"
             return render_to_response("user/base_user.html",
                                       { 'email': "secret signup email", 
                                         'password': "secret signup password"} 
@@ -50,8 +48,6 @@ def register(request):
 
     # authenticated user should not be able to register 
     if request.user.is_authenticated():
-	print "authenticated user"
-
 	return HttpResponseRedirect("/")
 
     if request.method == 'POST':
@@ -143,7 +139,6 @@ def activate(request, activation_key):
 
 @login_required
 def user_page(request, username):
-    print "In user_page"
     errormsg = None
     need_approval = False
 
@@ -175,20 +170,12 @@ def user_account(request, username):
                               context_instance=context
                               )
 
-@login_required
+@login_required # NOT USED
 def complete_profile(request):
     context=RequestContext(request)
 
 
     userprofile = UserProfile.objects.get(user=request.user)    
-    print "USER >>>>>>>>>>"
-    
-
-
-    print "USER PROFILE >>>>>>>>>"
-    print userprofile.user.first_name
-
-
     
 
     return render_to_response('user/complete_profile.html',
@@ -209,11 +196,6 @@ def change_email(request):
         if form.is_valid():
             email = form.cleaned_data["email"]
             user = User.objects.filter(username=u)
-            print "here:"
-            print user
-            print ">"
-            print user.email
- 
     else:
         form = EmailChangeForm()
 
@@ -239,7 +221,6 @@ def forget_password_email_sent(request):
                               )
     
 def resend_activation_email(request):
-    print "======== resend_activation_email ============"
     context = RequestContext(request)
 
     username = request.POST.get('user_name')

@@ -95,8 +95,6 @@ def req_parent(request, pending_parent_name, requesting_child):
 
     # Obtain group object corresponding to pending_parent
     
-    print "=========REQ_PARENT==============="
-
     try:
         pending_parent = Group.objects.get(name=pending_parent_name)
     except:
@@ -404,7 +402,6 @@ def event_page(request, groupname, title):
 def create_group(request):
     if request.method == 'POST':        
         form = GroupForm(request.POST) # Form bound to POST data
-        print "========CREATE_GROUP================"
 
         if form.is_valid(): 
 
@@ -418,14 +415,9 @@ def create_group(request):
             new_group.save()
 
 
-            print "STATUS > Before entering req_parent"
-
             # Notify parent group
             req_parent(request, pending_parent_name=pending_parent_name, 
                        requesting_child=new_group)
-
-
-            print "========EXIT CREATE_GROUP=========="
 
             #if check is False: # MING: Syntax is correct right
              #   print "ERROR in create_gorup!"
@@ -612,9 +604,9 @@ def handle_data(groupinfo, group, request):
 
             # If there is an existing parent request, remove old request
             if pending_mem_req:
-                print "STATUS > old pending parent name: ",
+#                print "STATUS > old pending parent name: ",
                 print group.pending_parent.name
-                print "Withdrawing old parent request... "
+#                print "Withdrawing old parent request... "
                 pending_mem_req.delete()
             else:
                 pass
@@ -622,7 +614,6 @@ def handle_data(groupinfo, group, request):
             # Check that new pending parent name exist
             check = Group.objects.filter(name=new_parent_name)
             if not check:
-                print "IN HERE"
                 errormsg = 'No parent group with name specified'
                 return errormsg
 
