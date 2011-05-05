@@ -630,8 +630,8 @@ def handle_data(groupinfo, group, request):
                        requesting_child=group)
         else:
             print "STATUS > No new parent"
-            errormsg = 'No parent group with name specified'
-            return errormsg
+#            errormsg = 'No parent group with name specified'
+#            return errormsg
 
 
 
