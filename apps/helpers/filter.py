@@ -104,7 +104,7 @@ class Filter:
             posts.sort(key=lambda post: post.get_date(), reverse=True)
         else:
             # primary sort is hot score, secondary sort is date
-            posts.sort(key=lambda post: post.get_date(), reverse=True)
+            posts.sort(key=lambda post: post.date, reverse=True)
             posts.sort(key=lambda post: post.hotscore(), reverse=True)            
 
     '''

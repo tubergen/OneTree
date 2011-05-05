@@ -116,7 +116,7 @@ function bind_vote(type, post_id, post_type)
       if (confirm("Are you sure you want to remove this post?")) {
         var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
         $.post("{{ delete_post_view_url }}", data, function() {
-          $('#post-box-'+post_id).slideUp("fast");
+          $('#post-box-'+post_type+'-'+post_id).slideUp("fast");
         });
       }
       }
@@ -199,7 +199,7 @@ function bind_vote(type, post_id, post_type)
       </script>
 
       {% for post in posts %}
-        <div class="post-box" id="post-box-{{post.id}}">
+        <div class="post-box" id="post-box-{{post.post_type}}-{{post.id}}">
           <div class="post-content">
             {% if is_admin or is_newsfeed %}
               <button type="button" class="post-delete delete-button" onClick="delete_post({{post.id}}, {{post.post_type}})"></button>
