@@ -6,6 +6,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
+from django.contrib.auth.models import AnonymousUser
 
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
@@ -23,7 +24,7 @@ def login(request, template_name='registration/login.html',
             user = User.objects.get(username=form.data['username'])
 
         except:            
-            user = User.objects.get(username='') # needed to prevent using user.is_authenticated() NEED A BETTER WAY TO AVOID THIS!
+            user = AnonymousUser # needed to prevent using user.is_authenticated() NEED A BETTER WAY TO AVOID THIS!
             return django_login(request, template_name=template_name,
                                 redirect_field_name=redirect_field_name,
                                 authentication_form=authentication_form)
