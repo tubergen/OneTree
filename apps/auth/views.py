@@ -9,7 +9,7 @@ def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           redirect_authenticated=None,
           authentication_form=AuthenticationForm):
-
+    context=RequestContext(request)
 
     form = authentication_form(data=request.POST)
     
@@ -32,7 +32,7 @@ def login(request, template_name='registration/login.html',
                                         'user': user,
                                         'need_activation': True,
                                         },
-                                      context_instance=RequestContext(request))
+                                      context_instance=context)
             
 
 

@@ -244,5 +244,5 @@ def resend_activation_email(request):
 
     profile.send_activation_email()
 
-    return render_to_response('user/registration_success.html',
+    return render_to_response('user/email_resent.html',
                               { 'email': user.email } )
