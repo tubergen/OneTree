@@ -600,16 +600,21 @@ def handle_data(groupinfo, group, request):
 
         new_parent_name = request.POST.get('new_parent', None)
         if new_parent_name:
-            print "STATUS > new parent name: ",
-            print new_parent_name
-            print "STATUS > group: ",
-            print group
+            print "STATUS > new parent name in string: ",
+            print str(new_parent_name)
+            print "STATUS > group.parent.name in string: ",
+            print str(group.parent.name)
             
             pending_mem_req = ParentReq.objects.filter(sender_group=group, pending=True)
-            print "STATUS > Printing pending_mem_req =========="
-            print pending_mem_req
 
+            if new_parent_name.lower()==group.parent.name.lower():
+                errormsg = new_parent_name + " is already a parent of the group"
+                return errormsg
+
+            # If there is an existing parent request, remove old request
             if pending_mem_req:
+                print "STATUS > old pending parent name: ",
+                print group.pending_parent.name
                 print "Withdrawing old parent request... "
                 pending_mem_req.delete()
             else:
@@ -621,6 +626,10 @@ def handle_data(groupinfo, group, request):
                 print "IN HERE"
                 errormsg = 'No parent group with name specified'
                 return errormsg
+
+            # Remove existing parent if necessary
+            if group.parent:
+                group.parent = None # Note: not saved in database until later
 
             # Save new pending parent name
             group.pending_parent = Group.objects.get(name=new_parent_name)
