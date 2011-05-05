@@ -386,6 +386,8 @@ function delete_comment(comment_id)
 </div>
   {% endfor %}
 
+{% if not group.pending_parent %}
+{% if group.parent or group.toplevelgroup %}
   <div id="page-navigation">
     <ul>
       {% if posts_on_page.has_previous %}
@@ -404,3 +406,5 @@ function delete_comment(comment_id)
       {% endif %}
     </ul>
   </div>
+{% endif %}
+{% endif %}
