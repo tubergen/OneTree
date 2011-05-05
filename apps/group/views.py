@@ -111,20 +111,12 @@ def req_parent(request, pending_parent_name, requesting_child):
                                                       recv_group=pending_parent,
                                                       pending=True)
         
-        print 'STATUS: pending_parent_req > ',
-        print pending_parent_req
-
         # If there is no pending membership request, perform a request
         if not pending_parent_req:
-            print "STATUS > printing requesting child: ",
-            print requesting_child
-            requesting_child.pending_parent_name = pending_parent
+            requesting_child.pending_parent = pending_parent
             requesting_child.save()
-            print "STATUS > New pending parent name: ",
-            print requesting_child.pending_parent_name
             parent_req = ParentReq(sender_group=requesting_child,
                                    recv_group=pending_parent)
-            print "STATUS > Pending notification created"
             parent_req.save()
         else: 
             print 'Already a pending parent request.'
@@ -419,8 +411,8 @@ def create_group(request):
             # Create the group but prevent parent from being created
             pending_parent_name = new_group.parent
             new_group.parent = None
-            new_group.pending_parent = pending_parent_name
             new_group.save()
+
 
             print "STATUS > Before entering req_parent"
 
@@ -557,6 +549,16 @@ def edit_groupinfo_page(request, groupname, edit_on=False):
 
 # groupphotos_page
 def groupphotos_page(request, groupname):
+    try:
+        group = Group.objects.get(name=groupname)
+    except:
+        print "ERROR in groupphotos_page (group/views.py)"
+        return HttpResponse(status=400)
+
+    if not group:
+        print "ERROR: Incorrect groupname in group/views.py groupphotos_page"
+        return HttpResponse(status=400)
+        
     return group_page(request, groupname, is_group_page=False, is_groupinfo_page=False, is_groupphotos_page=True)
     #pass
 
@@ -589,10 +591,10 @@ def handle_data(groupinfo, group, request):
         else:
             print 'no biginfo'
 
-        new_parent = request.POST.get('new_parent', None)
-        if new_parent:
+        new_parent_name = request.POST.get('new_parent', None)
+        if new_parent_name:
             print "STATUS > new parent name: ",
-            print new_parent
+            print new_parent_name
             print "STATUS > group: ",
             print group
             
@@ -607,24 +609,20 @@ def handle_data(groupinfo, group, request):
                 pass
             
             # Check that new pending parent name exist
-            check = Group.objects.filter(name=new_parent)
+            check = Group.objects.filter(name=new_parent_name)
             if not check:
                 print "IN HERE"
                 errormsg = 'No parent group with name specified'
                 return errormsg
 
             # Save new pending parent name
-            group.pending_parent_name = new_parent
+            group.pending_parent = Group.objects.get(name=new_parent_name)
             group.save()
 
-            req_parent(request, pending_parent_name=new_parent, 
+            req_parent(request, pending_parent_name=new_parent_name, 
                        requesting_child=group)
         else:
             print "STATUS > No new parent"
-            print "STATUS > Group: ",
-            print group
-            group.pending_parent_name=""
-            group.save()        
             errormsg = 'No parent group with name specified'
             return errormsg
 

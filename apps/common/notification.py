@@ -192,6 +192,7 @@ class ParentReq(Notification):
         self.send_confirmed()
         self.pending = False
         self.answered_yes = True
+        self.sender_group.pending_parent = None
         self.sender_group.save() # this is needed & different from the save() below
         self.save()
 

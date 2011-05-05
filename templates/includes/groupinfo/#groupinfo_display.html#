@@ -19,9 +19,7 @@
   {% endif %}
 
   {% if is_admin %}
-
     {% include "includes/groupinfo/groupinfo_edit.html" %}
-
   {% endif %}
 </div>
 

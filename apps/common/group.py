@@ -25,7 +25,7 @@ class Group(models.Model):
     name = models.CharField(max_length=15, verbose_name="name", unique=True)
     parent = models.ForeignKey('Group', related_name="child_set", blank=True,
                                null=True, verbose_name="parent")
-    pending_parent_name = models.CharField(max_length=50, blank=True, null=True, help_text="This is djangoadmin-assigned number, not a group name")
+    pending_parent = models.ForeignKey('Group', related_name="waiting_child_set", blank=True, null=True)
     toplevelgroup = models.BooleanField()
     inactive_child = models.ManyToManyField('Group', related_name="inactive_c",
                                             blank=True, null=True)
