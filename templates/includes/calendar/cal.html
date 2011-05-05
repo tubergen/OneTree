@@ -56,12 +56,10 @@ is commented out.
 	   reset_filters();
            return;
        }
-
        var dates_clone = dates.slice(0);
        dates_clone[1] = dates_clone[0];
        filter_date(dates_clone);
    }
-
 
    function filter_date(dates) {
       date0_str = format_amer_date(dates[0]);
@@ -126,7 +124,8 @@ is commented out.
       return y + '-' + m + '-' + d;
    }
 
-   $(document).ready(function() {
+   /*
+   $(document).ready(function() {	      
       $('#inlineDatepicker').hover(function() {}, function() { 
          if (range_selected)
             $('.datepick-status').html(date0_str + ' - ' + date1_str);
@@ -134,9 +133,10 @@ is commented out.
             $('.datepick-status').html('Select a date range');
       });
       // populate these here so they don't appear for people without javascript
-      /* $('.datepick-status').html('Select a date range');
-      $('.cal-reset').html('reset'); */
+      $('.datepick-status').html('Select a date range');
+      $('.cal-reset').html('reset'); 
    });
+   */
 </script> 
 
 {% comment %}

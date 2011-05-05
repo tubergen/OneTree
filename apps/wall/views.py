@@ -145,18 +145,17 @@ def filter_wall(request):
             filters = Filter();
             filters.parse_request(request);
             filtered_posts = filters.get_posts(group, start_date, end_date);
-            profile = request.user.get_profile()
 
             posts_on_page = paginate_posts(request, filtered_posts)
 
             if request.user.is_authenticated():
-                is_admin = profile.is_admin_of(group)
+                is_admin = request.user.get_profile().is_admin_of(group)
             else:
                 is_admin = False
 
             # get user's list of voted posts
             try:
-                voted_post_set = profile.get_voted_posts(group)
+                voted_post_set = request.user.get_profile().get_voted_posts(group)
             except (AttributeError):
                 # Note: attribute error occurs when user is AnonymousUser
                 voted_post_set = None
