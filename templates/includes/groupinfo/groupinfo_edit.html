@@ -72,6 +72,7 @@ $(document).ready(function() {
     {% if is_superadmin %}
 
     {% if not group.toplevelgroup %}
+    {% if not group.parent %}
       <div class="group-info-edit-box">
         <h3>Request New Parent</h3>
 	<p>This will change the current parent of this group.</p>
@@ -81,6 +82,7 @@ $(document).ready(function() {
           <input type="submit" name="data_submit" value="Request" />
         </form>
       </div>
+      {% endif %}
       {% endif %}
 
       {% if not group.pending_parent %}

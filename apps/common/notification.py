@@ -200,6 +200,8 @@ class ParentReq(Notification):
     def handle_no(self):
         self.pending = False
         self.answered_no = False
+        self.sender_group.pending_parent = None
+        self.sender_group.save()
         self.save()
 
     # Approved/Disapproved Text

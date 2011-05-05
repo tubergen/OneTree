@@ -16,9 +16,17 @@
 
 
 {% block top_title %}
+
     {% if group.pending_parent  %}
     <strong>This group is awaiting parent approval by <a href="/group/{{ group.pending_parent.name }}">{{ group.pending_parent.name }}</a></strong>.
+    {% else %}
+    {% if not group.parent %}
+    {% if not group.toplevelgroup %}
+    <strong>Sorry, your parent request has been denied. Please choose another group as your parent.</strong>
     {% endif %}
+    {% endif %}
+    {% endif %}
+
     
 
 
