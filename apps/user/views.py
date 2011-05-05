@@ -233,3 +233,16 @@ def forget_password_email_sent(request):
                               context_instance = context
                               )
     
+def resend_activation_email(request):
+    print "======== resend_activation_email ============"
+    context = RequestContext(request)
+
+    username = request.POST.get('user_name')
+    user = User.objects.get(username=username)
+
+    profile = RegistrationProfile.objects.get(user=user)
+
+    profile.send_activation_email()
+
+    return render_to_response('user/registration_success.html',
+                              { 'email': user.email } )

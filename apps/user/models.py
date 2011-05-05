@@ -11,7 +11,6 @@ from django.template.loader import render_to_string
 from django.utils.hashcompat import sha_constructor
 
 
-
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 class RegistrationManager(models.Manager):

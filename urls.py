@@ -8,7 +8,8 @@ from OneTree.apps.newsfeed.views import newsfeed, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
 from OneTree.apps.search.views import search
 from django.conf import settings
-from django.contrib.auth.views import login, logout, password_change, password_change_done, password_reset
+from django.contrib.auth.views import logout, password_change, password_change_done, password_reset
+from OneTree.apps.auth.views import login
 from django.views.generic.simple import direct_to_template
 
 #import haystack
@@ -64,6 +65,7 @@ urlpatterns = patterns('',
     url(r'^profile/account/changepwd/$', password_change, {'template_name': 'user/change_password.html', 'post_change_redirect': '/profile/account/changepwdsuccess' }, name='password_change'),
     url(r'^profile/account/forgetpwd/$', password_reset, { }, ), 
     (r'^profile/account/forgetpwdsent/$', forget_password_email_sent, ),
+    (r'^activate/resend/$', resend_activation_email, ),
     (r'^news/$', newsfeed),
     (r'^$', homepage),
     (r'^register/$', register),

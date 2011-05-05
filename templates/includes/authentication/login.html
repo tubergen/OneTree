@@ -1,6 +1,8 @@
 {% csrf_token %}
 {# HACKISH SOLUTION MUST BE CHANGED #}
 
+{% if need_activation %}
+{% else %}
   <div style="text-align: left; margin: 1em auto;">
     <p><label for="username">username:</label>
       <input type="text" name="username" value="" id="username" />
@@ -13,3 +15,4 @@
       <input style="margin-left: 8.7em" type="submit" value="login" />
     </p>
 </div>
+{% endif %}

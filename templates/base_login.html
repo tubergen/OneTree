@@ -8,11 +8,24 @@
 
 <div class="main-container">
   <div class="container-top-bar">
+    {% if need_activation %}
+    Inactive Account
+    {% else %}
     Please enter your information below to login.
+    {% endif %}
   </div>
+  {% if need_activation %}
+  <p class="error-message">Your account has not been activated.</p>
+
+  <form action="/activate/resend/" method="POST">{% csrf_token %}
+    <input type="hidden" name="user_name" value="{{ user.username }}"/>
+    <input type="submit" value="Resend Activation Email" />
+  </form>
+  {% else %}
   {% if form.errors %}
     <p class="error-message">Sorry, that's not a valid username or password. Please try again.</p>
-  {% endif %}
+    {% endif %}
+  {% endif %}    
   <div style="width: 30em; margin: 1em auto; padding-left: 8em;"> 
   <form action="" method="post">
     {% include 'includes/authentication/login.html' %}
