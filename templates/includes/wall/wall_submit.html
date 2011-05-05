@@ -51,7 +51,7 @@
 {% if group.parent or group.toplevelgroup %}
 <div id="wall-submit">
 
-  <form name="add_post_form" action="" method="post">{% csrf_token %}
+  <form name="add_post_form" action="{{ request.path }}" method="post">{% csrf_token %}
     {# checkbox #}  
     <input type="checkbox" id="eventclick" name="eventclick" onclick="toggle_event_fields()" />Event<br />
 
@@ -71,7 +71,7 @@
     </div>    
 
     <textarea name="post_content" cols=50 rows=4>{% if postdata and errormsg %}{{ postdata }}{% endif %}</textarea><br />
-    <input type="submit" name="post_submit" value="Submit" />	
+    <input type="submit" name="post_submit" value="submit" />	
 
   </form>
 </div>

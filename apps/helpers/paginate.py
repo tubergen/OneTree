@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
-def paginate_posts(request, posts):
-    paginator = Paginator(posts, 20)
+def paginate_posts(request, posts, paginate_count = 10):
+    paginator = Paginator(posts, paginate_count)
     try: 
         page = int(request.GET.get('page', '1'))
     except ValueError:

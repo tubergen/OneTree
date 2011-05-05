@@ -26,115 +26,115 @@ function bind_vote(type, post_id, post_type)
   $('#' + type + '-button-' + post_type + '-' + post_id).click(function() {
     update_vote_script(type, post_id, post_type);
   });
-}
+  }
 
-// Bind the correct functions to the buttons depending on whether 
-// the user has logged in and voted on this post before
-function setup_voting() {
-  {% if user.is_authenticated %}
+  // Bind the correct functions to the buttons depending on whether 
+  // the user has logged in and voted on this post before
+  function setup_voting() {
+    {% if user.is_authenticated %}
 
     // make all posts' voting active
     {% for post in posts %}
-      bind_vote('up', {{post.id}}, {{post.post_type}});
-      bind_vote('down', {{post.id}}, {{post.post_type}});
+    bind_vote('up', {{post.id}}, {{post.post_type}});
+    bind_vote('down', {{post.id}}, {{post.post_type}});
     {% endfor %}
 
     // retroactively remove voting from some of them
     {% for post_vote in voted_post_set %}
-      var vote = {{ post_vote.vote }};
-      var post_id = {{ post_vote.post.id }};
-      var post_type = {{post_vote.post.post_type}};
+    var vote = {{ post_vote.vote }};
+    var post_id = {{ post_vote.post.id }};
+    var post_type = {{post_vote.post.post_type}};
 
-      if (vote == 1)
-      {
-        $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
-      }
-      else if (vote == 2)
-      {
-        $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
-      }
-      else 
-      {
-      }
-  {% endfor %}
- {% else %}
-   {% for post in posts %}
-     $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
-       alert('Log in to vote !');
-     });
-
-     $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
-         alert('Log in to vote !');
-       });
-
-   {% endfor %}
- {% endif %}
-}
-
-$(document).ready(function() {
-  setup_voting();
-});
-
-// vote_type specifies if this was up or down vote; post_id identifies post
-function update_vote_script(vote_type, post_id, post_type)
-{
-  var score_id = '#vote-score-' + post_type + '-' + post_id;
-  var old_score = parseInt($(score_id).html());
-
-  var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
-
-  $.post("/_apps/wall/views-update_vote/", data, function(data) {
-    var change = parseInt(data)
-    $(score_id).html(old_score + change);
-
-    var up_but = '#up-button-' + post_type + '-' + post_id;
-    var down_but = '#down-button-' + post_type + '-' + post_id;
-
-    if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
+    if (vote == 1)
     {
-      $(up_but).addClass('up-selected')
-      $(down_but).removeClass('down-selected')
+      $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
     }
-    else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
+    else if (vote == 2)
     {
-      $(up_but).removeClass('up-selected')
-      $(down_but).addClass('down-selected')
+      $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
     }
-    else
+    else 
     {
-      $(up_but).removeClass('up-selected')
-      $(down_but).removeClass('down-selected')
     }
+    {% endfor %}
+    {% else %}
+    {% for post in posts %}
+    $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
+      alert('Log in to vote !');
+    });
 
+    $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
+      alert('Log in to vote !');
+    });
+
+    {% endfor %}
+    {% endif %}
+  }
+
+  $(document).ready(function() {
+    setup_voting();
   });
-}
 
-// deletes post specififed by post_id if it's being deleted by the author group
-// otherwise simply removes the post from the wall
-function delete_post(post_id, post_type)
-{
-  if (confirm("Are you sure you want to remove this post?")) {
-    var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
-    $.post("{{ delete_post_view_url }}", data, function() {
-      $('#post-box-'+post_id).slideUp("fast");
+  // vote_type specifies if this was up or down vote; post_id identifies post
+  function update_vote_script(vote_type, post_id, post_type)
+  {
+    var score_id = '#vote-score-' + post_type + '-' + post_id;
+    var old_score = parseInt($(score_id).html());
+
+    var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
+
+    $.post("/_apps/wall/views-update_vote/", data, function(data) {
+      var change = parseInt(data)
+      $(score_id).html(old_score + change);
+
+      var up_but = '#up-button-' + post_type + '-' + post_id;
+      var down_but = '#down-button-' + post_type + '-' + post_id;
+
+      if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
+      {
+        $(up_but).addClass('up-selected')
+        $(down_but).removeClass('down-selected')
+      }
+      else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
+      {
+        $(up_but).removeClass('up-selected')
+        $(down_but).addClass('down-selected')
+      }
+      else
+      {
+        $(up_but).removeClass('up-selected')
+        $(down_but).removeClass('down-selected')
+      }
+
     });
-  }
-}
+    }
 
-// deletes the comment
+    // deletes post specififed by post_id if it's being deleted by the author group
+    // otherwise simply removes the post from the wall
+    function delete_post(post_id, post_type)
+    {
+      if (confirm("Are you sure you want to remove this post?")) {
+        var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
+        $.post("{{ delete_post_view_url }}", data, function() {
+          $('#post-box-'+post_id).slideUp("fast");
+        });
+      }
+      }
 
-function delete_comment(comment_id)
-{
-  if (confirm("Are you sure you want to remove this comment?")) {
-    var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
-    $.post("/_apps/wall/views-delete_comment/", data, function(data) {
-      // returned data is the 'post was removed' message
-      $('#comment-content-' + comment_id).html(data); 
-      $('#comment-author-' + comment_id).remove();
-      $('#delete-button-' + comment_id).remove();
-    });
-  }
-}
+      // deletes the comment
+
+      function delete_comment(comment_id)
+      {
+        if (confirm("Are you sure you want to remove this comment?")) {
+          var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
+          $.post("/_apps/wall/views-delete_comment/", data, function(data) {
+            // returned data is the 'post was removed' message
+            $('#comment-content-' + comment_id).html(data); 
+            $('#comment-author-' + comment_id).remove();
+            $('#delete-button-' + comment_id).remove();
+          });
+        }
+        }
 
       </script>
 
@@ -242,15 +242,15 @@ function delete_comment(comment_id)
                 {% if post.flags.all %} <p class="event-flags">{{ post.flags.all|join:", " }}</p>{% endif %}
               {% endif %}
 
-	      {% if post.event_date %}
-		 {% if post.text|length >= 200 %}
-	 	 <div class="post-text">{{ post.text|slice:":200"|truncatewords:20 }}... <a href="/group/{{ group.url }}/event/{{ post.event_url }}">(more info)</a></div>
-		 {% else %}
-		 <div class="post-text">{{ post.text }}</div>
-		 {% endif %}
-	      {% else %}
-	       <div class="post-text">{{ post.text }}</div>
-	      {% endif %}
+              {% if post.event_date %}
+                {% if post.text|length >= 200 %}
+                  <div class="post-text">{{ post.text|slice:":200"|truncatewords:20 }}... <a href="/group/{{ group.url }}/event/{{ post.event_url }}">(more info)</a></div>
+                {% else %}
+                  <div class="post-text">{{ post.text }}</div>
+                {% endif %}
+              {% else %}
+                <div class="post-text">{{ post.text }}</div>
+              {% endif %}
 
 
               <div class="post-bottom-bar">
@@ -258,7 +258,7 @@ function delete_comment(comment_id)
                   {% if user.is_authenticated %}
                     <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this);">Comment!</a>
                   {% else %}
-                    {% if forloop.first %} <a href="/login/?next={{ request.path }}">Login to comment!</a> {% endif %}
+                    {% if forloop.first %} <a href="/login/?next={{ request.get_full_path }}">Login to comment!</a> {% endif %}
                   {% endif %}
                 </div>
                 <div class="post-date">
@@ -272,7 +272,7 @@ function delete_comment(comment_id)
               {# now allow for posting of comment #}
               <div class="form-div {% if not post.comment_set.all %}form-div-no-comments{% endif %}">
                 <form name="post_{{ post.id }}" id="{{ post.post_type }}_id_{{ post.id }}" class="comment-level-0 comment-post" action="/post/comment/" method="post">{% csrf_token %}
-                  <input type="hidden" name="next" value="{{ request.path }}"></input>
+                  <input type="hidden" name="next" value="{{ request.get_full_path }}"></input>
                 <input type="hidden" name="post_id" value="{{ post.id }}"></input>
               <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
             <label for="comment_text_id_{{ post.id }}" class="comment-label"></label>
@@ -303,7 +303,7 @@ function delete_comment(comment_id)
                   {% if user.is_authenticated %}
                     <button type="button" class="comment-reply-button" onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">reply</button>
                   {% else %}
-                    {# do nothing... <a href="/login/?next={{ request.path }}">Login to reply!</a> #}
+                    {# do nothing... <a href="/login/?next={{ request.get_full_path }}">Login to reply!</a> #}
                   {% endif %}
                 </li>
                 <li>
@@ -331,7 +331,7 @@ function delete_comment(comment_id)
 
           {# posting of a reply to a comment #}
           <form name="comment_post_{{ comment.id }}" id="comment_post_id_{{ comment.id }}" class="comment-post comment-level-1" action="/post/comment/" method="post">{% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}"></input>
+            <input type="hidden" name="next" value="{{ request.get_full_path }}"></input>
           <input type="hidden" name="post_id" value="{{ comment.id }}"></input>
         <input type="hidden" name="post_type" value="{{ comment.post_type }}"></input>
       <label for="comment_text_id_{{ comment.id }}" class="comment-label"></label>
@@ -386,25 +386,29 @@ function delete_comment(comment_id)
 </div>
   {% endfor %}
 
-{% if not group.pending_parent %}
-{% if group.parent or group.toplevelgroup %}
-  <div id="page-navigation">
-    <ul>
-      {% if posts_on_page.has_previous %}
-        <li>
-          <a href="?page={{ posts_on_page.previous_page_number }}">Previous</a>
-        </li>
-      {% else %}
-        <li>previous</li>
-      {% endif %}
-      {% if posts_on_page.has_next %}
-        <li>
-          <a href="?page={{ posts_on_page.next_page_number }}">Next</a>
-        </li>
-      {% else %}
-        <li>next</li>
-      {% endif %}
-    </ul>
-  </div>
-{% endif %}
-{% endif %}
+  {% if not group.pending_parent %}
+    {% if group.parent or group.toplevelgroup %}
+      <div id="page-navigation">
+        <ul>
+          {% if posts_on_page.has_previous %}
+            <li>
+              <a href="?page={{ posts_on_page.previous_page_number }}">Previous</a>
+            </li>
+          {% else %}
+            {% if posts %}
+              <li>previous</li>
+            {% endif %}
+          {% endif %}
+          {% if posts_on_page.has_next %}
+            <li>
+              <a href="?page={{ posts_on_page.next_page_number }}">Next</a>
+            </li>
+          {% else %}
+            {% if posts %}
+              <li>next</li>
+            {% endif %}
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endif %}
