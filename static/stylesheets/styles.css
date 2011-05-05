@@ -391,6 +391,7 @@ img.tall-resize, img.tall-resize {
     padding-right: 10px;
     width: 550px;
     border-right: 1px solid #CCCCCC; 
+    margin-bottom: 0;
 }
 
 .members-list {
