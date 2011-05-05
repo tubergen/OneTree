@@ -1,3 +1,4 @@
+<div class="form-field-container">
 {% for field in form %}
   {% if field.errors %}
     <div class="form-field form-error">
@@ -8,3 +9,4 @@
       {{ field.label_tag|lower }}: {{ field }} <span class="form-help">{{ field.help_text }}</span>
     </div>
   {% endfor %}
+</div>

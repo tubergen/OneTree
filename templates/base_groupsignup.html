@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <h1 id="title">Group Registration</h1>
+    <h1 id="title">group registration</h1>
 {% endblock %}
 
 {% block main_content %}
@@ -9,8 +9,13 @@
         <p class="error-message">One or more fields below are either missing or filled out improperly.</p>
     {% endif %}
 
-    <form class="main-container" action="/group-signup/" method="post">{% csrf_token %}
+<div class="main-container">
+  <div class="container-top-bar">
+    Create your own group at OneTree!
+  </div>
+    <form action="/group-signup/" method="post">{% csrf_token %}
         {% include "includes/forms/forms.html" %}
-        <input type="submit" value="Submit" />
+        <input type="submit" value="submit" />
     </form>
+  </div>
 {% endblock %}

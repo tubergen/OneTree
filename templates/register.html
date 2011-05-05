@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <h1 id="title">User Account Creation</h1>
+    <h1 id="title">create an account</h1>
 {% endblock %}
 
 {% block main_content %}
 <div class="main-container">
+  <div class="container-top-bar">
+    Registering is quick and easy. Just fill out the info below, activate your email, and you're done!
+  </div>
     {% if form.errors %}
         <p class="error-message">One or more fields below are either missing or filled out improperly.</p>
     {% endif %}

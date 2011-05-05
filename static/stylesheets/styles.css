@@ -151,6 +151,10 @@ a {
     text-align: center;
 }
 
+.form-field-container {
+    margin: 1em auto;
+}
+
 .form-field {
     line-height: 2em;
     text-align: left;
@@ -160,7 +164,7 @@ a {
   display: block;
   float: left;
   clear: left;
-  width: 39%;
+  width: 43%;
   position: relative;
   overflow: show;
   text-align: right;
