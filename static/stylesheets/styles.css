@@ -412,6 +412,12 @@ img.tall-resize, img.tall-resize {
     text-align: center;    
 }
 
+.side-note {
+    font-style: italic;
+    color: #888888;
+    font-size: 10pt;
+}
+
 /* ---------- Notifications/newsfeed stuff ---------- */
 /* notif boxes are practically the same as post boxes */
 .notif-box {

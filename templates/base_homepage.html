@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block top_content %}
-
     <h1 id="title">OneTree</h1>
 {% endblock %}
 
@@ -32,10 +31,11 @@
                 <p>We need to think of what should go in here for users who are logged in.</p>
             {% else %}
                 <form action="/login/" method="POST">{% csrf_token %}
+                  <div style="margin-left: 4em;">
                     {% include 'includes/authentication/login.html' %}
+                  </div>
                 </form>
-                <p>Not a user yet? <a href="/user-signup/">Sign up now!</a><br />
-		  <a href="/profile/account/forgetpwd">Forgot password?</a></p>
+                <p style="text-align: center; margin-right: 2em;">Not a user yet? <a href="/user-signup/"><strong>Sign up now!</strong></a>
             {% endif %}
         </div>
         <div class="main-container container-right-containee">

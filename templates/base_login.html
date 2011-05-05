@@ -13,9 +13,11 @@
   {% if form.errors %}
     <p class="error-message">Sorry, that's not a valid username or password. Please try again.</p>
   {% endif %}
+  <div style="width: 30em; margin: 1em auto; padding-left: 8em;"> 
   <form action="" method="post">
     {% include 'includes/authentication/login.html' %}
   </form>
+</div>
 </div>
 
 {% endblock %}
