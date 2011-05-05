@@ -1,22 +1,45 @@
 <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
 <script type="text/javascript">
+
+  var pics = {{ piccount }}
+  var maxpics = {{ maxpics }}
+  
+
     // deletes pic specififed by picture_id
     function delete_picture(picture_id)
     {
         var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
         $.post("{{ delete_picture_view_url }}", data, function() {
             $('#picture-'+picture_id).hide("fast");
+
         });
+        pics--;
+ //       var auto_refresh = setInterval(
+ //       function()
+ //       {
+ //       $('#photo').fadeOut('fast').load('/group/{{ group.url }}/photos').fadeIn("fast");
+ //       }, 1000);
+
+        if (pics == 0)
+        {
+                $(document).load('/group/{{ group.url }}/photos');
+        //      $('#photo').fadeOut('fast').load('#nophoto').fadeIn("fast");
+        //    $('#photo').innerHTML = "(No Photos)";
+        }
+
         
-   //     if !({{ group }}.pictures.all) {
-   //         document.getElementById("nophoto1").innerHTML = "(No photos)";
-   //     }
+//        $(document).reload();
+ //       location.reload();
+        
+ //       if (!{{ group.pictures.all }}) {
+ //           document.getElementById("nophoto1").innerHTML = "(No Photos)";
+ //       }
     }
 </script>
 
 
 
-<div class="photo-container-all">
+<div class="photo-container-all" id="photo">
 {% if group.pictures.all %}
    {% for picture in group.pictures.all %}
        {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
@@ -44,7 +67,7 @@
    {% endfor %}
    {# <div id="nophoto1"></div> #}
 {% else %}
-    <p>(No Photos)</p>
+     <div id="nophoto"><p>(No Photos)</p></div> 
 {% endif %}
 </div>
 

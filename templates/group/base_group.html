@@ -148,7 +148,10 @@
   {% if groupinfo.data %}
     <p class="group-intro-text" style="margin-top: 0; padding-top 0;">{{ groupinfo.data }}
   {% else %}
+      {% comment %}
     <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This is a blurb about the group. The group should be able to put anything here that they'd like (within reason -- eg, not 30 lines of text).
+      {% endcomment %}
+    <p class="group-intro-text" style="margin-top: 0; padding-top: 0;">This group has not entered an introduction yet.
   {% endif %}
   {% if is_admin %}
     (<a class="edit-group-intro" href="/group/{{ group.url }}/info/edit">edit introduction</a>)</p>

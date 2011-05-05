@@ -29,7 +29,7 @@ $(document).ready(function() {
   <div id="data-fields">
     <div class="group-info-edit-box">
       <h3>Add Group Photos</h3>
-      {% if piccount < 20 %}
+      {% if piccount < maxpics %}
         <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
           {{ form.as_p }}
           <input type="submit" value="Submit" />
