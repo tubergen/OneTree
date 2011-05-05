@@ -356,7 +356,7 @@ img.tall-resize, img.tall-resize {
 }
 
 .delete-photo-button {
-    position: relative;
+    position: absolute;
     z-index: 3;
 }
 

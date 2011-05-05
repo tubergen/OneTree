@@ -1,78 +1,79 @@
 <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
 <script type="text/javascript">
 
-  var pics = {{ piccount }}
-  var maxpics = {{ maxpics }}
-  
+var pics = {{ piccount }}
+var maxpics = {{ maxpics }}
 
-    // deletes pic specififed by picture_id
-    function delete_picture(picture_id)
-    {
-        var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
-        $.post("{{ delete_picture_view_url }}", data, function() {
-            $('#picture-'+picture_id).hide("fast");
 
-        });
-        pics--;
- //       var auto_refresh = setInterval(
- //       function()
- //       {
- //       $('#photo').fadeOut('fast').load('/group/{{ group.url }}/photos').fadeIn("fast");
- //       }, 1000);
+// deletes pic specififed by picture_id
+function delete_picture(picture_id)
+{
+  var data = { "picture_id":picture_id, "group_id":"{{group.id}}" };
+  $.post("{{ delete_picture_view_url }}", data, function() {
+    $('#picture-'+picture_id).hide("fast");
 
-        if (pics == 0)
-        {
-                $(document).load('/group/{{ group.url }}/photos');
-        //      $('#photo').fadeOut('fast').load('#nophoto').fadeIn("fast");
-        //    $('#photo').innerHTML = "(No Photos)";
-        }
+  });
+  pics--;
+  //       var auto_refresh = setInterval(
+  //       function()
+  //       {
+  //       $('#photo').fadeOut('fast').load('/group/{{ group.url }}/photos').fadeIn("fast");
+  //       }, 1000);
 
-        
-//        $(document).reload();
- //       location.reload();
-        
- //       if (!{{ group.pictures.all }}) {
- //           document.getElementById("nophoto1").innerHTML = "(No Photos)";
- //       }
-    }
+  /*
+   if (pics == 0)
+   {
+     $(document).load('/group/{{ group.url }}/photos');
+     //      $('#photo').fadeOut('fast').load('#nophoto').fadeIn("fast");
+     //    $('#photo').innerHTML = "(No Photos)";
+}
+*/
+
+  //        $(document).reload();
+  //       location.reload();
+
+  //       if (!{{ group.pictures.all }}) {
+  //           document.getElementById("nophoto1").innerHTML = "(No Photos)";
+  //       }
+}
 </script>
 
 
 
 <div class="photo-container-all" id="photo">
-{% if group.pictures.all %}
-   {% for picture in group.pictures.all %}
-       {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
-       {% if picture.image %}           
-           <div id="picture-{{ picture.id }}" class="photo-container">
+  {% if group.pictures.all %}
+    {% for picture in group.pictures.all %}
+      {# the following if statement protects against the very rare case that our server crash while an uploaded image is being saved. in that case, there's a corrupted image associated with the Picture object and it has no url. The best thing would be to delete that object since it's useless... but this probably isn't the time to be generating errors :) in short: I dunno when to delete corrupt saves, but now's not the time to ruin someone's photo album #}
+      {% if picture.image %}           
+        <div id="picture-{{ picture.id }}" class="photo-container">
 
-               <a class="lightbox-gallery" href="{{ picture.image.url }}">
-               <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
-               </a>
+          <a class="lightbox-gallery" href="{{ picture.image.url }}">
+            <img class="{% if picture.image.height > picture.image.width %}tall-resize{% else %}fat-resize{% endif %}" src="{{ picture.image.url }}" />
+          </a>
 
-               <div class="delete-photo">
-                   {% if is_admin %}<button type="button" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
-               </div>
+          <div class="delete-photo">
+            {% if is_admin %}<button type="button" class="delete-button delete-photo-button" onClick="delete_picture({{picture.id}})"></button>{% endif %}
+          </div>
 
-{% comment %}
-{% if is_admin %}<button type="button" class="post-delete" id="photo-button-{{picture.id}}" onClick="delete_picture({{picture.id}})">delete</button>
-{% endif %}
-{% if is_admin %} <div class="photo-text-container-top"><input type="checkbox" value="{{ picture.image.url }}" /></div> {% endif %}
-{% endcomment %}
+          {% comment %}
+            {% if is_admin %}<button type="button" class="post-delete" id="photo-button-{{picture.id}}" onClick="delete_picture({{picture.id}})">delete</button>
+            {% endif %}
+            {% if is_admin %} <div class="photo-text-container-top"><input type="checkbox" value="{{ picture.image.url }}" /></div> {% endif %}
+          {% endcomment %}
 
 
-	   </div>
+        </div>
 
-       {% endif %}
-   {% endfor %}
-   {# <div id="nophoto1"></div> #}
-{% else %}
-     <div id="nophoto"><p>(No Photos)</p></div> 
-{% endif %}
+      {% endif %}
+    {% endfor %}
+    {# <div id="nophoto1"></div> #}
+  {% else %}
+    <div id="nophoto"><p>(No Photos)</p></div> 
+  {% endif %}
 </div>
 
 <script type="text/javascript">
-$(function() {
-	$('a.lightbox-gallery').lightBox(); // Select all links with lightbox class
-});
+  $(function() {
+    $('a.lightbox-gallery').lightBox(); // Select all links with lightbox class
+  });
 </script>
