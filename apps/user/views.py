@@ -120,9 +120,14 @@ def activate(request, activation_key):
                 # Activate!
                 user.is_active = True
                 user.save()
+
+                # Provide some groups so that they have a place to start
+                toplevelgroups = Group.objects.filter(toplevelgroup=True)
+                # ^ this code is replicated in homepage
                 
                 login(request, user)
-                return render_to_response("reg_complete.html", 
+                return render_to_response("reg_complete.html",
+                        {'toplevelgroups': toplevelgroups},
                                           context_instance=context)
 
             else:

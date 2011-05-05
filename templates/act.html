@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <h1 id="title">Almost there!</h1>
+    <h1 id="title">almost there!</h1>
 {% endblock %}
 
 {% block main_content %}
     <div class="main-container">
-        <p>To complete the activation process, just enter your username and password below:</p>
+      <div class="container-top-bar">To complete the activation process, just enter your username and password below</div>
 
         {% if error_msg %}
             <p>{{ error_msg }}</p>
@@ -14,7 +14,7 @@
 
         <form action="" method="post">{% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Activate!" />
+            <input type="submit" value="activate!" />
         </form>
     </div>
 

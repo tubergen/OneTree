@@ -1,60 +1,55 @@
 {% extends "base.html" %}
 
 {% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" href="/static/stylesheets/homepage.css" type="text/css" media="screen" />
+  {{ block.super }}
+  <link rel="stylesheet" href="/static/stylesheets/homepage.css" type="text/css" media="screen" />
 {% endblock %}
 
 {% block top_content %}
-    <h1 id="title">OneTree</h1>
+  <h1 id="title">OneTree</h1>
 {% endblock %}
 
 {% block main_content %}
-    <div class="main-container container-left">
-        <div class="container-top-bar"><strong>Welcome to OneTree!</strong> The new way to organize communities.</div>
-        <h3>What is this place?</h3>
-        <div class="explanation">OneTree is a brand new site that helps you explore your community by organizing all the sub-communities that comprise it.</div>
-        <h3>How does it work?</h3>
-        <div class="explanation">Imagine the Princeton community: it itself is comprised of sub-communities like "Arts" and "Sports," which in term are comprised of many smaller sub-communities.</div>
-        <div class="explanation-image"><img src="/static/images/explanation.gif" width="280" height="300" /></div>
-        <div class="explanation">If you're curious about what's going on at Princeton, you might as well aggregate everything going on in all its sub-communities. Or if you're interested in only the arts at Princeton, you can aggregate all of its sub-communities.</div>
-        <div class="explanation">OneTree lets you do just that: by visiting any community page, you'll instantly see announcements and events of <em>all</em> sub-communities that comprise it.</div>
-        <h3>What next?</h3>
-        <div class="explanation">Explore the site, or go <a href="/user-signup/">make an account!</a> And please don't hesitate to <a href="">send us feedback</a> (link coming soon =P) -- we're working hard to improve this site!</div>
-    </div>
+  <div class="main-container container-left">
+    <div class="container-top-bar"><strong>Welcome to OneTree!</strong> The new way to organize communities.</div>
+    <h3>What is this place?</h3>
+    <div class="explanation">OneTree is a brand new site that helps you explore your community by organizing all the sub-communities that comprise it.</div>
+    <h3>How does it work?</h3>
+    <div class="explanation" style="margin-bottom: 0; padding-bottom: 0;">Imagine the Princeton community: it itself is comprised of sub-communities like "Arts" and "Sports," which in term are comprised of many smaller sub-communities.</div>
+    <div class="explanation-image"><img src="/static/images/explanation.gif" width="280" height="300" /></div>
+    <div class="explanation">If you're curious about what's going on at Princeton, you might as well aggregate everything going on in all its sub-communities. Or if you're interested in only the arts at Princeton, you can aggregate all of its sub-communities.</div>
+    <div class="explanation">OneTree lets you do just that: by visiting any community page, you'll instantly see announcements and events of <em>all</em> sub-communities that comprise it.</div>
+    <h3>What next?</h3>
+    <div class="explanation">Explore the site, or go <a href="/user-signup/">make an account!</a> And please don't hesitate to <a href="">send us feedback</a> (link coming soon =P) -- we're working hard to improve this site!</div>
+  </div>
 
-    <div class="main-container container-right-container">
-        <div class="main-container container-right-containee">
-            <div class="container-top-bar"><strong>{% if user.is_authenticated %}Welcome, {{ user.username }}!{% else %}Login or register!{% endif %}</strong></div>
-            {% if user.is_authenticated %}
-                <p>Check out your <a href="/news/">news</a>! There must be some exciting new updates... (don't hold that against us)
-                <p>We need to think of what should go in here for users who are logged in.</p>
-            {% else %}
-                <form action="/login/" method="POST">{% csrf_token %}
-                  <div style="margin-left: 4em;">
-                    {% include 'includes/authentication/login.html' %}
-                  </div>
-                </form>
-                <p style="text-align: center; margin-right: 2em; margin-bottom: 0; margin-top: 2em;">Not a user yet? <a href="/user-signup/"><strong>Sign up now!</strong></a>
-            {% endif %}
-        </div>
-        <div class="main-container container-right-containee">
-            <div class="container-top-bar"><strong>Check out some communities!</strong></div>
-            {% if toplevelgroups %}
-            <p>To help get you started, check out the Princeton community or any of the sub-communities that comprise it:</p>
-            <ul class="group-list" style="font-size: 12pt; text-align: center; line-height: 1.2em">
-                    {% for group in toplevelgroups %}
-                      <li><a href="/group/{{ group.url }}" style="font-size: 16pt;"><strong>{{ group.name }}</strong></a>
-                          <ul style="list-style: none; margin-left: 0; padding-left: 0;">
-                               {% for child in group.child_set.all %}
-                                 <li style="margin: 0; padding: 0;"><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
-                               {% endfor %}
-                             </ul></li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Sorry, there are no groups yet. Why don't you go ahead and make one?</p>
-            {% endif %}
-        </div>
+  <div class="main-container container-right-container">
+    <div class="main-container container-right-containee">
+      <div class="container-top-bar"><strong>{% if user.is_authenticated %}Welcome, {{ user.username }}!{% else %}Login or register!{% endif %}</strong></div>
+      {% if user.is_authenticated %}
+        <p>View your <a href="/news/">news</a>!</p>
+        {% if user.get_profile.subscriptions.all %}
+          <p>Groups you've subscribed to:</p>
+          <ul style="list-type: none;">
+            {% for group in user.get_profile.subscriptions.all %}
+              <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Or check the groups below to start exploring!</p>
+        {% endif %}
+      {% else %}
+        <form action="/login/" method="POST">{% csrf_token %}
+          <div style="margin-left: 4em;">
+            {% include 'includes/authentication/login.html' %}
+          </div>
+        </form>
+        <p style="text-align: center; margin-right: 2em; margin-bottom: 0; margin-top: 2em;">Not a user yet? <a href="/user-signup/"><strong>Sign up now!</strong></a>
+        {% endif %}
+      </div>
+      <div class="main-container container-right-containee">
+        <div class="container-top-bar"><strong>Check out some communities!</strong></div>
+        {% include 'includes/community_list.html' %}
+      </div>
     </div>
-{% endblock %}
+  {% endblock %}

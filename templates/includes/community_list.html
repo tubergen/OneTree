@@ -1,0 +1,17 @@
+{# included in the homepage and when a new user is done activating so that they have somewhere to start #}
+
+{% if toplevelgroups %}
+  <p>To help get you started, check out the Princeton community or any of the sub-communities that comprise it:</p>
+  <ul class="group-list" style="font-size: 12pt; text-align: center; line-height: 1.2em">
+    {% for group in toplevelgroups %}
+      <li><a href="/group/{{ group.url }}" style="font-size: 16pt;"><strong>{{ group.name }}</strong></a>
+        <ul style="list-style: none; margin-left: 0; padding-left: 0; margin-top: .3em;">
+          {% for child in group.child_set.all %}
+            <li style="margin: 0; padding: 0;"><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+          {% endfor %}
+        </ul></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Sorry, there are no groups yet. Why don't you go ahead and make one?</p>
+{% endif %}

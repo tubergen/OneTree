@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
 {% block top_content %}
-    <h1 id="title">Activation complete!</span>
+    <h1 id="title">activation complete!</span>
 {% endblock %}
 
 {% block main_content %}
     <div class="main-container">
+      <div class="container-top-bar">Welcome to OneTree!</div>
         <p>Your account has been activated! Go ahead and explore the communities!</p>
+        {% include 'includes/community_list.html' %}
     </div>
 {% endblock %}
