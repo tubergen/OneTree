@@ -106,7 +106,7 @@
         <div id="group-navigation-div">
             <div class="parent-word"><a href="/group/{{ group.parent.url }}">{% if group.parent %}{{ group.parent }}{% else %}OneTree{% endif %}</a></div>
             <ul class="parent-list">
-                <li><div class="child-list-border"></div><a class="child-name group-list-name">{{ group.name }}</a>
+              <li style="margin-top: .25em;"><div class="child-list-border"></div><a class="child-name group-list-name">{{ group.name }}</a>
                     <ul class="child-list">
                         {% for child in children %}
                             <li><span class="child-list-border"></span><a class="child-name" href="/group/{{ child.url }}">{{ child.name }}</a></li>
