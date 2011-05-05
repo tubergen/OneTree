@@ -35,17 +35,21 @@
                     {% include 'includes/authentication/login.html' %}
                   </div>
                 </form>
-                <p style="text-align: center; margin-right: 2em;">Not a user yet? <a href="/user-signup/"><strong>Sign up now!</strong></a>
+                <p style="text-align: center; margin-right: 2em; margin-bottom: 0; margin-top: 2em;">Not a user yet? <a href="/user-signup/"><strong>Sign up now!</strong></a>
             {% endif %}
         </div>
         <div class="main-container container-right-containee">
-            <div class="container-top-bar"><strong>Or check out some current groups!</strong></div>
-            <p>(This is currently a list of all top-level groups. When we're ending development, replace it with some active groups)</p>
+            <div class="container-top-bar"><strong>Check out some communities!</strong></div>
             {% if toplevelgroups %}
-                <p>All top-level groups currently registered at OneTree:</p>
-                <ul class="group-list">
+            <p>To help get you started, check out the Princeton community or any of the sub-communities that comprise it:</p>
+            <ul class="group-list" style="font-size: 12pt; text-align: center; line-height: 1.2em">
                     {% for group in toplevelgroups %}
-                        <li><a href="/group/{{ group.url }}">{{ group.name }}</a></li>
+                      <li><a href="/group/{{ group.url }}" style="font-size: 16pt;"><strong>{{ group.name }}</strong></a>
+                          <ul style="list-style: none; margin-left: 0; padding-left: 0;">
+                               {% for child in group.child_set.all %}
+                                 <li style="margin: 0; padding: 0;"><a href="/group/{{ child.url }}">{{ child.name }}</a></li>
+                               {% endfor %}
+                             </ul></li>
                     {% endfor %}
                 </ul>
             {% else %}
