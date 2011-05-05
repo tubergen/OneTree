@@ -84,7 +84,7 @@ $(document).ready(function() {
       </div>
       {% endif %}
 
-
+      {% if not group.pending_parent %}
       <div class="group-info-edit-box">
         <h3>Add Group Admin</h3>
         <form action="" method="post">{% csrf_token %}
@@ -93,7 +93,9 @@ $(document).ready(function() {
           <input type="submit" name="data_submit" value="Submit" />
         </form>
       </div>
+      {% endif %}
 
+      {% if not group.pending_parent %}
       <div class="group-info-edit-box">
         <h3>Remove Group Admin</h3>
         <p> To remove yourself as admin, see "Transfer Group SuperAdmin."</p>
@@ -112,7 +114,9 @@ $(document).ready(function() {
           {% endifnotequal %}
         </form>
       </div>
+      {% endif %}
 
+      {% if not group.pending_parent %}
       <div class="group-info-edit-box">
         <h3>Transfer Group SuperAdmin</h3> 
         <a id="super-admin-descrip-link" href="#super-admin-descrip-link" style="display: none">What's this?</a>
@@ -126,6 +130,7 @@ $(document).ready(function() {
         </form>
         <br />
       </div>
+      {% endif %}
 
     {% else %}
 

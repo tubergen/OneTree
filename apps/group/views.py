@@ -549,16 +549,23 @@ def edit_groupinfo_page(request, groupname, edit_on=False):
 
 # groupphotos_page
 def groupphotos_page(request, groupname):
+    
+    # Try to get group
     try:
         group = Group.objects.get(name=groupname)
     except:
         print "ERROR in groupphotos_page (group/views.py)"
         return HttpResponse(status=400)
 
+    # If group does not exist, return HTTP 400 Error
     if not group:
         print "ERROR: Incorrect groupname in group/views.py groupphotos_page"
         return HttpResponse(status=400)
-        
+    
+    # If group exists but has pending parent, redirect to group page
+    if group.pending_parent:
+        return HttpResponseRedirect("/group/" + group.url)
+
     return group_page(request, groupname, is_group_page=False, is_groupinfo_page=False, is_groupphotos_page=True)
     #pass
 
