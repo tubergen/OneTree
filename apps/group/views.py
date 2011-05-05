@@ -149,6 +149,9 @@ def handle_submit(request, group):
     postdata = None
     errortype = -1
     if request.method == 'POST':
+        print "STATUS >>>>>>>>>>>>>>>>>>>>>>>"
+        print request.POST
+        print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         if not verify_admin(request, group):
             errormsg = "Get outta here, you liar!"
         elif 'post_content' in request.POST and request.POST['post_content']:
