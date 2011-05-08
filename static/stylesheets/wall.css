@@ -441,6 +441,7 @@
 
 .comment-author {
     font-weight: bold;
+    text-decoration: underline;
 }
 
 .comment-author:after {
