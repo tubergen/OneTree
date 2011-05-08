@@ -2,7 +2,7 @@
 
 {% block top_content %}
 <span id="title"><h1>{{ event.event_title }}</h1></span>
-<h2><strong>Created by: </strong><a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a></h2>
+<h2><strong>Created by: </strong><a href="/group/{{ event.origin_group.url }}">{{ event.origin_group.name }}</a></h2>
 {# Back to <a href="/group/{{ event.origin_group }}">{{ event.origin_group }}</a> #}
 {% endblock %}
 
