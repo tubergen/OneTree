@@ -40,7 +40,7 @@
                 <li><a href="/logout/">Logout</a></li>
               {% else %}
                 <li><a href="/user-signup/">Register</a></li>
-                <li><a href="/login/?next={{ request.path }}">Login</a></li>
+                <li><a href="/login/?next={{ request.get_full_path }}">Login</a></li>
               {% endif %}
               <li>
                 <form action='/search/' method='GET'>

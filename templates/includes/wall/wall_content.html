@@ -292,7 +292,7 @@ function bind_vote(type, post_id, post_type)
           <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
             <div class="comment-content-div">
               {% if not comment.removed %}
-                <span class="comment-author" id="comment-author-{{comment.id}}"><a href="/user/{{ comment.author }}">{{ comment.author }}</a>:</span>
+              <span class="comment-author" id="comment-author-{{comment.id}}">{{ comment.author }}:</span>
               {% endif %}
               <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
             </div>
@@ -345,7 +345,7 @@ function bind_vote(type, post_id, post_type)
     <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.parentloop.counter }}{% endif %}">
       <div class="comment-content-div">
         {% if not comment_child.removed %}
-          <span class="comment-author" id="comment-author-{{comment_child.id}}"><a href="/user/{{ comment_child.author }}">{{ comment_child.author }}</a>:</span>
+        <span class="comment-author" id="comment-author-{{comment_child.id}}">{{ comment_child.author }}:</span>
         {% endif %}
         <span class="comment-content" id="comment-content-{{comment_child.id}}">{{ comment_child.text }}</span>
       </div>
@@ -366,6 +366,7 @@ function bind_vote(type, post_id, post_type)
     </div>
 
     {# hr #}
+    {% set comment_count thread safety %}
     {% if comment_count > 5 %}
       <hr class="hr-too-many hr-too-many-{{forloop.parentloop.parentloop.counter}}" />
     {% else %}
@@ -375,6 +376,7 @@ function bind_vote(type, post_id, post_type)
   {# end nested comment #}
 
   {% if forloop.last %}
+    {% set comment_count thread safety %}
     {% if comment_count > 5 %}
       <div class="load-more-comments-div"><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}', 'hr-too-many-{{forloop.parentloop.counter}}');">see more comments</a></div>
     {% endif %}
