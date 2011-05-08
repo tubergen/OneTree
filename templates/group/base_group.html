@@ -17,7 +17,7 @@
 
 {% block top_title %}
   {% if group.pending_parent  %}
-    <strong>This group is awaiting parent approval by <a href="/group/{{ group.pending_parent.name }}">{{ group.pending_parent.name }}</a></strong>.    
+    <strong>This group is awaiting parent approval by <a href="/group/{{ group.pending_parent.url }}">{{ group.pending_parent.name }}</a></strong>.    
   {% else %}
     {% if not group.parent %}
       {% if not group.toplevelgroup %}

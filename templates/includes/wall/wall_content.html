@@ -366,6 +366,7 @@ function bind_vote(type, post_id, post_type)
     </div>
 
     {# hr #}
+    {% set comment_count thread safety %}
     {% if comment_count > 5 %}
       <hr class="hr-too-many hr-too-many-{{forloop.parentloop.parentloop.counter}}" />
     {% else %}
@@ -375,6 +376,7 @@ function bind_vote(type, post_id, post_type)
   {# end nested comment #}
 
   {% if forloop.last %}
+    {% set comment_count thread safety %}
     {% if comment_count > 5 %}
       <div class="load-more-comments-div"><a class="load-more-comments" id="load-more-comments-{{ forloop.parentloop.counter }}" onclick="toggle_extra_comments('comment-too-many-{{ forloop.parentloop.counter }}', this, 'load-more-comments-{{ forloop.parentloop.counter }}', 'hr-too-many-{{forloop.parentloop.counter}}');">see more comments</a></div>
     {% endif %}
