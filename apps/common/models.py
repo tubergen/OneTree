@@ -202,10 +202,12 @@ class Picture(models.Model):
         return os.path.join('uploaded_files', str(instance.owner.url),
                 strftime('%Y/%m/%d'), filename)
 
+
     upload_date = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to=picture_location)
     owner = models.ForeignKey('Group', blank=True, null=True,
             related_name='pictures')
+ 
     
 class UserInfo(models.Model):
     pass

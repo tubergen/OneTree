@@ -184,6 +184,7 @@ def delete_picture(request):
             try: 
                 picture = Picture.objects.get(id=picture_id)
                 if request.user in group.admins.all():
+                    picture.image.delete()
                     picture.delete()
 
 #                return HttpResponse('/group/' + group.name + '/photos/')
