@@ -596,6 +596,9 @@ def handle_data(groupinfo, group, request):
             groupinfo.save()
         else:
             print 'no biginfo'
+            groupinfo.biginfo = ''
+            groupinfo.group = group
+            groupinfo.save()
 
         new_parent_name = request.POST.get('new_parent', None)
         if new_parent_name:
