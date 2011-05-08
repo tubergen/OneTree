@@ -68,14 +68,19 @@ class Group(models.Model):
 
     # in future, change this so that parent can 'reject' percolating posts
     def addAnnToParent(self, announcement):
-        curNode = self
+        curNode = self.parent 
         while (curNode is not None):
+            if curNode.announcements.filter(id=announcement.id):
+                return
             curNode.announcements.add(announcement)
             curNode = curNode.parent
 
     def addEventToParent(self, event):
-        curNode = self
+        curNode = self.parent
         while (curNode is not None):
+            # added by Jorge for infinite loop fix
+            if curNode.events.filter(id=event.id):
+                return
             curNode.events.add(event)
             curNode = curNode.parent
 
