@@ -184,6 +184,7 @@ def delete_picture(request):
             try: 
                 picture = Picture.objects.get(id=picture_id)
                 if request.user in group.admins.all():
+                    picture.image.delete()
                     picture.delete()
 
 #                return HttpResponse('/group/' + group.name + '/photos/')
@@ -596,6 +597,9 @@ def handle_data(groupinfo, group, request):
             groupinfo.save()
         else:
             print 'no biginfo'
+            groupinfo.biginfo = ''
+            groupinfo.group = group
+            groupinfo.save()
 
         new_parent_name = request.POST.get('new_parent', None)
         if new_parent_name:
