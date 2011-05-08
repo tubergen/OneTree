@@ -2,6 +2,9 @@
 {# it should eventulaly be referencing the same JS #}
 <script type="text/javascript">  
 
+var pics = {{ piccount }};
+var maxpics = {{ maxpics }};
+
 function toggle_edit_info()
 {
   if ($('#eventclick').is(':checked'))
@@ -17,6 +20,17 @@ function toggle_edit_info()
 
 $(document).ready(function() {
   $('#data-fields').hide();
+  
+  if (pics < maxpics)
+  {
+     $('#photo_form').show();
+     $('#photo_max').hide();
+  }
+  else
+  {
+     $('#photo_form').hide();
+     $('#photo_max').show();
+  }	   
 }); 
 
 </script>
@@ -29,14 +43,16 @@ $(document).ready(function() {
   <div id="data-fields">
     <div class="group-info-edit-box">
       <h3>Add Group Photos</h3>
-      {% if piccount < maxpics %}
+{#      {% if piccount < maxpics %}  #}
+			 <div id="photo_form">
         <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
           {{ form.as_p }}
           <input type="submit" value="Submit" />
         </form>
-      {% else %}
-        <p>You have reached the maximum number of photos. Try deleting one first.</p>
-      {% endif %}
+			 </div>
+{#      {% else %} #}
+       <div id="photo_max"> <p>You have reached the maximum number of photos. Try deleting one first.</p></div>
+  {#    {% endif %} #}
     </div>
   </div>
 </div>

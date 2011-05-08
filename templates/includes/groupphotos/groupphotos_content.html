@@ -1,9 +1,8 @@
 <script type="text/javascript" src="/static/javascripts/jquery.lightbox-0.5.js"></script>
 <script type="text/javascript">
 
-var pics = {{ piccount }}
-var maxpics = {{ maxpics }}
-
+var pics = {{ piccount }};
+var maxpics = {{ maxpics }};
 
 // deletes pic specififed by picture_id
 function delete_picture(picture_id)
@@ -13,29 +12,24 @@ function delete_picture(picture_id)
     $('#picture-'+picture_id).hide("fast");
 
   });
-  pics--;
-  //       var auto_refresh = setInterval(
-  //       function()
-  //       {
-  //       $('#photo').fadeOut('fast').load('/group/{{ group.url }}/photos').fadeIn("fast");
-  //       }, 1000);
 
-  /*
+  pics--;
+  
    if (pics == 0)
    {
-     $(document).load('/group/{{ group.url }}/photos');
-     //      $('#photo').fadeOut('fast').load('#nophoto').fadeIn("fast");
-     //    $('#photo').innerHTML = "(No Photos)";
-}
-*/
+       $('#nophoto1').show();
+   }
 
-  //        $(document).reload();
-  //       location.reload();
-
-  //       if (!{{ group.pictures.all }}) {
-  //           document.getElementById("nophoto1").innerHTML = "(No Photos)";
-  //       }
+   if (pics < maxpics)
+   {
+       $('#photo_max').hide();      
+       $('#photo_form').show();
+   }
 }
+
+$(document).ready(function() {
+  $('#nophoto1').hide();
+});
 </script>
 
 
@@ -66,7 +60,7 @@ function delete_picture(picture_id)
 
       {% endif %}
     {% endfor %}
-    {# <div id="nophoto1"></div> #}
+     <div id="nophoto1">(No Photos)</div> 
   {% else %}
     <div id="nophoto"><p>(No Photos)</p></div> 
   {% endif %}
