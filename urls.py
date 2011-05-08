@@ -18,7 +18,7 @@ import djapian
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 
-admin.autodiscover()
+#admin.autodiscover()
 
 # get djapian indexing
 djapian.load_indexes()
