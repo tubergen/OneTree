@@ -18,7 +18,7 @@
   <p class="error-message">Your account has not been activated.</p>
 
   <form action="/activate/resend/" method="POST">{% csrf_token %}
-    <input type="hidden" name="user_name" value="{{ user.username }}"/>
+    <input type="hidden" name="user_name" value="{{ username }}"/>
     <input type="submit" value="Resend Activation Email" />
   </form>
   {% else %}
