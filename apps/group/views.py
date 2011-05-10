@@ -234,16 +234,20 @@ def suppress_errormsg(request, errormsg):
 # GROUP PAGE
 #######################################
 def group_page(request, group_url, partial_form=None, is_group_page=True,
-               is_groupinfo_page=False, is_groupphotos_page=False, edit_on=False):
-    errormsg = None
+               is_groupinfo_page=False, is_groupphotos_page=False, edit_on=False, errormsg=None):
+#    errormsg = None
     # For repopulation of event fields
     title = None
     where = None
     date = None
     time = None
     postdata = ''
-  #  eventblurb = ''
+    
+    comment_error = False
 
+    if errormsg:
+        comment_error = True
+  
     context = RequestContext(request)
     if request.user.is_authenticated():
        profile = request.user.get_profile()
@@ -265,8 +269,10 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     else:
         groupinfo = groupinfo[0]
 
-    #form = upload_file(request, group.url, is_groupphotos_page)
-    (form, errormsg) = upload_file(request, group.url, is_groupphotos_page)
+    # deal with an uploaded image
+    (form, newerrormsg) = upload_file(request, group.url, is_groupphotos_page)
+    if not comment_error:
+        errormsg = newerrormsg
 
     piccount = 0
     pics = group.pictures.all()
@@ -276,21 +282,17 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
     maxpics = 20
 
     # handle editable info submit
-    if 'data_submit' in request.POST:
+    if 'data_submit' in request.POST and not comment_error:
         errormsg = handle_data(groupinfo, group, request)
         
     errortype = -1
 
     # handle the wall post that was perhaps submitted
-    if 'post_submit' in request.POST:
+    if 'post_submit' in request.POST and not comment_error:
         #errormsg = handle_submit(request, group)
         (errormsg, title, where, date, time, postdata, errortype) = handle_submit(request, group)
         if errormsg:
             print errormsg      
-
-    # create shorter blurb for events
- #   if postdata:
- #       eventblurb = (postdata[:150] + '...') if len(postdata) > 150 else postdata 
 
     # get user's subscription status to this group
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
@@ -533,7 +535,7 @@ def upload_file(request, group_url, is_groupphotos_page=False):
 
 # groupinfo page
 def groupinfo_page(request, groupname, edit_on=False):
-    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True, is_groupphotos_page=False, edit_on=edit_on)
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=True, is_groupphotos_page=False, edit_on=edit_on, errormsg=None)
 
 @login_required
 def edit_groupinfo_page(request, groupname, edit_on=False):
@@ -566,7 +568,7 @@ def groupphotos_page(request, groupname):
     if group.pending_parent:
         return HttpResponseRedirect("/group/" + group.url)
 
-    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=False, is_groupphotos_page=True)
+    return group_page(request, groupname, is_group_page=False, is_groupinfo_page=False, is_groupphotos_page=True, errormsg=None)
     #pass
 
 

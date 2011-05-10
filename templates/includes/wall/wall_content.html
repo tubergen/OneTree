@@ -386,6 +386,10 @@ function delete_comment(comment_id)
   {% endif %}
   {# DO IT #}
 </div>
+  {% empty %}
+    {% if not wall_subtitle %} {# in future should add something to filter to insure this was a calendar click #}
+       <h2 id="subtitle">Sorry, no events are listed on this date.</h2>
+    {% endif %}
   {% endfor %}
 
   {% if not group.pending_parent %}
