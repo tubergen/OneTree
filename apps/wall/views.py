@@ -18,7 +18,8 @@ def post_comment(request):
     redirect = request.POST.get("next")
     comment_text = request.POST.get("comment_text")
     post_type = int(request.POST.get("post_type"))
-    # oh boy...
+
+    # check to see if the comment is too long
     if post_type == PostType.ANNOUNCEMENT:
         post = Announcement.objects.get(id=post_id)
     elif post_type == PostType.EVENT:
@@ -28,9 +29,11 @@ def post_comment(request):
         
     group = post.origin_group
     url = group.url
-    if len(comment_text) > 200:
-        errormsg = 'Your comment is too long. The maximum character length is ' + str(200) + ' characters. Your current comment length is ' + str(len(comment_text)) + ' characters.'
+    if len(comment_text) > 1000:  # arbitrary
+        errormsg = 'Your comment is too long. The maximum character length is ' + str(1000) + ' characters. Your current comment length is ' + str(len(comment_text)) + ' characters.'
         return group_page(request, url, errormsg=errormsg)
+
+    # end comment length testing
 
         
 
