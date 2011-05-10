@@ -3,6 +3,7 @@
   id "wall-content".
 {% endcomment %}
 
+{% if not wall_subtitle %} {# should think up a better way of deciding to disable filters #}
 <script type="text/javascript" charset="utf-8">
 
 var filters = {};
@@ -65,6 +66,7 @@ function change_filter_by_date() {
   $('#filter-by-date-picker').show();
 }
 </script>
+{% endif %}
 
 {% comment %}
   The filter button ids are important. They give the name of the filter we need
