@@ -26,115 +26,115 @@ function bind_vote(type, post_id, post_type)
   $('#' + type + '-button-' + post_type + '-' + post_id).click(function() {
     update_vote_script(type, post_id, post_type);
   });
+}
+
+// Bind the correct functions to the buttons depending on whether 
+// the user has logged in and voted on this post before
+function setup_voting() {
+  {% if user.is_authenticated %}
+
+  // make all posts' voting active
+  {% for post in posts %}
+  bind_vote('up', {{post.id}}, {{post.post_type}});
+  bind_vote('down', {{post.id}}, {{post.post_type}});
+  {% endfor %}
+
+  // retroactively remove voting from some of them
+  {% for post_vote in voted_post_set %}
+  var vote = {{ post_vote.vote }};
+  var post_id = {{ post_vote.post.id }};
+  var post_type = {{post_vote.post.post_type}};
+
+  if (vote == 1)
+  {
+    $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
   }
-
-  // Bind the correct functions to the buttons depending on whether 
-  // the user has logged in and voted on this post before
-  function setup_voting() {
-    {% if user.is_authenticated %}
-
-    // make all posts' voting active
-    {% for post in posts %}
-    bind_vote('up', {{post.id}}, {{post.post_type}});
-    bind_vote('down', {{post.id}}, {{post.post_type}});
-    {% endfor %}
-
-    // retroactively remove voting from some of them
-    {% for post_vote in voted_post_set %}
-    var vote = {{ post_vote.vote }};
-    var post_id = {{ post_vote.post.id }};
-    var post_type = {{post_vote.post.post_type}};
-
-    if (vote == 1)
-    {
-      $('#up-button-' + post_type + '-' + post_id).addClass('up-selected');
-    }
-    else if (vote == 2)
-    {
-      $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
-    }
-    else 
-    {
-    }
-    {% endfor %}
-    {% else %}
-    {% for post in posts %}
-    $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
-      alert('Log in to vote !');
-    });
-
-    $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
-      alert('Log in to vote !');
-    });
-
-    {% endfor %}
-    {% endif %}
+  else if (vote == 2)
+  {
+    $('#down-button-' + post_type + '-' + post_id).addClass('down-selected');
   }
-
-  $(document).ready(function() {
-    setup_voting();
+  else 
+  {
+  }
+  {% endfor %}
+  {% else %}
+  {% for post in posts %}
+  $('#down-button-{{post.post_type}}-{{post.id}}').click(function() {
+    alert('Log in to vote !');
   });
 
-  // vote_type specifies if this was up or down vote; post_id identifies post
-  function update_vote_script(vote_type, post_id, post_type)
-  {
-    var score_id = '#vote-score-' + post_type + '-' + post_id;
-    var old_score = parseInt($(score_id).html());
+  $('#up-button-{{post.post_type}}-{{post.id}}').click(function() {
+    alert('Log in to vote !');
+  });
 
-    var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
+  {% endfor %}
+  {% endif %}
+}
 
-    $.post("/_apps/wall/views-update_vote/", data, function(data) {
-      var change = parseInt(data)
-      $(score_id).html(old_score + change);
+$(document).ready(function() {
+  setup_voting();
+});
 
-      var up_but = '#up-button-' + post_type + '-' + post_id;
-      var down_but = '#down-button-' + post_type + '-' + post_id;
+// vote_type specifies if this was up or down vote; post_id identifies post
+function update_vote_script(vote_type, post_id, post_type)
+{
+  var score_id = '#vote-score-' + post_type + '-' + post_id;
+  var old_score = parseInt($(score_id).html());
 
-      if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
-      {
-        $(up_but).addClass('up-selected')
-        $(down_but).removeClass('down-selected')
-      }
-      else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
-      {
-        $(up_but).removeClass('up-selected')
-        $(down_but).addClass('down-selected')
-      }
-      else
-      {
-        $(up_but).removeClass('up-selected')
-        $(down_but).removeClass('down-selected')
-      }
+  var data = {"vote_type":vote_type, "post_id":post_id, "post_type":post_type};
 
-    });
+  $.post("/_apps/wall/views-update_vote/", data, function(data) {
+    var change = parseInt(data)
+    $(score_id).html(old_score + change);
+
+    var up_but = '#up-button-' + post_type + '-' + post_id;
+    var down_but = '#down-button-' + post_type + '-' + post_id;
+
+    if (vote_type == 'up' && !($(up_but).hasClass('up-selected')))
+    {
+      $(up_but).addClass('up-selected')
+      $(down_but).removeClass('down-selected')
+    }
+    else if (vote_type == 'down' && !($(down_but).hasClass('down-selected')))
+    {
+      $(up_but).removeClass('up-selected')
+      $(down_but).addClass('down-selected')
+    }
+    else
+    {
+      $(up_but).removeClass('up-selected')
+      $(down_but).removeClass('down-selected')
     }
 
-    // deletes post specififed by post_id if it's being deleted by the author group
-    // otherwise simply removes the post from the wall
-    function delete_post(post_id, post_type)
-    {
-      if (confirm("Are you sure you want to remove this post?")) {
-        var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
-        $.post("{{ delete_post_view_url }}", data, function() {
-          $('#post-box-'+post_type+'-'+post_id).slideUp("fast");
-        });
-      }
-      }
+  });
+}
 
-      // deletes the comment
+// deletes post specififed by post_id if it's being deleted by the author group
+// otherwise simply removes the post from the wall
+function delete_post(post_id, post_type)
+{
+  if (confirm("Are you sure you want to remove this post?")) {
+    var data = { "post_id":post_id, "post_type":post_type, "group_id":"{{group.id}}" };
+    $.post("{{ delete_post_view_url }}", data, function() {
+      $('#post-box-'+post_type+'-'+post_id).slideUp("fast");
+    });
+  }
+}
 
-      function delete_comment(comment_id)
-      {
-        if (confirm("Are you sure you want to remove this comment?")) {
-          var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
-          $.post("/_apps/wall/views-delete_comment/", data, function(data) {
-            // returned data is the 'post was removed' message
-            $('#comment-content-' + comment_id).html(data); 
-            $('#comment-author-' + comment_id).remove();
-            $('#delete-button-' + comment_id).remove();
-          });
-        }
-        }
+// deletes the comment
+
+function delete_comment(comment_id)
+{
+  if (confirm("Are you sure you want to remove this comment?")) {
+    var data = { "comment_id":comment_id, "group_id":"{{group.id}}" };
+    $.post("/_apps/wall/views-delete_comment/", data, function(data) {
+      // returned data is the 'post was removed' message
+      $('#comment-content-' + comment_id).html(data); 
+      $('#comment-author-' + comment_id).remove();
+      $('#delete-button-' + comment_id).remove();
+    });
+  }
+}
 
       </script>
 
@@ -292,7 +292,7 @@ function bind_vote(type, post_id, post_type)
           <div class="comment comment-level-{{ comment.level }} {% ifequal comment.author user %}comment-is-yours{% endifequal %} {% if forloop.first %}comment-first{% endif %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.counter }}{% endif %}">
             <div class="comment-content-div">
               {% if not comment.removed %}
-              <span class="comment-author" id="comment-author-{{comment.id}}">{{ comment.author }}:</span>
+                <span class="comment-author" id="comment-author-{{comment.id}}">{{ comment.author }}:</span>
               {% endif %}
               <span class="comment-content" id="comment-content-{{comment.id}}">{{ comment.text }}</span>
             </div>
@@ -345,7 +345,7 @@ function bind_vote(type, post_id, post_type)
     <div class="comment comment-level-{{ comment_child.level }} {% ifequal comment_child.author user %}comment-is-yours{% endifequal %} {% if comment_count > 5 %}comment-too-many comment-too-many-{{ forloop.parentloop.parentloop.counter }}{% endif %}">
       <div class="comment-content-div">
         {% if not comment_child.removed %}
-        <span class="comment-author" id="comment-author-{{comment_child.id}}">{{ comment_child.author }}:</span>
+          <span class="comment-author" id="comment-author-{{comment_child.id}}">{{ comment_child.author }}:</span>
         {% endif %}
         <span class="comment-content" id="comment-content-{{comment_child.id}}">{{ comment_child.text }}</span>
       </div>
@@ -390,27 +390,29 @@ function bind_vote(type, post_id, post_type)
 
   {% if not group.pending_parent %}
     {% if group.parent or group.toplevelgroup %}
-      <div id="page-navigation">
-        <ul>
-          {% if posts_on_page.has_previous %}
-            <li>
-              <a href="?page={{ posts_on_page.previous_page_number }}">previous</a>
-            </li>
-          {% else %}
-            {% if posts %}
-              <li>previous</li>
+      {% if posts_on_page.has_previous or posts_on_page.has_next %}
+        <div id="page-navigation">
+          <ul>
+            {% if posts_on_page.has_previous %}
+              <li>
+                <a href="?page={{ posts_on_page.previous_page_number }}">previous</a>
+              </li>
+            {% else %}
+              {% if posts %}
+                <li>previous</li>
+              {% endif %}
             {% endif %}
-          {% endif %}
-          {% if posts_on_page.has_next %}
-            <li>
-              <a href="?page={{ posts_on_page.next_page_number }}">next</a>
-            </li>
-          {% else %}
-            {% if posts %}
-              <li>next</li>
+            {% if posts_on_page.has_next %}
+              <li>
+                <a href="?page={{ posts_on_page.next_page_number }}">next</a>
+              </li>
+            {% else %}
+              {% if posts %}
+                <li>next</li>
+              {% endif %}
             {% endif %}
-          {% endif %}
-        </ul>
-      </div>
+          </ul>
+        </div>
+      {% endif %}
     {% endif %}
   {% endif %}
