@@ -16,4 +16,7 @@ tmp
 .DS_Store
 djapian_spaces
 static/uploaded_files/*
+static/uploaded_files/
+*.swp
+*.pyc
 settings_local.py
