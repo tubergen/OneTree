@@ -294,8 +294,6 @@ def group_page(request, group_url, partial_form=None, is_group_page=True,
         if errormsg:
             print errormsg      
 
-    print 'There should be something here.'
-
     # get user's subscription status to this group
     #    Note: I deliberately do not catch Profile.DoesNotExist here,
     #    since all logged in users should have a profile
