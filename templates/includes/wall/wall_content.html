@@ -394,7 +394,7 @@ function bind_vote(type, post_id, post_type)
         <ul>
           {% if posts_on_page.has_previous %}
             <li>
-              <a href="?page={{ posts_on_page.previous_page_number }}">Previous</a>
+              <a href="?page={{ posts_on_page.previous_page_number }}">previous</a>
             </li>
           {% else %}
             {% if posts %}
@@ -403,7 +403,7 @@ function bind_vote(type, post_id, post_type)
           {% endif %}
           {% if posts_on_page.has_next %}
             <li>
-              <a href="?page={{ posts_on_page.next_page_number }}">Next</a>
+              <a href="?page={{ posts_on_page.next_page_number }}">next</a>
             </li>
           {% else %}
             {% if posts %}
