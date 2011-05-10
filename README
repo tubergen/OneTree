@@ -1,4 +1,14 @@
-this should be read
-lol jk im not reading it
-loser
-yeah well who's gonna make me?
+~*-------------------------------------*~
+~* Welcome to the OneTree source code! *~
+~*-------------------------------------*~
+Copyright 2011 Tyler Brown, Ming Loong Chng, Jorge Lugo, Seung Nam, Brian Tubergen
+feedback+cos.333.2011 -at- gmail -dot- com
+
+~*-----*~
+~* FAQ *~
+~*-----*~
+Q: Can I see this running live?
+A: http://onetree.princeton.edu
+
+Q: Why can't I run this locally?
+A: You may not have the right dependencies (will list eventually). You also need a properly configured settings_local.py file in your directory for settings.py to import from.
