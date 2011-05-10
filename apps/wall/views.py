@@ -4,6 +4,7 @@ from OneTree.apps.common.models import *
 from OneTree.apps.helpers.enums import PostType, VoteType
 from OneTree.apps.helpers.filter import Filter
 from OneTree.apps.helpers.paginate import paginate_posts
+from OneTree.apps.group.views import group_page
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -17,6 +18,22 @@ def post_comment(request):
     redirect = request.POST.get("next")
     comment_text = request.POST.get("comment_text")
     post_type = int(request.POST.get("post_type"))
+    # oh boy...
+    if post_type == PostType.ANNOUNCEMENT:
+        post = Announcement.objects.get(id=post_id)
+    elif post_type == PostType.EVENT:
+        post = Event.objects.get(id=post_id)
+    else:
+        post = Comment.objects.get(id=post_id)
+        
+    group = post.origin_group
+    url = group.url
+    if len(comment_text) > 200:
+        errormsg = 'Your comment is too long. The maximum character length is ' + str(200) + ' characters. Your current comment length is ' + str(len(comment_text)) + ' characters.'
+        return group_page(request, url, errormsg=errormsg)
+
+        
+
     this_level = 0; # change this when you add comments to comments
     if post_id and comment_text and post_type and request.user.is_authenticated() \
            and comment_text != default_comment_text:
