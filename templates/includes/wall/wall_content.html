@@ -143,10 +143,11 @@ function delete_comment(comment_id)
         // this code is for posting of comments
 
         // don't hide reply field for comments
-        function toggle_reply_box(id, reference) {
+        function toggle_reply_box(id, reference, textarea) {
           if (!reference.is_shown) {
             $('#'+id).show("fast");
             reference.is_shown = true;
+            $('#'+textarea).focus();
           } else {
             $('#'+id).hide("fast");
             reference.is_shown = false;
@@ -256,7 +257,7 @@ function delete_comment(comment_id)
               <div class="post-bottom-bar">
                 <div class="post-reply-button">
                   {% if user.is_authenticated %}
-                    <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this);">Comment!</a>
+                    <a onclick="toggle_reply_box('{{ post.post_type }}_id_{{ post.id }}', this, 'comment_text_id_level_0_{{ post.id }}');">Comment!</a>
                   {% else %}
                     {% if forloop.first %} <a href="/login/?next={{ request.get_full_path }}">Login to comment!</a> {% endif %}
                   {% endif %}
@@ -275,8 +276,8 @@ function delete_comment(comment_id)
                   <input type="hidden" name="next" value="{{ request.get_full_path }}"></input>
                 <input type="hidden" name="post_id" value="{{ post.id }}"></input>
               <input type="hidden" name="post_type" value="{{ post.post_type }}"></input>
-            <label for="comment_text_id_{{ post.id }}" class="comment-label"></label>
-            <textarea id="comment_text_id_{{ post.id }}" name="comment_text" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
+            <label for="comment_text_id_level_0_{{ post.id }}" class="comment-label"></label>
+            <textarea id="comment_text_id_level_0_{{ post.id }}" name="comment_text" onfocus="this.value=''; this.onfocus=null">type comment here!</textarea>
             <input type="submit" value="Post!"></input>
         </form>
       </div>
@@ -301,7 +302,7 @@ function delete_comment(comment_id)
               <ul>
                 <li>
                   {% if user.is_authenticated %}
-                    <button type="button" class="comment-reply-button" onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this);">reply</button>
+                    <button type="button" class="comment-reply-button" onclick="toggle_reply_box('comment_post_id_{{ comment.id }}', this, 'comment_nest_id_{{ comment.id }}');">reply</button>
                   {% else %}
                     {# do nothing... <a href="/login/?next={{ request.get_full_path }}">Login to reply!</a> #}
                   {% endif %}
@@ -334,8 +335,8 @@ function delete_comment(comment_id)
             <input type="hidden" name="next" value="{{ request.get_full_path }}"></input>
           <input type="hidden" name="post_id" value="{{ comment.id }}"></input>
         <input type="hidden" name="post_type" value="{{ comment.post_type }}"></input>
-      <label for="comment_text_id_{{ comment.id }}" class="comment-label"></label>
-      <textarea id="comment_text_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
+      <label for="comment_nest_id_{{ comment.id }}" class="comment-label"></label>
+      <textarea id="comment_nest_id_{{ comment.id }}" name="comment_text" cols="62" rows="2" onfocus="this.value=''; this.onfocus=null">type reply here!</textarea>
       <input type="submit" value="Post!"></input>
   </form>
 
