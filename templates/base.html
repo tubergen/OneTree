@@ -44,7 +44,7 @@
               {% endif %}
               <li>
                 <form action='/search/' method='GET'>
-                  <input name="query" class="search-bar" type="text" value="search groups" style="color: gray;" onfocus="this.value=''; this.style.color='black'; this.onfocus=null;" />
+                  <input name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' }" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';}" />
                 </form>
               </li>
             </ul>

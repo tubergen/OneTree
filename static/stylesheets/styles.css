@@ -85,6 +85,10 @@ a img {
     display: inline-block;
 }
 
+.search-bar {
+    color: #888888;
+}
+
 #content {
     background-color: #FFFFFF;
     border: 1px solid #000000;
