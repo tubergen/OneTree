@@ -6,6 +6,33 @@
     <link rel="stylesheet" href="/static/stylesheets/styles.css" type="text/css" media="screen" />
     <script src="/static/javascripts/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="/static/javascripts/base.js"></script>
+    <script type="text/javascript">
+      // sendValue function for search results
+      function sendValue(str) {
+        $.post("{% url ajax_search %}",
+          {value: str},
+          function(data) {
+            var results_box = $('#ajax-search-results')
+            if (! $.isEmptyObject(data)) {
+              var list = "<ul>";
+              $.each(data, function(index, item) {
+                var list_item = '<a href="/group/'+item.fields.url+'">' +
+                  "<li>" +
+                  item.fields.name + "</li></a>";
+                list += list_item;
+              });
+              list += "</ul>";
+              results_box.html(list);
+              results_box.fadeIn("fast");
+            }
+            else {
+              results_box.fadeOut("fast");
+            }
+          },
+          "json"
+        )
+      };
+    </script>
 
     {% block head %}{% endblock %}
   </head>
@@ -44,8 +71,9 @@
               {% endif %}
               <li>
                 <form action='/search/' method='GET'>
-                  <input name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' }" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';}" />
+                  <input autocomplete="off" id="search-bar" name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' }" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';} $('#ajax-search-results').fadeOut('fast');" />
                 </form>
+                <div id="ajax-search-results">(no results)</div>
               </li>
             </ul>
           </div>

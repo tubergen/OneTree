@@ -74,12 +74,12 @@ a img {
     font-size: 12pt;
 }
 
-#header_nav ul {
+#header_nav > ul {
     margin: 0;
     padding: 0;
 }
 
-#header_nav li {
+#header_nav > ul > li {
     list-style: none;
     padding: 0 1em 0 0;
     display: inline-block;
@@ -87,6 +87,35 @@ a img {
 
 .search-bar {
     color: #888888;
+}
+
+#ajax-search-results {
+    display: none;
+    position: absolute;
+    text-align: left;
+    padding: .2em .5em;
+    border: 1px solid;
+    width: 150px;
+    background-color: #ffffff;
+    z-index: 10;
+}
+
+#ajax-search-results ul, #ajax-search-results li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#ajax-search-results li:before {
+    content: "- ";
+}
+
+#ajax-search-results li:hover {
+    background-color: #eeeeee;
+}
+
+#ajax-search-results a {
+    color: black;
 }
 
 #content {

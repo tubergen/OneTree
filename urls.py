@@ -6,7 +6,7 @@ from OneTree.apps.group.views import create_group, req_membership
 from OneTree.apps.common.views import homepage
 from OneTree.apps.newsfeed.views import newsfeed, filter_newsfeed, remove_post
 from OneTree.apps.wall.views import *
-from OneTree.apps.search.views import search
+from OneTree.apps.search.views import search, ajax_search_results
 from django.conf import settings
 from django.contrib.auth.views import logout, password_change, password_change_done, password_reset
 from OneTree.apps.auth.views import login
@@ -77,6 +77,7 @@ urlpatterns = patterns('',
     # Searching
     #(r'^search/', include('haystack.urls')),
     url(r'^search/$', search, name='search'),
+    url(r'^_apps/search/ajax-results/$', ajax_search_results, name='ajax_search'),
 
     # Activate/complete must come before activate/activation_key
     url(r'^activate/complete/$', 
