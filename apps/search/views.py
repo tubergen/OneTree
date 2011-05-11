@@ -23,11 +23,12 @@ class SearchForm(forms.Form):
 def ajax_search_results(request):
     if request.is_ajax():
         if request.method == 'POST':
-            # clean the data
+
+            #!!!!!!!!!!!!!!!!!!!!! clean the data ????????
             value = request.POST['value']
 
-            # if we can filter in the .search for just 5 results that'd be ideal
-            results = complete_indexer.search(value).prefetch()
+            # if we can filter for just 5 results that'd be ideal
+            results = complete_indexer.search(value + '*.').spell_correction()
             results_list = []
             for hit in results:
                 results_list.append(hit.instance);
@@ -36,7 +37,6 @@ def ajax_search_results(request):
 
             data = serializers.serialize('json',
                     results_list, fields=('name', 'url'))
-            print data
             return HttpResponse(data, mimetype='application/json')
         else:
             return HttpResponse(status=400)
@@ -51,7 +51,7 @@ def search(request):
         if form.is_valid():
             query = form.cleaned_data['query']
             indexer = complete_indexer
-            results = indexer.search(query).prefetch()
+            results = indexer.search(query).spell_correction()
             for hit in results:
                 print hit.instance.name
     else:
