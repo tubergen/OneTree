@@ -109,7 +109,7 @@ a img {
 }
 
 .ajax-list-li:before {
-    content: "- ";
+    content: "";
 }
 
 #ajax-search-none:before {
