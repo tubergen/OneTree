@@ -33,8 +33,10 @@
               $(str).appendTo('#ajax-search-results ul');
               max_value = -1;
             }
-            if ($('#search-box').attr('value') != '')
+            var search_box = $('#search-bar');
+            if (search_box.attr('value') != '') {
               results_box.fadeIn("fast");
+            }
             else
               results_box.fadeOut("fast");
           },
