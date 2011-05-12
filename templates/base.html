@@ -38,7 +38,7 @@
       }
 
       // scroll through ajax search list
-      function handleSearchKeyDown(isDownKey, isUpKey) {
+      function handleSearchKeyDown(isDownKey, isUpKey, isEnterKey) {
         if (isDownKey) {
           // doesn't really do anything yet
           if (! this.already_set) {
@@ -71,6 +71,15 @@
           else
             $('#search-bar').focus().attr('value',
               $('#ajax-list-'+this.scroll_index).html());
+        }
+        else if (isEnterKey) {
+          if (this.already_set)
+            if (this.scroll_index > 0) {
+              window.location.href =
+                $('#ajax-list-'+this.scroll_index).parent().attr('href');
+              return true;
+            }
+          return false;
         }
         else { // some other key
           this.old_value = $('#search-bar').attr('value');

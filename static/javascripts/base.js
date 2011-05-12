@@ -62,15 +62,19 @@ $(document).ready(function() {
     $('#search-bar').keydown(function(e) {
         var code = (e.which ? e.which : e.keyCode);
         if (code == '40') {
-            handleSearchKeyDown(true, false);
-            return false;
+            handleSearchKeyDown(true, false, false);
+            return false; // return false overrides default action
         }
         else if (code == '38') {
-            handleSearchKeyDown(false, true);
+            handleSearchKeyDown(false, true, false);
             return false;
         }
+        else if (code == '13') {
+            if (handleSearchKeyDown(false, false, true))
+                return false;
+        }
         else {
-            handleSearchKeyDown(false, false);
+            handleSearchKeyDown(false, false, false);
         }
     });
 });
