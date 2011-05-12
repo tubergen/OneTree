@@ -31,6 +31,7 @@
             else {
               var str = '<li id="ajax-search-none">no results</li>';
               $(str).appendTo('#ajax-search-results ul');
+              max_value = -1;
             }
             if ($('#search-box').attr('value') != '')
               results_box.fadeIn("fast");
@@ -42,8 +43,8 @@
       }
 
       // scroll through ajax search list
-      function handleSearchKeyDown(isDownKey, isUpKey, isEnterKey) {
-        if (isDownKey) {
+      function handleSearchKeyDown(is_down_key, is_up_key, is_enter_key) {
+        if (is_down_key) {
           // doesn't really do anything yet
           if (! this.already_set) {
             this.scroll_index = -1;
@@ -63,7 +64,7 @@
             $('#search-bar').attr('value', $('#ajax-list-'+this.scroll_index).html());
           }
         }
-        else if (isUpKey) {
+        else if (is_up_key) {
           $('#ajax-list-'+this.scroll_index).removeClass('ajax-search-result-selected');
           if (this.scroll_index >= 0) {
             this.scroll_index--;
@@ -76,7 +77,7 @@
             $('#search-bar').focus().attr('value',
               $('#ajax-list-'+this.scroll_index).html());
         }
-        else if (isEnterKey) {
+        else if (is_enter_key) {
           if (this.already_set)
             if (this.scroll_index > 0) {
               window.location.href =
