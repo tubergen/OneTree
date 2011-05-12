@@ -99,6 +99,7 @@ a img {
     width: 150px;
     background-color: #ffffff;
     z-index: 10;
+    font-size: 10pt;
 }
 
 #ajax-search-results ul, #ajax-search-results li {
@@ -107,12 +108,17 @@ a img {
     list-style: none;
 }
 
-#ajax-search-results li:before {
+.ajax-list-li:before {
     content: "- ";
 }
 
-#ajax-search-results li:hover {
-    background-color: #eeeeee;
+#ajax-search-none:before {
+    content: "";
+}
+
+#ajax-search-results li:hover, .ajax-search-result-selected {
+    background-color: #358196;
+    color: white;
 }
 
 #ajax-search-results a {

@@ -21,17 +21,21 @@
               var num = 0;
               $.each(data, function(index, item) {
                 var str = '<a href="/group/'+item.fields.url+'">' +
-                  '<li id="ajax-list-' + num + '">' + 
+                  '<li class="ajax-list-li" id="ajax-list-' + num + '">' + 
                   item.fields.name + "</li></a>";
                 $(str).appendTo("#ajax-search-results ul");
                 num++;
               });
               max_value = num - 1;
-              results_box.fadeIn("fast");
             }
             else {
-              results_box.fadeOut("fast");
+              var str = '<li id="ajax-search-none">no results</li>';
+              $(str).appendTo('#ajax-search-results ul');
             }
+            if ($('#search-box').attr('value') != '')
+              results_box.fadeIn("fast");
+            else
+              results_box.fadeOut("fast");
           },
           "json"
         )
@@ -48,23 +52,23 @@
           
           if (this.scroll_index < max_value) {
             if (this.scroll_index >= 0)
-              $('#ajax-list-'+this.scroll_index).css('background-color', '#ffffff');
+              $('#ajax-list-'+this.scroll_index).removeClass('ajax-search-result-selected');
             this.scroll_index++;
 
             if (this.scroll_index == 0)
               this.old_value = $('#search-bar').attr('value');
 
             var this_list = $('#ajax-list-'+this.scroll_index);
-            this_list.css('background-color', '#eeeeee');
+            this_list.addClass('ajax-search-result-selected');
             $('#search-bar').attr('value', $('#ajax-list-'+this.scroll_index).html());
           }
         }
         else if (isUpKey) {
-          $('#ajax-list-'+this.scroll_index).css('background-color', '#ffffff');
+          $('#ajax-list-'+this.scroll_index).removeClass('ajax-search-result-selected');
           if (this.scroll_index >= 0) {
             this.scroll_index--;
             if (this.scroll_index >= 0)
-            $('#ajax-list-'+this.scroll_index).css('background-color', '#eeeeee');
+            $('#ajax-list-'+this.scroll_index).addClass('ajax-search-result-selected');
           }
           if (this.scroll_index == -1)
             $('#search-bar').focus().attr('value', this.old_value);
@@ -128,11 +132,11 @@
               {% endif %}
               <li>
                 <form action='/search/' method='GET'>
-                  <input autocomplete="off" id="search-bar" name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' }" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';} $('#ajax-search-results').fadeOut('fast');" />
+                  <input autocomplete="off" id="search-bar" name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' } if (this.value != &#39;&#39;) {$('#ajax-search-results').fadeIn('fast');}" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';} $('#ajax-search-results').fadeOut('fast');" />
                 </form>
                 <div id="ajax-search-results">
                   <ul id="ajax-search-list">
-                    <li>no results</li>
+                    <li id="ajax-search-none">no results</li>
                   </ul>
                 </div>
               </li>
