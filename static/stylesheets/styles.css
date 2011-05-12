@@ -87,6 +87,7 @@ a img {
 
 .search-bar {
     color: #888888;
+    width: 150px;
 }
 
 #ajax-search-results {

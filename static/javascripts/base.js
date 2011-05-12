@@ -52,7 +52,25 @@ $(document).ready(function() {
     });
 
     // search results pop under search bar
-    $('#search-bar').keyup(function() {
-        sendValue($(this).val());
+    $('#search-bar').keyup(function(e) {
+        var code = (e.which ? e.which : e.keyCode);
+        if (code != '40' && code != '38')
+            sendValue($(this).val());
+    });
+
+    // handle key presses to scroll through options
+    $('#search-bar').keydown(function(e) {
+        var code = (e.which ? e.which : e.keyCode);
+        if (code == '40') {
+            handleSearchKeyDown(true, false);
+            return false;
+        }
+        else if (code == '38') {
+            handleSearchKeyDown(false, true);
+            return false;
+        }
+        else {
+            handleSearchKeyDown(false, false);
+        }
     });
 });

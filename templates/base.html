@@ -7,22 +7,26 @@
     <script src="/static/javascripts/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="/static/javascripts/base.js"></script>
     <script type="text/javascript">
-      // sendValue function for search results
+      var max_value; {# global variable for ajax search #}
+
+      // retrieve ajax search results
       function sendValue(str) {
         $.post("{% url ajax_search %}",
           {value: str},
           function(data) {
-            var results_box = $('#ajax-search-results')
+            var results_box = $('#ajax-search-results');
+            var results_box_list = $('#ajax-search-list');
+            results_box_list.html('');
             if (! $.isEmptyObject(data)) {
-              var list = "<ul>";
+              var num = 0;
               $.each(data, function(index, item) {
-                var list_item = '<a href="/group/'+item.fields.url+'">' +
-                  "<li>" +
+                var str = '<a href="/group/'+item.fields.url+'">' +
+                  '<li id="ajax-list-' + num + '">' + 
                   item.fields.name + "</li></a>";
-                list += list_item;
+                $(str).appendTo("#ajax-search-results ul");
+                num++;
               });
-              list += "</ul>";
-              results_box.html(list);
+              max_value = num - 1;
               results_box.fadeIn("fast");
             }
             else {
@@ -31,7 +35,51 @@
           },
           "json"
         )
-      };
+      }
+
+      // scroll through ajax search list
+      function handleSearchKeyDown(isDownKey, isUpKey) {
+        if (isDownKey) {
+          // doesn't really do anything yet
+          if (! this.already_set) {
+            this.scroll_index = -1;
+            this.already_set = true;
+          }
+          
+          if (this.scroll_index < max_value) {
+            if (this.scroll_index >= 0)
+              $('#ajax-list-'+this.scroll_index).css('background-color', '#ffffff');
+            this.scroll_index++;
+
+            if (this.scroll_index == 0)
+              this.old_value = $('#search-bar').attr('value');
+
+            var this_list = $('#ajax-list-'+this.scroll_index);
+            this_list.css('background-color', '#eeeeee');
+            $('#search-bar').attr('value', $('#ajax-list-'+this.scroll_index).html());
+          }
+        }
+        else if (isUpKey) {
+          $('#ajax-list-'+this.scroll_index).css('background-color', '#ffffff');
+          if (this.scroll_index >= 0) {
+            this.scroll_index--;
+            if (this.scroll_index >= 0)
+            $('#ajax-list-'+this.scroll_index).css('background-color', '#eeeeee');
+          }
+          if (this.scroll_index == -1)
+            $('#search-bar').focus().attr('value', this.old_value);
+          else
+            $('#search-bar').focus().attr('value',
+              $('#ajax-list-'+this.scroll_index).html());
+        }
+        else { // some other key
+          this.old_value = $('#search-bar').attr('value');
+          if (this.already_set) {
+            $('#ajax-list-'+this.scroll_index).css('background-color', '#ffffff');
+            this.scroll_index = -1;
+          }
+        }
+      }
     </script>
 
     {% block head %}{% endblock %}
@@ -73,7 +121,11 @@
                 <form action='/search/' method='GET'>
                   <input autocomplete="off" id="search-bar" name="query" class="search-bar" type="search" onfocus="if (this.value == &#39;search groups&#39;) { this.value=&#39;&#39;; this.style.color='black' }" value="search groups" onblur="if (this.value == &#39;&#39;) { this.value=&#39;search groups&#39;; this.style.color='gray';} $('#ajax-search-results').fadeOut('fast');" />
                 </form>
-                <div id="ajax-search-results">(no results)</div>
+                <div id="ajax-search-results">
+                  <ul id="ajax-search-list">
+                    <li>no results</li>
+                  </ul>
+                </div>
               </li>
             </ul>
           </div>
